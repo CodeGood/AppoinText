@@ -5,6 +5,8 @@ import com.appointext.naivebayes.Classifier;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.os.Bundle;
+import android.telephony.SmsMessage;
 import android.util.Log;
 
 /*
@@ -22,9 +24,43 @@ import android.util.Log;
 
 public class AppoinTextService extends IntentService {
 	
-	public AppoinTextService(String name) {
-		super(name);
-		// TODO Auto-generated constructor stub
+	public AppoinTextService() {
+		super("AppoinText"); //Apparently the name is necessary only for tracking purposes
+		//It is easier to give a default name than bothering to figure out how to raise an Intent to call a parameterised constructor
+	}
+	
+	@Override
+	protected void onHandleIntent(Intent intent) {
+		//For an IntentService, all work must be in onHandleIntent. onCreate and onCommand should never be overridden.
+		Log.i("AppoinText", "Service successfully called.");
+		
+		//Should have received the incoming sms as part of the Intent
+		Bundle smsBundle = intent.getExtras();		
+		SmsMessage[] msgs = null;
+		String curText = null;
+		
+        if (smsBundle != null) {
+            
+        	//---retrieve the SMS message received. Using the array just for the sake of safety ---
+        	
+            Object[] pdus = (Object[]) smsBundle.get("pdus");
+            msgs = new SmsMessage[pdus.length];
+            
+            for (int i=0; i<msgs.length; i++){
+            	
+                msgs[i] = SmsMessage.createFromPdu((byte[])pdus[i]);             
+                curText = msgs[i].getMessageBody().toString();
+                /*
+                 * The following values will be utilized some day or the other
+                 * .getTimestampMillis(); - Will give you the timestamp of receipt in milliseconds from epoch
+                 * .getOriginatingAddress(); - Will give the sender number
+                 * ReceiverNumber should be known, or can be replaced by an x in all databases.
+                 */
+                Log.i("AppoinText", "Result of" + curText + " was " + classify(curText));
+                
+            }
+        }
+		
 	}
 
 	/**
@@ -49,12 +85,5 @@ public class AppoinTextService extends IntentService {
 		
 		return null;
 	}
-
-	@Override
-	protected void onHandleIntent(Intent intent) {
-		// TODO Auto-generated method stub
-		
-	}
-
 
 }
