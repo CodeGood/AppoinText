@@ -50,12 +50,14 @@ public class AppoinTextService extends IntentService {
             	
                 msgs[i] = SmsMessage.createFromPdu((byte[])pdus[i]);             
                 curText = msgs[i].getMessageBody().toString();
+                
                 /*
                  * The following values will be utilized some day or the other
                  * .getTimestampMillis(); - Will give you the timestamp of receipt in milliseconds from epoch
                  * .getOriginatingAddress(); - Will give the sender number
                  * ReceiverNumber should be known, or can be replaced by an x in all databases.
                  */
+                
                 Log.i("AppoinText", "Result of" + curText + " was " + classify(curText));
                 
             }
