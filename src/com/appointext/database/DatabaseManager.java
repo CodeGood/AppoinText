@@ -1,6 +1,7 @@
 package com.appointext.database;
  
 import java.util.ArrayList;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -8,6 +9,34 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
+/*Sample usage for the Database Manager class
+ *  		db = new DatabaseManager(this);
+	        db.open();
+	        
+	        db.addRow("settingsTable", 01, "Morning", "7AM");
+	        db.addRow("setReminders", 01, 0, 0, "I am madness personified");
+	        db.addRow("pendingReminders", 12, 1, 2, "Kakkas", "Mundane", "Naale", "Manemele", "blah");
+	        db.updateRow("settingsTable", 01, "Morning", "9M");
+	        db.deleteRow("pendingReminders", 12);
+	        
+	        row = db.getRowAsArray("settingsTable", 01);
+	        
+	        db.close();
+	        
+	        
+	        in the above piece of code the tables are:
+	        
+	        settings(this table is to store the values of settings)
+	         : it has an ID field, name which is the name of the setting attribute and the value is a comma seperated list of 
+	        values which you will have to tokenize later
+	        
+	        pendingReminders(table to store all the reminders which are not confirmend yet)
+	         : 	it has an eventId field, sender(number), receiver(number), attendees(commma seperated), what, whenIsIt, whereIsIt, timeStamp
+	        
+	        setReminders(a list of all the reminders which are already set)
+	         :  it has an eventId field, isComplete(binary), isGroup(binary), extracted data(string)
+ */
  
 public class DatabaseManager {
 
@@ -99,11 +128,10 @@ public class DatabaseManager {
        }
 
 
-       /* long insertTitle(ContentValues initialValues,String TableName) 
-       {
-
-           return db.insert(TableName, null, initialValues);
-       }*/
+       public void executeStatement(String query){
+    	   
+    	   db.execSQL(query);
+       }
        
        public void addRow(String dbName,int evntId, int isComp, int isGrp, String extractedData)
        {
