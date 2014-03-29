@@ -1,4 +1,4 @@
-package com.appointext.backend;
+package com.appointext.regex;
 
 import java.util.Locale;
 
@@ -28,7 +28,7 @@ public class RecognizeTime {
 			//Step 2 - Check whether it is I am 
 			for (String curam : amStrings) {
 				
-				if (curam.charAt(curam.length()-1) != 'I') { //It is NOT I am					
+				if (curam.charAt(curam.length()-1) != 'i') { //It is NOT I am					
 					int start = getNumberStartIndex(curam); //check if a number exists in the current string
 					if (start != -1) //if it does
 						returnString += sms.substring(start, getNumberEndIndex(curam, start)) + ","; //extract and add
