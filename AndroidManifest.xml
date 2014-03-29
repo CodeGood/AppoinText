@@ -10,7 +10,9 @@
 
     <uses-permission android:name="android.permission.RECEIVE_SMS"></uses-permission>
     <uses-permission android:name="android.permission.READ_SMS" />
-    <uses-permission android:name="android.permission.SEND_SMS"></uses-permission> <!-- TODO: NOT REQUIRED I THINK -->  
+    <uses-permission android:name="android.permission.SEND_SMS"></uses-permission> <!-- TODO: NOT REQUIRED I THINK -->
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <uses-permission android:name="android.permission.WRITE_CALENDAR" />  
     
     <application
         android:allowBackup="true"
@@ -24,6 +26,23 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.appointext.frontend.SettingsDisplay"
+            android:label="DisplaySettings" >            
+        </activity>
+        <activity
+            android:name="com.appointext.frontend.RaterDisplay"
+            android:label="RateDisplayer" >            
+        </activity>
+        <activity
+            android:name="com.appointext.frontend.RemindersDisplay"
+            android:label="ReminderDisplayer" >            
+        </activity>
+        <activity
+            android:name="com.appointext.frontend.TNCDisplay"
+            android:label="TNCDisplayer" >            
         </activity>
         
         <service
