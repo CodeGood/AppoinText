@@ -2,6 +2,8 @@ package com.appointext.backend;
 
 import java.util.Map;
 import com.appointext.naivebayes.Classifier;
+import com.appointext.database.*;
+import com.appointext.nertagger.*;
 
 import android.app.IntentService;
 import android.content.Intent;
@@ -45,11 +47,59 @@ public class AppoinTextService extends IntentService {
         	
             Object[] pdus = (Object[]) smsBundle.get("pdus");
             msgs = new SmsMessage[pdus.length];
+            Map<String, Double> res;
+            String category = null;
+            Double minimumConfidence = Double.MIN_VALUE;
             
             for (int i=0; i<msgs.length; i++){
             	
                 msgs[i] = SmsMessage.createFromPdu((byte[])pdus[i]);             
                 curText = msgs[i].getMessageBody().toString();
+                
+                String taggedCurText = null;
+                
+                res = this.classify(curText);
+                
+                for (Map.Entry<String, Double> entry : res.entrySet()) {
+                    String key = entry.getKey();
+                    Double value = entry.getValue();
+                    
+                    if(value > minimumConfidence){
+                    	
+                    	minimumConfidence = value;
+                    	category = key;
+                    }
+                   
+                }
+                
+                if(category.equalsIgnoreCase("irrelevant")){
+                	
+                	return;
+                }
+                
+                if(category.equalsIgnoreCase("query")){
+                	
+                	String[] taggedWords;
+                	
+                	
+                	
+                	try{
+                		
+                		taggedCurText = NERecognizer.NERTagger(curText);
+                	}
+                	
+                	catch(Exception e){
+                		
+                		Log.e("NER Tagger", "Died while tagging :"+e);
+                	}
+                	
+                	if(taggedCurText!=null){
+                		
+                		taggedWords = taggedCurText.split(" ");
+                	}
+                }
+                
+                
                 
                 /*
                  * The following values will be utilized some day or the other
