@@ -1,0 +1,29 @@
+<PreferenceScreen
+      xmlns:android="http://schemas.android.com/apk/res/android">	
+    <PreferenceScreen
+        android:title="Blocked Number"
+        android:key = "numberBlocked"
+        android:persistent = "false">
+    <ListPreference
+        android:title = "Enter a number manually"
+        android:key = "numberManual">
+        <intent android:action="android.intent.action.EDIT"
+            android:data="http://www.example.com" />
+		</ListPreference>
+      <ListPreference
+        android:key = "contactChosen"
+        android:title = "Choose from contacts">
+        <intent android:action="android.intent.action.VIEW"
+            android:data="content://contacts/people/" />
+       </ListPreference>
+	</PreferenceScreen> 
+	
+    <ListPreference
+        android:key="pref_prompts"
+        android:title="Choose how to handle prompts:"
+        android:dialogTitle="Choose how to handle prompts:"
+        android:defaultValue="pambiguity"
+        android:entries="@array/pref_prompts_entries"
+        android:entryValues="@array/pref_prompts_values" />
+    
+</PreferenceScreen>
