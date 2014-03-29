@@ -11,14 +11,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.RatingBar;
-import android.widget.RatingBar.OnRatingBarChangeListener;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class RaterDisplay extends Activity {
 	
 	private RatingBar ratingBar;
-	  private TextView txtRatingValue;
+	  @SuppressWarnings("unused")
+	private TextView txtRatingValue;
 	  private Button btnSubmit;
 	
 	@Override

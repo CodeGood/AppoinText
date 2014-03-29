@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.os.Bundle;
 
 public class TNCDisplay extends Activity {
-	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
