@@ -2,7 +2,6 @@ package com.appointext.backend;
 
 import java.util.Map;
 import com.appointext.naivebayes.Classifier;
-import com.appointext.database.*;
 import com.appointext.nertagger.*;
 
 import android.app.IntentService;
