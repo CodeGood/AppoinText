@@ -4,26 +4,37 @@
         android:title="Blocked Number"
         android:key = "numberBlocked"
         android:persistent = "false">
-    <ListPreference
-        android:title = "Enter a number manually"
-        android:key = "numberManual">
-        <intent android:action="android.intent.action.EDIT"
-            android:data="http://www.example.com" />
-		</ListPreference>
-      <ListPreference
-        android:key = "contactChosen"
-        android:title = "Choose from contacts">
-        <intent android:action="android.intent.action.VIEW"
-            android:data="content://contacts/people/" />
-       </ListPreference>
+	    <Preference
+	        android:title = "Enter a number manually"
+	        android:key = "numberManual">
+	        <intent android:action="android.intent.action.EDIT"
+	            android:data="tel:" />
+			</Preference>
+	      <Preference
+	        android:key = "contactChosen"
+	        android:title = "Choose from contacts">
+	        <intent android:action="android.intent.action.PICK"
+	            android:data="content://contacts/people/" />
+	       </Preference>
 	</PreferenceScreen> 
 	
-    <ListPreference
+	<ListPreference
         android:key="pref_prompts"
-        android:title="Choose how to handle prompts:"
-        android:dialogTitle="Choose how to handle prompts:"
+        android:title="Prompt Control"
+        android:dialogTitle="Raise a prompt when:"
         android:defaultValue="pambiguity"
         android:entries="@array/pref_prompts_entries"
         android:entryValues="@array/pref_prompts_values" />
     
-</PreferenceScreen>
+	<Preference
+   	    android:id = "@+id/dayTime"
+        android:key = "day_time"
+        android:title = "Day Timings"
+        android:onClick = "pickTime" />
+	
+	<Preference
+	    android:id = "@+id/NoNag"
+   		android:title = "No Nag Mode"
+   		android:key = "no_nag"
+   		android:onClick = "NoNagHandler" />
+  </PreferenceScreen>

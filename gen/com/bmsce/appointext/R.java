@@ -29,27 +29,44 @@ public final class R {
         public static final int logo_appointext=0x7f020001;
     }
     public static final class id {
-        public static final int action_settings=0x7f09000b;
-        public static final int btnSubmit=0x7f090008;
+        public static final int EveningTimeText=0x7f090016;
+        public static final int MorningTimeText=0x7f090014;
+        public static final int NightTimeText=0x7f090017;
+        public static final int NoNag=0x7f090013;
+        public static final int NoNagModeScheduler=0x7f090008;
+        public static final int NoNagSchedulerEndTime=0x7f09000b;
+        public static final int NoNagSchedulerStart=0x7f090009;
+        public static final int NoNagSchedulerStartTime=0x7f09000a;
+        public static final int NoNagStatusText=0x7f090006;
+        public static final int NoNagStatusToggle=0x7f090007;
+        public static final int action_settings=0x7f090019;
+        public static final int btnSubmit=0x7f09000f;
         public static final int buttonInvite=0x7f090003;
         public static final int buttonRate=0x7f090004;
         public static final int buttonReminders=0x7f090001;
         public static final int buttonSettings=0x7f090002;
         public static final int buttonTnc=0x7f090005;
-        public static final int lblRateMe=0x7f090006;
-        public static final int linearLayout1=0x7f090009;
+        public static final int dayTime=0x7f090012;
+        public static final int lblRateMe=0x7f09000d;
+        public static final int linearLayout1=0x7f090010;
         public static final int op=0x7f090000;
-        public static final int ratingBar=0x7f090007;
-        public static final int txtRatingValue=0x7f09000a;
+        public static final int ratingBar=0x7f09000e;
+        public static final int timePickerEvening=0x7f09000c;
+        public static final int timePickerMorning=0x7f090015;
+        public static final int timePickerNight=0x7f090018;
+        public static final int txtRatingValue=0x7f090011;
     }
     public static final class layout {
         public static final int activity_appoin_text=0x7f030000;
         public static final int activity_main=0x7f030001;
         public static final int invite=0x7f030002;
-        public static final int rate=0x7f030003;
-        public static final int reminders=0x7f030004;
-        public static final int settings=0x7f030005;
-        public static final int tnc=0x7f030006;
+        public static final int no_nag=0x7f030003;
+        public static final int nonagscheduler=0x7f030004;
+        public static final int rate=0x7f030005;
+        public static final int reminders=0x7f030006;
+        public static final int settings=0x7f030007;
+        public static final int time_picker=0x7f030008;
+        public static final int tnc=0x7f030009;
     }
     public static final class menu {
         public static final int appoin_text=0x7f080000;

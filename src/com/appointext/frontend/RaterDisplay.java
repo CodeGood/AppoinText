@@ -62,8 +62,8 @@ public class RaterDisplay extends Activity {
 			public void onClick(View v) {
 				String rating = String.valueOf(ratingBar.getRating()).substring(0,1);
 				AlertDialog alertDialog = new AlertDialog.Builder(RaterDisplay.this).create();
-		        alertDialog.setTitle("Thank you");
-		        alertDialog.setMessage("Thank you for giving us " + rating +"\u000059");
+		        alertDialog.setTitle("AppoinText");
+		        alertDialog.setMessage("Thank you for your feedback! :)");
 		        alertDialog.setButton (DialogInterface.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
 		                public void onClick(DialogInterface dialog, int which) {
 		                }
