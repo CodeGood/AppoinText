@@ -12,7 +12,7 @@
 		    android:layout_height="wrap_content"
 		    android:orientation="horizontal" >
 		    	<TextView
-			        android:id="@+id/textView1"
+			        android:id="@+id/MorningTimeText"
 			        android:layout_width="wrap_content"
 			        android:layout_height="wrap_content"
 			        android:text="Morning"/>
@@ -27,7 +27,7 @@
 		    android:layout_height="wrap_content"
 		    android:orientation="horizontal" >
 		    	<TextView
-			        android:id="@+id/textView1"
+			        android:id="@+id/EveningTimeText"
 			        android:layout_width="wrap_content"
 			        android:layout_height="wrap_content"
 			        android:text="Evening"/>
@@ -42,7 +42,7 @@
 		    android:layout_height="wrap_content"
 		    android:orientation="horizontal" >
 		    	<TextView
-			        android:id="@+id/textView1"
+			        android:id="@+id/NightTimeText"
 			        android:layout_width="wrap_content"
 			        android:layout_height="wrap_content"
 			        android:text="Night"/>

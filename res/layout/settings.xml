@@ -4,18 +4,18 @@
         android:title="Blocked Number"
         android:key = "numberBlocked"
         android:persistent = "false">
-	    <ListPreference
+	    <Preference
 	        android:title = "Enter a number manually"
 	        android:key = "numberManual">
 	        <intent android:action="android.intent.action.EDIT"
-	            android:data="http://www.example.com" />
-			</ListPreference>
-	      <ListPreference
+	            android:data="tel:" />
+			</Preference>
+	      <Preference
 	        android:key = "contactChosen"
 	        android:title = "Choose from contacts">
-	        <intent android:action="android.intent.action.VIEW"
+	        <intent android:action="android.intent.action.PICK"
 	            android:data="content://contacts/people/" />
-	       </ListPreference>
+	       </Preference>
 	</PreferenceScreen> 
 	
 	<ListPreference
