@@ -50,6 +50,7 @@ public class AppoinTextService extends IntentService {
             String category = null;
             Double minimumConfidence = Double.MIN_VALUE;
             
+            //loop through the messages, if multiple are recieved in the same time
             for (int i=0; i<msgs.length; i++){
             	
                 msgs[i] = SmsMessage.createFromPdu((byte[])pdus[i]);             
@@ -72,29 +73,34 @@ public class AppoinTextService extends IntentService {
                 }
                 
                 if(category.equalsIgnoreCase("irrelevant")){
-                	
+                	// this is not important to us, so stop the service by returning.
                 	return;
                 }
                 
                 if(category.equalsIgnoreCase("query")){
                 	
-                	String[] taggedWords;
+                	//since this is a query, extract all the details and then store it in the pending table.
                 	
-                	
+                	String[] taggedWords; 
+                	String people;
+                	String location;
                 	
                 	try{
-                		
                 		taggedCurText = NERecognizer.NERTagger(curText);
                 	}
-                	
-                	catch(Exception e){
-                		
+                	catch(Exception e){	
                 		Log.e("NER Tagger", "Died while tagging :"+e);
                 	}
                 	
-                	if(taggedCurText!=null){
-                		
+                	if(taggedCurText!=null){                		
                 		taggedWords = taggedCurText.split(" ");
+                
+	                	for(String word : taggedWords){
+	                		if(word.contains("PERSON")){
+	                			
+	                			word.split("/");
+	                		}
+	                	}
                 	}
                 }
                 
