@@ -1,5 +1,6 @@
 package com.appointext.database;
 
+
 /* JUSTIFICATION
  * 	I did think of making getCalendarID public. But then I realized each IntentService will serve exactly one sms and die. 
  * So by the time the next reminder has to be set, the previous calendar id is well forgotten.
