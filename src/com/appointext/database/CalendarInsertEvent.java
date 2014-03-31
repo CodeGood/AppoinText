@@ -11,6 +11,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -167,7 +168,7 @@ Log.d("Appointext Calendar", "Obtained Calendar ID as " + calId);
 			            insert(Events.CONTENT_URI, values);
 			long eventId =  Long.valueOf(uri.getLastPathSegment());
 			
-Log.d("Appointext Calendar", "Event added successfully");
+Log.d("Appointext Calendar", "Event" + title" added successfully");
 
 			/* Now set a reminder */
 
@@ -180,20 +181,24 @@ Log.d("Appointext Calendar", "Event added successfully");
 			/* Now add attendees for the reminder. I assume we have nothing to do with anything other than name */
 			if (attendees != null) {
 
-				values.clear();
-				for (String name : attendees.split(","))
+				ContentResolver cr = con.getContentResolver();
+				
+				for (String name : attendees.split(",")) {
+					values.clear();
+					values.put(Attendees.EVENT_ID, eventId);
 					values.put(Attendees.ATTENDEE_NAME, name);
-				con.getContentResolver().insert(Attendees.CONTENT_URI, values);
+					cr.insert(Attendees.CONTENT_URI, values);
+				}
 				
 			}
 			
-Log.d("Appointext Calendar", "Reminder Added Successfully");
+Log.d("Appointext Calendar", "Reminder" + title + "Added Successfully");
 
 			return eventId;			
 			
 		}
 		catch(Exception e) {
-			Log.e("Appointext Calendar", "Error in Reminder Setting : " + e.getMessage() + "\nCause may be : " + e.getCause());
+			Log.e("Appointext Calendar", "Error in Reminder " + title + " Setting : " + e.getMessage() + "\nCause may be : " + e.getCause());
 		}
 		
 		return -1;
