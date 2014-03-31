@@ -19,6 +19,6 @@ public class NERecognizer {
       //return(classifier.classifyWithInlineXML(message));
       //return(classifier.classifyToString(message, "xml", true));
         
-      }
+   }
  
 }
