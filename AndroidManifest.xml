@@ -30,19 +30,27 @@
 
         <activity
             android:name="com.appointext.frontend.SettingsDisplay"
-            android:label="DisplaySettings" >            
+            android:label="Settings" >            
         </activity>
         <activity
             android:name="com.appointext.frontend.RaterDisplay"
-            android:label="RateDisplayer" >            
+            android:label="Rate AppoinText" >            
+        </activity>
+        <activity
+            android:name="com.appointext.frontend.NoNagMode"
+            android:label="No Nag Mode" >            
         </activity>
         <activity
             android:name="com.appointext.frontend.RemindersDisplay"
-            android:label="ReminderDisplayer" >            
+            android:label="Existing Reminders" >            
         </activity>
         <activity
             android:name="com.appointext.frontend.TNCDisplay"
-            android:label="TNCDisplayer" >            
+            android:label="Terms and Conditions" >            
+        </activity>
+        <activity
+            android:name="com.appointext.frontend.TimeSelector"
+            android:label="Day Scheduler" >            
         </activity>
         
         <service
