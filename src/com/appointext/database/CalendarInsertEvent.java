@@ -7,11 +7,20 @@ package com.appointext.database;
  * So why make the user work more? May as well as call my API ... 
  */
 
+/* 
+ * TODO :
+ * 		1. Add multiple attendees rather than a CSV
+ * 		2. Check whether delete actually deletes the reminder or not.
+ * 		3. Check whether updating the start time actually updates the reminder time.
+ * 	I am 99.99% sure of the last two, but then who knows! Always better to check or at least document unchecked  
+ */
+
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -203,6 +212,67 @@ Log.d("Appointext Calendar", "Reminder" + title + "Added Successfully");
 		
 		return -1;
 	
-   }
+	}
+	   
+	   /**
+	    * Updates calendar entry
+	    * @param con - Context
+	    * @param entryID - Event to be updated
+	    * @param updateValues - each String should be a Key,Value pair, separated by commas. DO NOT add attendees here. This is for location, title, description, start time and end time
+	    * @param min_before_event - Number of minutes before the event you want your reminder now. If no change is required, pass a negative value.
+	    * @param attendees - New attendee list
+	    * @return - number of rows updated
+	    */
+		   
+	   public static int updateCalendarEntry(Context con, long entryID, String[] updateValues, int min_before_event, String attendees) {
+		        
+		   		int iNumRowsUpdated = 0;
+
+		        ContentValues values = new ContentValues();
+
+		        for (String cur : updateValues)
+		        	values.put(cur.split(",")[0], cur.split(",")[1]);
+
+		        Uri eventUri = ContentUris.withAppendedId(Events.CONTENT_URI, entryID);        
+		        iNumRowsUpdated = con.getContentResolver().update(eventUri, values, null,
+		                			null);
+
+		        Log.i("AppoinText", "Updated " + iNumRowsUpdated + " calendar entry.");
+		        
+		        /* adding the reminder, if change is require */
+		        if (min_before_event > 0) {
+		        	values.clear();
+		        	values.put(Reminders.EVENT_ID, entryID);
+		        	values.put(Reminders.METHOD, Reminders.METHOD_ALERT);
+		        	values.put(Reminders.MINUTES, min_before_event);
+		        	con.getContentResolver().insert(Reminders.CONTENT_URI, values);
+		        }
+				
+				/* adding attendees if any. In a CSV */
+				if (attendees != null) {
+					values.clear();
+					values.put(Attendees.EVENT_ID, entryID);
+					values.put(Attendees.ATTENDEE_NAME, attendees); //TODO: Get attendees to work
+					con.getContentResolver().insert(Attendees.CONTENT_URI, values);
+				}
+
+		        return iNumRowsUpdated;
+	   }
+
+	   /**
+	    * Deletes the event associated with the eventID passed.
+	    * @param con - Context
+	    * @param entryID - Event ID
+	    * @return - number of rows deleted
+	    */
+	   
+	   public static int deleteCalendarEntry(Context con, long entryID) {
+		   
+		        int iNumRowsDeleted = 0;
+		        Uri eventUri = ContentUris.withAppendedId(Events.CONTENT_URI, entryID);
+		        iNumRowsDeleted = con.getContentResolver().delete(eventUri, null, null);
+		        Log.i("AppoinText", "Deleted " + iNumRowsDeleted + " calendar entry.");
+		        return iNumRowsDeleted;
+		}
 	   
 }

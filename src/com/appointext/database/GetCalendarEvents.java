@@ -18,6 +18,8 @@ public class GetCalendarEvents {
 	 * @param con - The Context. If you are calling it from  an Activity or Service, pass 'this'
 	 * @param sTime - The Start date passed as "dd/MM/yyyy HH:mm"
 	 * @param etime - End time, passed in same format
+	 * @param fields - A String array mentioning which fields are required. Fields returned will be in order specified here. 
+	 * 					Look at http://developer.android.com/reference/android/provider/CalendarContract.EventsColumns.html for field names
 	 * @return - A String where fields are separated by comma and rows are separated by hashes
 	 */
 	
