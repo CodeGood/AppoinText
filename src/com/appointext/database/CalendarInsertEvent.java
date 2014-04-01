@@ -63,7 +63,7 @@ Log.d("AppoinText", "Got Timezone as " + TimeZone.getDefault().toString());
 	 * @return - An ID of the calendar that was found first
 	 */
 	
-	private static long getCalendarId() { //Just get the first calendar ID the comes up.
+	 private static long getCalendarId() { //Just get the first calendar ID the comes up.
 		   
 		  try {
 			  String[] projection = new String[]{
@@ -168,7 +168,7 @@ Log.d("Appointext Calendar", "Obtained Calendar ID as " + calId);
 			            insert(Events.CONTENT_URI, values);
 			long eventId =  Long.valueOf(uri.getLastPathSegment());
 			
-Log.d("Appointext Calendar", "Event" + title" added successfully");
+Log.d("Appointext Calendar", "Event" + title + " added successfully");
 
 			/* Now set a reminder */
 
@@ -186,7 +186,7 @@ Log.d("Appointext Calendar", "Event" + title" added successfully");
 				for (String name : attendees.split(",")) {
 					values.clear();
 					values.put(Attendees.EVENT_ID, eventId);
-					values.put(Attendees.ATTENDEE_NAME, name);
+					values.put(Attendees.ATTENDEE_NAME, attendees); //TODO: Get attendees to work
 					cr.insert(Attendees.CONTENT_URI, values);
 				}
 				
