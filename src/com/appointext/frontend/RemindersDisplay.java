@@ -11,4 +11,5 @@ public class RemindersDisplay extends Activity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.reminders);
 }
+	
 }
