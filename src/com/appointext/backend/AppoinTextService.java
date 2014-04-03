@@ -35,7 +35,10 @@ public class AppoinTextService extends IntentService {
 		Log.i("AppoinText", "Service successfully called.");
 		
 		//Should have received the incoming sms as part of the Intent
-		Bundle smsBundle = intent.getExtras();		
+		Bundle smsBundle = intent.getExtras();
+		String origin = intent.getStringExtra("origin");
+		Log.i("AppoinText", "Got origin as " + origin);
+		
 		SmsMessage[] msgs = null;
 		String curText = null;
 		
