@@ -22,8 +22,7 @@ public class DatabaseManager {
     		   			"create table " +
 						"settingsTable" +
 						" (" +
-						"settingId" + " integer primary key autoincrement not null," +
-						"name" + " text," +
+						"name" + " text primary key not null," +
 						"value" + " text" +
 						");";
 
@@ -100,6 +99,8 @@ public class DatabaseManager {
        public DatabaseManager open() throws SQLException 
        {
            db = DBHelper.getWritableDatabase();
+           db.execSQL("DROP TABLE IF EXISTS settingsTable");
+           db.execSQL(DATABASE_CREATE_SETTINGSTABLE);
            return this;
        }
 
@@ -347,37 +348,7 @@ public class DatabaseManager {
 	   				Log.i("pendingReminders","I am in getrow");	
 	   			}
 	   			
-	   			if(dbName.equalsIgnoreCase("settingsTable")){
-	   				cursor = db.query
-	   				(
-	   						dbName,
-	   						new String[] { "settingId", "name", "value" },
-	   						"settingId" + "=" + rowID,
-	   						null, null, null, null, null
-	   				);
-	   				
-	   				// move the pointer to position zero in the cursor.
-	   				cursor.moveToFirst();
-	   	 
-	   				// if there is data available after the cursor's pointer, add
-	   				// it to the ArrayList that will be returned by the method.
-	   				if (!cursor.isAfterLast())
-	   				{
-	   					do
-	   					{
-	   						rowArray.add(cursor.getInt(0));
-	   						rowArray.add(cursor.getString(1));
-	   						rowArray.add(cursor.getString(2));
-	
-	   					}
-	   					while (cursor.moveToNext());
-	   				}
-	   	 
-	   				// let java know that you are through with the cursor.
-	   				cursor.close();
-	   				
-	   				Log.i("setting","I am in getrow");
-	   			}   			
+	   						
 	   		}
 	   		catch (SQLException e) 
 	   		{
@@ -386,6 +357,46 @@ public class DatabaseManager {
 	   		}
 	    
 	   		// return the ArrayList containing the given row from the database.
+	   		return rowArray;
+	   	}
+	   	
+	   	
+	   	public ArrayList<Object> getRowAsArray(String dbName, String name){
+	   		
+	   		ArrayList<Object> rowArray = new ArrayList<Object>();
+	   		Cursor cursor;
+	   		
+	   		if(dbName.equalsIgnoreCase("settingsTable")){
+   				cursor = db.query
+   				(
+   						dbName,
+   						new String[] { "name", "value" },
+   						"name" + "=" + "'" + name + "'",
+   						null, null, null, null, null
+   				);
+   				
+   				// move the pointer to position zero in the cursor.
+   				cursor.moveToFirst();
+   	 
+   				// if there is data available after the cursor's pointer, add
+   				// it to the ArrayList that will be returned by the method.
+   				if (!cursor.isAfterLast())
+   				{
+   					do
+   					{
+   						rowArray.add(cursor.getString(0));
+   						rowArray.add(cursor.getString(1));
+
+   					}
+   					while (cursor.moveToNext());
+   				}
+   	 
+   				// let java know that you are through with the cursor.
+   				cursor.close();
+   				
+   				Log.i("setting","I am in getrow");
+   			}   
+	   		
 	   		return rowArray;
 	   	}
    	
@@ -403,11 +414,7 @@ public class DatabaseManager {
 					db.delete(dbName, "eventId" + "=" + rowID, null);
 					Log.i("pendingReminders","I am in deleterow");
 				}
-				
-				if(dbName.equalsIgnoreCase("sharedPreferences")){				
-					db.delete(dbName, "settingId" + "=" + rowID, null);
-					Log.i("sharedPreferences","I am in deleterow");
-				}
+			
 			}
 			catch (Exception e)
 			{
@@ -415,6 +422,15 @@ public class DatabaseManager {
 				e.printStackTrace();
 			}
 		}
+	   	
+	   	public void deleteRow(String dbName, String name){
+	   		
+	   		if(dbName.equalsIgnoreCase("settingsTable")){				
+				db.delete(dbName, "name" + "=" + "'" + name + "'", null);
+				Log.i("sharedPreferences","I am in deleterow");
+			}
+	   		
+	   	}
    	
 	   	//for the setReminders table
 	   	public void updateRow(String dbName, int evntId, int isComp, int isGrp, String extractedData)
@@ -467,16 +483,15 @@ public class DatabaseManager {
 		}
 		
 		//this is for the setReminders table
-		public void updateRow(String dbName, int settingId, String name, String value)
+		public void updateRow(String dbName, String name, String value)
 		{
 				// this is a key value pair holder used by android's SQLite functions
 				ContentValues values = new ContentValues();
-				values.put("name", name);
 				values.put("value", value);
 		 
 				// ask the database object to update the database row of given rowID
 				try {
-						db.update(dbName, values, "settingId" + "=" + settingId, null);
+						db.update(dbName, values, "name" + "=" + "'" + name + "'", null);
 						Log.i("sharedPreferences","I am in updaterow");
 					}
 				catch (Exception e)
