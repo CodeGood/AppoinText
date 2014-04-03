@@ -110,10 +110,9 @@ public class AppoinTextService extends IntentService {
                 	}
                 	
                 	int senderNumber, recieverNumber;
+                	
                 }
-                
-                
-                
+             
                 /*
                  * The following values will be utilized some day or the other
                  * .getTimestampMillis(); - Will give you the timestamp of receipt in milliseconds from epoch
