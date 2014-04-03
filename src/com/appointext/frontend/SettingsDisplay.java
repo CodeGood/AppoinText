@@ -31,14 +31,17 @@ public class SettingsDisplay extends PreferenceActivity {
 				return false;
 			}
 		});
-		
+
+
 		Preference noNag = (Preference) findPreference("no_nag");
 		noNag.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
+Log.d("AppoinText", "Opening No Nag Activity");
 				Intent intent = new Intent(SettingsDisplay.this, NoNagMode.class);
 				startActivity(intent);
+Log.d("AppoinText", "Either activity ended or it is asynchronous call");
 				return false;
 				}
 		
