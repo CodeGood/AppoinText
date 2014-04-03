@@ -9,6 +9,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
+import java.util.Date;
+import java.util.Calendar;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 /*
  * JUSTIFICATION -->
@@ -82,8 +86,11 @@ public class AppoinTextService extends IntentService {
                 	//since this is a query, extract all the details and then store it in the pending table.
                 	
                 	String[] taggedWords; 
-                	String people;
-                	String location;
+                	String people = "";
+                	String location = "";
+                	DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                	Calendar cal = Calendar.getInstance();
+                	dateFormat.format(cal.getTime());
                 	
                 	try{
                 		taggedCurText = NERecognizer.NERTagger(curText);
@@ -96,10 +103,17 @@ public class AppoinTextService extends IntentService {
                 		taggedWords = taggedCurText.split(" ");
                 
 	                	for(String word : taggedWords){
-	                		if(word.contains("PERSON")){
-	                			
-	                			word.split("/");
+	                		if(word.contains("PERSON")){  
+	                			people += word.split("/")[0] + ",";
 	                		}
+	                		
+	                		if(word.contains("LOCATION")){   			
+	                			location += word.split("/")[0] + ",";
+	                		}
+	                		
+	                		if(word.contains("ORGANISATION")){   			
+	                			location += word.split("/")[0] + ",";
+	   	                	}
 	                	}
                 	}
                 }
