@@ -9,11 +9,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
-import java.util.Date;
-import java.util.Calendar;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-
 /*
  * JUSTIFICATION -->
  * 
@@ -88,10 +83,7 @@ public class AppoinTextService extends IntentService {
                 	String[] taggedWords; 
                 	String people = "";
                 	String location = "";
-                	DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-                	Calendar cal = Calendar.getInstance();
-                	dateFormat.format(cal.getTime());
-                	
+ 
                 	try{
                 		taggedCurText = NERecognizer.NERTagger(curText);
                 	}
@@ -116,6 +108,8 @@ public class AppoinTextService extends IntentService {
 	   	                	}
 	                	}
                 	}
+                	
+                	
                 }
                 
                 
