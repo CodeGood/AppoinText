@@ -5,11 +5,9 @@ import com.bmsce.appointext.R;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
-import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.util.Log;
-import android.view.View;
 
 public class SettingsDisplay extends PreferenceActivity {
 

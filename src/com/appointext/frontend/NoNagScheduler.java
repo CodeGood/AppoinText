@@ -4,8 +4,6 @@ import com.bmsce.appointext.R;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.TimePicker.OnTimeChangedListener;
 import android.widget.Toast;
