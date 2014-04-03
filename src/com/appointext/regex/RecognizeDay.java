@@ -10,17 +10,6 @@ public class RecognizeDay {
 	private static Calendar c = Calendar.getInstance(); //Got the current date
 	private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy"); //to parse dates
 
-	public static void main(String[] args)throws Exception {
-
-System.out.println("SMS = '" + args[0] + "'\tDate = " + (args.length > 1 ? args[1] : sdf.format(c.getTime())));
-	
-		if (args.length > 1) { //If you did indeed try to set the day
-			c.setTime(sdf.parse(args[1]));
-		}
-	
-		System.out.println("Found days of Week as : " + findDay(args[0]) + "\n");
-	}
-
 	/**
 	 * Returns a String of Days (of the week) found, and AN EMPTY STRING (NOT equal to null) if none are found
 	 * @param msg - Input:: SMS Body (Text Only) to process 
@@ -38,13 +27,12 @@ System.out.println("SMS = '" + args[0] + "'\tDate = " + (args.length > 1 ? args[
 			for (int j = 0; j < dotw.length; j++) {			
 			
 				if (dotw[j].equals(words[i])) {
-					if (i != 0 ) {
-						if (!(words[i-1].equalsIgnoreCase("last"))) { //am not interested in 'past' dates!
+					
+					if (i == 0 || !(words[i-1].equalsIgnoreCase("last"))) { //am not interested in 'past' dates!
 						
 							foundDates += convertToDate((j > 6 ? j-7 : j), words[i-1], (i > 3 ? (words[i-3]+words[i-2]) : null));
-							foundDates += ",";
+							foundDates += ("/" + i + ","); //adding the location using a slash in case you require further processing
 							
-						}
 					}
 				}
 			}
