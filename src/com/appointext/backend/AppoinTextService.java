@@ -165,9 +165,13 @@ public class AppoinTextService extends IntentService {
 	         	    		dateExtract = extractedData[1].split("/");
 	         	    		
 	         	    		hour = Integer.parseInt(timeExtract[0]);
+	         	    		minute = Integer.parseInt(timeExtract[1]);
 	         	    		
+	         	    		date = Integer.parseInt(dateExtract[0]);
+	         	    		month = Integer.parseInt(dateExtract[1]);
+	         	    		year = Integer.parseInt(dateExtract[2]);
 	         	    		
-	         	    		//CalendarInsertEvent.addReminder(this, date, month, year, hour, minute, min_before_event, title, location, desc, attendees);
+	         	    		CalendarInsertEvent.addReminder(this, date, month, year, hour, minute, min_before_event, title, location, desc, attendees);
 	         	    	}
 	         	    }
                 }
