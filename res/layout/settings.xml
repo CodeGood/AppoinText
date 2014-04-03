@@ -2,24 +2,28 @@
       xmlns:android="http://schemas.android.com/apk/res/android">	
     <PreferenceScreen
         android:title="Blocked Number"
+        android:id="@+id/BlockedNumbers"
         android:key = "numberBlocked"
         android:persistent = "false">
 	    <Preference
 	        android:title = "Enter a number manually"
-	        android:key = "numberManual">
+	        android:key = "numberManual"
+	        android:id="@+id/BlockedNumbersManual">
 	        <intent android:action="android.intent.action.EDIT"
 	            android:data="tel:" />
 			</Preference>
 	      <Preference
 	        android:key = "contactChosen"
-	        android:title = "Choose from contacts">
+	        android:title = "Choose from contacts"
+	        android:id="@+id/BlockedNumbersContacts">
 	        <intent android:action="android.intent.action.PICK"
 	            android:data="content://contacts/people/" />
 	       </Preference>
 	</PreferenceScreen> 
 	
 	<ListPreference
-        android:key="pref_prompts"
+        android:key="PromptsPreference"
+        android:id="@+id/PromptsPreference"
         android:title="Prompt Control"
         android:dialogTitle="Raise a prompt when:"
         android:defaultValue="pambiguity"
