@@ -2,8 +2,8 @@ package com.appointext.backend;
 
 public class FindSentiment {
 
-	private static String[] positiveWords = {};
-	private static String[] negativeWords = {};
+	private static String[] positiveWords = {"Yes","Sure","Yeah","Yup","Okay","love to","will come","I'm in","let's go"};
+	private static String[] negativeWords = {"No","Nope","Na","I cannot","can't","sorry","will not be able","won't"};
 	
 	static String findSentiment(String msg){
 		

@@ -156,12 +156,12 @@ Log.d("Appointext Calendar", "Obtained Calendar ID as " + calId);
 			values.put(Events.DTSTART, start); 
 			values.put(Events.DTEND, start);
 			
-			if (title != null)			values.put(Events.TITLE, title);
+			if (!title.equalsIgnoreCase(""))			values.put(Events.TITLE, title);
 			else						values.put(Events.TITLE, "Default Event"); //I assume no one will be dumb enough to send title as null? 
 
 			/* Now let us set the optional values */
-			if (location != null)		values.put(Events.EVENT_LOCATION, location);
-			if (desc != null)			values.put(Events.DESCRIPTION, desc);
+			if (!location.equalsIgnoreCase(""))		values.put(Events.EVENT_LOCATION, location);
+			if (!desc.equalsIgnoreCase(""))			values.put(Events.DESCRIPTION, desc);
 			
 			
 			/* Some common sense values, which do not require being parameterized */
@@ -188,7 +188,7 @@ Log.d("Appointext Calendar", "Event" + title + " added successfully");
 			con.getContentResolver().insert(Reminders.CONTENT_URI, values);
 			
 			/* Now add attendees for the reminder. I assume we have nothing to do with anything other than name */
-			if (attendees != null) {
+			if (!attendees.equalsIgnoreCase("")) {
 
 				ContentResolver cr = con.getContentResolver();
 				

@@ -134,6 +134,8 @@ public class AppoinTextService extends IntentService {
                 	db.addRow("pendingReminders", senderNumber, recieverNumber, 0, people, event, when, location);  
                 	db.close();
                 	
+                	return;
+                	
                 }
                 
                 if(category.equalsIgnoreCase("reply")){
@@ -151,7 +153,8 @@ public class AppoinTextService extends IntentService {
 	         	    	
 	         	    	if(rows.get(0).get(6).toString().equalsIgnoreCase("")){         	    		
 	         	    		
-	         	    		db.updateRow("pendingReminders", (Integer)rows.get(0).get(0), (Integer)rows.get(0).get(1), (Integer)rows.get(0).get(2), 1, rows.get(0).get(4).toString(), rows.get(0).get(5).toString(), rows.get(0).get(6).toString(), rows.get(0).get(7).toString());	         	    		
+	         	    		db.updateRow("pendingReminders", (Integer)rows.get(0).get(0), (Integer)rows.get(0).get(1), (Integer)rows.get(0).get(2), 1, rows.get(0).get(4).toString(), rows.get(0).get(5).toString(), rows.get(0).get(6).toString(), rows.get(0).get(7).toString());	
+	         	    		return;
 	         	    	}
 	         	    	
 	         	    	else{
@@ -171,9 +174,18 @@ public class AppoinTextService extends IntentService {
 	         	    		month = Integer.parseInt(dateExtract[1]);
 	         	    		year = Integer.parseInt(dateExtract[2]);
 	         	    		
-	         	    		CalendarInsertEvent.addReminder(this, date, month, year, hour, minute, 30, rows.get(0).get(5).toString(), rows.get(0).get(7).toString(), null, rows.get(0).get(4).toString());
+	         	    		int eventId = (int) CalendarInsertEvent.addReminder(this, date, month, year, hour, minute, 30, rows.get(0).get(5).toString(), rows.get(0).get(7).toString(), null, rows.get(0).get(4).toString());
+	         	    		
+	         	    		//TODO : to check the values and add it to set reminders tables
+	         	    		
+	         	    		return;
 	         	    	}
 	         	    }
+	         	    
+	         	   if(reply.equalsIgnoreCase("no")){
+	         		   
+	         		   db.deleteRow("pendingReminders", (Integer)rows.get(0).get(0));
+	         	   }
                 }
              
                 /*
