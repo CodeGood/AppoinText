@@ -27,7 +27,7 @@ import com.appointext.database.CalendarInsertEvent;
  * 
  * Calls are queued and passed on to onHandleIntent (Reference here http://stackoverflow.com/questions/14833555/android-how-to-queue-multiple-intents-on-an-intentservice)
  * All data must be passed through Intent which starts/calls this Service.
- * Downside is NO UI Activity permitted. NONE. Howeever, I assume that shoud never be required in the actual AppoinText app?
+ * Down side is NO UI Activity permitted. NONE. However, I assume that should never be required in the actual AppoinText app?
  */
 
 public class AppoinTextService extends IntentService {
@@ -62,7 +62,7 @@ public class AppoinTextService extends IntentService {
             String category = null;
             Double minimumConfidence = Double.MIN_VALUE;
             
-            //loop through the messages, if multiple are recieved in the same time
+            //loop through the messages, if multiple are received in the same time
             for (int i=0; i<msgs.length; i++){
             	
                 msgs[i] = SmsMessage.createFromPdu((byte[])pdus[i]);             
@@ -123,6 +123,17 @@ public class AppoinTextService extends IntentService {
                 	}
                 	
                 	int senderNumber =0, recieverNumber=0;
+                	
+                	if(origin.equalsIgnoreCase("inbox")){                		
+                		senderNumber = Integer.parseInt(msgs[i].getOriginatingAddress());
+                		recieverNumber = 123;
+                	}
+                	
+                	else{               		
+                		senderNumber = 123;
+                		recieverNumber = Integer.parseInt(msgs[i].getOriginatingAddress());;              		
+                	}
+                	
                 	String event = RecognizeEvent.getEvent(curText);
                 	String when;
                 	
@@ -145,13 +156,27 @@ public class AppoinTextService extends IntentService {
                 	db = new DatabaseManager(this);
          	        db.open();
          	        
-         	        rows = db.getMultiplePendingReminders("SELECT * FROM pendingReminders WHERE senderNumber=" + 123 + " and receiverNumber=" + 789);
+         	       int senderNumber =0, recieverNumber=0;
+         	        
+         	       if(origin.equalsIgnoreCase("inbox")){                		
+	               		senderNumber = Integer.parseInt(msgs[i].getOriginatingAddress());
+	               		recieverNumber = 123;
+	               	}
+	               	
+	               	else{               		
+	               		senderNumber = 123;
+	               		recieverNumber = Integer.parseInt(msgs[i].getOriginatingAddress());;              		
+	               	}
+         	        
+         	        rows = db.getMultiplePendingReminders("SELECT * FROM pendingReminders WHERE senderNumber=" + senderNumber + " and receiverNumber=" + recieverNumber);
          	        
          	        String reply = FindSentiment.findSentiment(curText);
          	        
+         	        //TODO : Figure out if only date and only day is give, what to do then. And take care of the situation
+         	        
 	         	    if(reply.equalsIgnoreCase("yes")){
 	         	    	
-	         	    	if(rows.get(0).get(6).toString().equalsIgnoreCase("")){         	    		
+	         	    	if(rows.get(0).get(6).toString().equalsIgnoreCase("") || rows.get(0).get(6).toString().startsWith(",") || rows.get(0).get(6).toString().endsWith(",")){         	    		
 	         	    		
 	         	    		db.updateRow("pendingReminders", (Integer)rows.get(0).get(0), (Integer)rows.get(0).get(1), (Integer)rows.get(0).get(2), 1, rows.get(0).get(4).toString(), rows.get(0).get(5).toString(), rows.get(0).get(6).toString(), rows.get(0).get(7).toString());	
 	         	    		return;
@@ -185,12 +210,13 @@ public class AppoinTextService extends IntentService {
 	         	   if(reply.equalsIgnoreCase("no")){
 	         		   
 	         		   db.deleteRow("pendingReminders", (Integer)rows.get(0).get(0));
+	         		   return;
 	         	   }
                 }
              
                 /*
                  * The following values will be utilized some day or the other
-                 * .getTimestampMillis(); - Will give you the timestamp of receipt in milliseconds from epoch
+                 * .getTimestampMillis(); - Will give you the time stamp of receipt in milliseconds from epoch
                  * .getOriginatingAddress(); - Will give the sender number
                  * ReceiverNumber should be known, or can be replaced by an x in all databases.
                  */
