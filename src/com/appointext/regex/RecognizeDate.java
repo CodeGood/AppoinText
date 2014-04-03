@@ -1,18 +1,20 @@
 package com.appointext.regex;
 
-/** ASSUMPTIONS
+/** ASSUMPTIONS AND WARNINGS
+Some of the return a character index rather than a word index. They are preceeded by c
 day after = day after tomorrow
 24th = 24th of this month
 */
 
+import android.annotation.SuppressLint;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.ArrayList;
 
+@SuppressLint({ "SimpleDateFormat", "DefaultLocale" })
 public class RecognizeDate {
 	
 	private static int thisDay, thisMonth, thisYear;
@@ -28,12 +30,6 @@ public class RecognizeDate {
 		thisDay = Integer.parseInt(today[0]);
 	}
 
-	public static void main(String[] args) {
-//System.out.println("abc12bd3".replaceAll("[^0-9]", ""));
-		System.out.println(findDates(args[0]));
-		
-	}
-	
 	/**
 	* Returns a Comma Separated list of dates found - including keywords like today. Returns an EMPTY String - NOT null - if no date found.
 	*@param msg - The SMS to analyze
@@ -59,6 +55,7 @@ public class RecognizeDate {
 	* @return - CSV list of dates
 	*/
 	
+	@SuppressLint("DefaultLocale")
 	public static String findByKeywords(String msg) {
 	
 		msg = msg.toLowerCase().trim(); //Since I do not see how preserving capitalisation will help
@@ -117,11 +114,10 @@ public class RecognizeDate {
 		String[] words = msg.split(" ");
 		String foundDates = "";
 		String date = "xx";
-		int index;
 		
 		for (int i = 0; i < words.length; i++) {
 		
-			if ((index = words[i].indexOf("Jan")) != -1) {
+			if ((words[i].indexOf("Jan")) != -1) {
 
 				if (i != 0) { //Check if the month is preceeded by a date
 					if((date = words[i-1].replaceAll("[^0-9]", "")).equals("")) //if there are no numbers in the previous string
@@ -133,7 +129,7 @@ public class RecognizeDate {
 				foundDates += (date + "/01/" + thisYear + "/" + i + ",");
 				
 			}
-			else if ((index = words[i].indexOf("Feb")) != -1){
+			else if ((words[i].indexOf("Feb")) != -1){
 
 				if (i != 0) { 
 					if((date = words[i-1].replaceAll("[^0-9]", "")).equals("")) 
@@ -144,7 +140,7 @@ public class RecognizeDate {
 				foundDates += (date + "/02/" + thisYear + "/" + i + ",");
 				
 			}
-			else if ((index = words[i].indexOf("Mar")) != -1) {
+			else if ((words[i].indexOf("Mar")) != -1) {
 				if (i != 0) { 
 					if((date = words[i-1].replaceAll("[^0-9]", "")).equals("")) 
 						date = "xx"; 
@@ -153,7 +149,7 @@ public class RecognizeDate {
 					date = "xx"; 
 				foundDates += (date + "/01/" + thisYear + "/" + i + ",");
 			}
-			else if ((index = words[i].indexOf("Apr")) != -1) { 
+			else if ((words[i].indexOf("Apr")) != -1) { 
 
 				if (i != 0) {
 					if((date = words[i-1].replaceAll("[^0-9]", "")).equals("")) 
@@ -164,7 +160,7 @@ public class RecognizeDate {
 				foundDates += (date + "/04/" + thisYear + "/" + i + ",");
 				
 			}
-			else if ((index = words[i].indexOf("May")) != -1) { 
+			else if ((words[i].indexOf("May")) != -1) { 
 
 				if (i != 0) { 
 					if((date = words[i-1].replaceAll("[^0-9]", "")).equals("")) 
@@ -175,7 +171,7 @@ public class RecognizeDate {
 				foundDates += (date + "/05/" + thisYear + "/" + i + ",");
 				
 			}
-			else if ((index = words[i].indexOf("Jun")) != -1) { 
+			else if ((words[i].indexOf("Jun")) != -1) { 
 
 				if (i != 0) { 
 					if((date = words[i-1].replaceAll("[^0-9]", "")).equals("")) 
@@ -186,7 +182,7 @@ public class RecognizeDate {
 				foundDates += (date + "/06/" + thisYear + "/" + i + ",");
 				
 			}
-			else if ((index = words[i].indexOf("Jul")) != -1) { 
+			else if ((words[i].indexOf("Jul")) != -1) { 
 
 				if (i != 0) { 
 					if((date = words[i-1].replaceAll("[^0-9]", "")).equals("")) 
@@ -197,7 +193,7 @@ public class RecognizeDate {
 				foundDates += (date + "/07/" + thisYear + "/" + i + ",");
 				
 			}
-			else if ((index = words[i].indexOf("Aug")) != -1) { 
+			else if ((words[i].indexOf("Aug")) != -1) { 
 
 				if (i != 0) {
 					if((date = words[i-1].replaceAll("[^0-9]", "")).equals("")) 
@@ -208,7 +204,7 @@ public class RecognizeDate {
 				foundDates += (date + "/08/" + thisYear + "/" + i + ",");
 				
 			}
-			else if ((index = words[i].indexOf("Sep")) != -1) { 
+			else if ((words[i].indexOf("Sep")) != -1) { 
 
 				if (i != 0) {
 					if((date = words[i-1].replaceAll("[^0-9]", "")).equals(""))
@@ -219,7 +215,7 @@ public class RecognizeDate {
 				foundDates += (date + "/09/" + thisYear + "/" + i + ",");
 				
 			}
-			else if ((index = words[i].indexOf("Oct")) != -1) { 
+			else if ((words[i].indexOf("Oct")) != -1) { 
 
 				if (i != 0) { 
 					if((date = words[i-1].replaceAll("[^0-9]", "")).equals("")) 
@@ -230,7 +226,7 @@ public class RecognizeDate {
 				foundDates += (date + "/10/" + thisYear + "/" + i + ",");
 				
 			}
-			else if ((index = words[i].indexOf("Nov")) != -1) { 
+			else if ((words[i].indexOf("Nov")) != -1) { 
 
 				if (i != 0) {
 					if((date = words[i-1].replaceAll("[^0-9]", "")).equals(""))
@@ -241,7 +237,7 @@ public class RecognizeDate {
 				foundDates += (date + "/11/" + thisYear + "/" + i + ",");
 				
 			}
-			else if ((index = words[i].indexOf("Dec")) != -1) { 
+			else if ((words[i].indexOf("Dec")) != -1) { 
 
 				if (i != 0) { 
 					if((date = words[i-1].replaceAll("[^0-9]", "")).equals(""))
