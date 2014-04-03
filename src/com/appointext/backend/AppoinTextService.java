@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
-
 /*
  * JUSTIFICATION -->
  * 
@@ -82,9 +81,9 @@ public class AppoinTextService extends IntentService {
                 	//since this is a query, extract all the details and then store it in the pending table.
                 	
                 	String[] taggedWords; 
-                	String people;
-                	String location;
-                	
+                	String people = "";
+                	String location = "";
+ 
                 	try{
                 		taggedCurText = NERecognizer.NERTagger(curText);
                 	}
@@ -96,12 +95,21 @@ public class AppoinTextService extends IntentService {
                 		taggedWords = taggedCurText.split(" ");
                 
 	                	for(String word : taggedWords){
-	                		if(word.contains("PERSON")){
-	                			
-	                			word.split("/");
+	                		if(word.contains("PERSON")){  
+	                			people += word.split("/")[0] + ",";
 	                		}
+	                		
+	                		if(word.contains("LOCATION")){   			
+	                			location += word.split("/")[0] + ",";
+	                		}
+	                		
+	                		if(word.contains("ORGANISATION")){   			
+	                			location += word.split("/")[0] + ",";
+	   	                	}
 	                	}
                 	}
+                	
+                	int senderNumber, recieverNumber;
                 }
                 
                 

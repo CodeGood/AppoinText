@@ -8,6 +8,9 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import java.util.Calendar;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
  
 public class DatabaseManager {
 
@@ -49,6 +52,10 @@ public class DatabaseManager {
 						"lastAccessed" + " text" +
 						");";
 
+       
+       public DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+       public Calendar cal = Calendar.getInstance();
+  		
        private Context context;
        private DatabaseHelper DBHelper;
        private SQLiteDatabase db;
@@ -127,9 +134,11 @@ public class DatabaseManager {
    		}
 
 	       //this is for pendingReminders
-	   public void addRow(String dbName, int sender, int receiver, int isConfirmed, String attendees, String what, String whenIsIt, String whereIsIt, String timeStamp)
+	   public void addRow(String dbName, int sender, int receiver, int isConfirmed, String attendees, String what, String whenIsIt, String whereIsIt)
 	   {
 	   			// this is a key value pair holder used by android's SQLite functions
+		  
+		   		String timeStamp = dateFormat.format(cal.getTime());
 	
 	   			ContentValues values = new ContentValues();
 	   			//values.put("eventId", evntId);
@@ -429,10 +438,12 @@ public class DatabaseManager {
 		}
 	
 		// this is for the pendingReminders table
-		public void updateRow(String dbName, int evntId, int sender, int receiver, int isConfirmed, String attendees, String what, String whenIsIt, String whereIsIt, String timeStamp)
+		public void updateRow(String dbName, int evntId, int sender, int receiver, int isConfirmed, String attendees, String what, String whenIsIt, String whereIsIt)
 		{
 					// this is a key value pair holder used by android's SQLite functions
 	
+					String timeStamp = dateFormat.format(cal.getTime());
+					
 					ContentValues values = new ContentValues();
 					values.put("senderNumber", sender);
 					values.put("receiverNumber", receiver);
