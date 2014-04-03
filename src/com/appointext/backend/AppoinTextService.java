@@ -1,20 +1,28 @@
 package com.appointext.backend;
 
 import java.util.Map;
+
+import com.appointext.database.DatabaseManager;
 import com.appointext.naivebayes.Classifier;
 import com.appointext.nertagger.*;
+import com.appointext.regex.RecognizeDay;
+import com.appointext.regex.RecognizeEvent;
+import com.appointext.regex.RecognizeTime;
 
 import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
+import java.util.ArrayList;
+import com.appointext.database.CalendarInsertEvent;
+
 /*
  * JUSTIFICATION -->
  * 
  * IntentService is a light weight way of implementing a Service class
  * Why we used this instead of just Service is, IntentService cleans up after itself
- * An ordinary service would continue running in the Backgroun unless the Android System murders it.
+ * An ordinary service would continue running in the Background unless the Android System murders it.
  * An IntentService decently terminates, once it's work is done.
  * 
  * Calls are queued and passed on to onHandleIntent (Reference here http://stackoverflow.com/questions/14833555/android-how-to-queue-multiple-intents-on-an-intentservice)
@@ -23,6 +31,8 @@ import android.util.Log;
  */
 
 public class AppoinTextService extends IntentService {
+	
+	DatabaseManager db;
 	
 	public AppoinTextService() {
 		super("AppoinText"); //Apparently the name is necessary only for tracking purposes
@@ -112,8 +122,54 @@ public class AppoinTextService extends IntentService {
 	                	}
                 	}
                 	
-                	int senderNumber, recieverNumber;
+                	int senderNumber =0, recieverNumber=0;
+                	String event = RecognizeEvent.getEvent(curText);
+                	String when;
                 	
+                	when = RecognizeTime.findTime(curText) + "," + RecognizeDay.findDay(curText);
+                	
+                	db = new DatabaseManager(this);
+                	
+                	db.open();
+                	db.addRow("pendingReminders", senderNumber, recieverNumber, 0, people, event, when, location);  
+                	db.close();
+                	
+                }
+                
+                if(category.equalsIgnoreCase("reply")){
+                	
+                	ArrayList<ArrayList<Object>> rows;
+                	
+                	db = new DatabaseManager(this);
+         	        db.open();
+         	        
+         	        rows = db.getMultiplePendingReminders("SELECT * FROM pendingReminders WHERE senderNumber=" + 123 + " and receiverNumber=" + 789);
+         	        
+         	        String reply = FindSentiment.findSentiment(curText);
+         	        
+	         	    if(reply.equalsIgnoreCase("yes")){
+	         	    	
+	         	    	if(rows.get(0).get(6).toString().equalsIgnoreCase("")){         	    		
+	         	    		
+	         	    		db.updateRow("pendingReminders", (Integer)rows.get(0).get(0), (Integer)rows.get(0).get(1), (Integer)rows.get(0).get(2), 1, rows.get(0).get(4).toString(), rows.get(0).get(5).toString(), rows.get(0).get(6).toString(), rows.get(0).get(7).toString());	         	    		
+	         	    	}
+	         	    	
+	         	    	else{
+	         	    		
+	         	    		String whenStamp = rows.get(0).get(6).toString();	         	    		
+	         	    		String[] extractedData = whenStamp.split(",");	         	    		
+	         	    		int date, month, year, hour, minute;
+	         	    		String[] dateExtract, timeExtract;
+	         	    		
+	         	    		timeExtract = extractedData[0].split(":");
+	         	    		dateExtract = extractedData[1].split("/");
+	         	    		
+	         	    		hour = Integer.parseInt(timeExtract[0]);
+	         	    		
+	         	    		
+	         	    		//CalendarInsertEvent.addReminder(this, date, month, year, hour, minute, min_before_event, title, location, desc, attendees);
+	         	    	}
+	         	    }
                 }
              
                 /*
