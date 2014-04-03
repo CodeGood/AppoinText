@@ -171,7 +171,7 @@ public class AppoinTextService extends IntentService {
 	         	    		month = Integer.parseInt(dateExtract[1]);
 	         	    		year = Integer.parseInt(dateExtract[2]);
 	         	    		
-	         	    		CalendarInsertEvent.addReminder(this, date, month, year, hour, minute, min_before_event, title, location, desc, attendees);
+	         	    		CalendarInsertEvent.addReminder(this, date, month, year, hour, minute, 30, rows.get(0).get(5).toString(), rows.get(0).get(7).toString(), null, rows.get(0).get(4).toString());
 	         	    	}
 	         	    }
                 }
