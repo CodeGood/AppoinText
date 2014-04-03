@@ -109,7 +109,7 @@ public class AppoinTextService extends IntentService {
 	                	}
                 	}
                 	
-                	
+                	int senderNumber, recieverNumber;
                 }
                 
                 
