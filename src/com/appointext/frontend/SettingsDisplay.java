@@ -15,6 +15,7 @@ import android.preference.PreferenceActivity;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.util.Log;
+import android.widget.Toast;
 
 public class SettingsDisplay extends PreferenceActivity {
 	static final int PICK_CONTACT_REQUEST = 1;
@@ -23,10 +24,10 @@ public class SettingsDisplay extends PreferenceActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.layout.settings);
+
+		//Preferences to select the times for various times of the day
 		Preference dateTime = (Preference) findPreference("day_time");
-
 		dateTime.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
 				Intent intent = new Intent(SettingsDisplay.this, TimeSelector.class);
@@ -35,23 +36,22 @@ public class SettingsDisplay extends PreferenceActivity {
 			}
 		});
 
-
+		//Preferences for No Nag Mode
 		Preference noNag = (Preference) findPreference("no_nag");
 		noNag.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
-					Intent intent = new Intent(SettingsDisplay.this, NoNagMode.class);
-					startActivity(intent);
-					return false;
-				}
+				Intent intent = new Intent(SettingsDisplay.this, NoNagMode.class);
+				startActivity(intent);
+				return false;
+			}
 
 		});
 
+		//Preferences for Choosing a Contact To Be Excluded from the contacts
 		Preference contactBlocker = (Preference) findPreference("contactChosen");
-
 		contactBlocker.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
 				Intent pickContactIntent = new Intent(Intent.ACTION_PICK, Uri.parse("content://contacts"));
@@ -61,13 +61,23 @@ public class SettingsDisplay extends PreferenceActivity {
 			}
 		});
 
+		//To show numbers that are excluded from AppoinText's purview. :P
 		Preference displayBlocked = (Preference) findPreference("ShowBlockedNumbers");
-
 		displayBlocked.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
 				Intent intent = new Intent(SettingsDisplay.this, BlockedNumberDisplay.class);
+				startActivity(intent);
+				return false;
+			}
+		});
+
+		//Preference to try and get the user to enter manual numbers to block! :P
+		Preference manualNumber = (Preference) findPreference("numberManual");
+		manualNumber.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				Intent intent = new Intent(SettingsDisplay.this, ManualBlockedNumber.class);
 				startActivity(intent);
 				return false;
 			}
@@ -93,25 +103,20 @@ public class SettingsDisplay extends PreferenceActivity {
 				ArrayList<Object> row;
 				row = db.getRowAsArray("settingsTable", "BlockedNumbers");
 				if(row.isEmpty())	{
-					if(number.length() > 10)	{
-						finalData = number.substring(2,12) + " - " + name;
-						db.addRow("settingsTable", "BlockedNumbers", finalData);
-					}
-					else	{
-						finalData = number + " - " + name;
-						db.addRow("settingsTable", "BlockedNumbers", finalData);
-					}
+					finalData = number + " - " + name;
+					db.addRow("settingsTable", "BlockedNumbers", finalData);
+					Toast.makeText(getApplicationContext(), number + " added to excluded list!", Toast.LENGTH_SHORT).show();
 				}
 				else	{
 					String numbersExisting = row.get(1).toString();
 					if(!numbersExisting.contains(number))	{
-						if(number.length() > 10)
-							finalData = number.substring(2,12) + " - " + name;
-						else
-							finalData = number + " - " + name;
+						finalData = number + " - " + name;
 						String toBeAdded = numbersExisting + "," + finalData;
 						db.updateRow("settingsTable", "BlockedNumbers", toBeAdded);
+						Toast.makeText(getApplicationContext(), number + " added to excluded list!", Toast.LENGTH_SHORT).show();
 					}
+					else
+						Toast.makeText(getApplicationContext(), number + " already exists in excluded list!", Toast.LENGTH_SHORT).show();
 				}
 			}
 

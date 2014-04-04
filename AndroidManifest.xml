@@ -10,7 +10,6 @@
 
     <uses-permission android:name="android.permission.RECEIVE_SMS"></uses-permission>
     <uses-permission android:name="android.permission.READ_SMS" />
-    <uses-permission android:name="android.permission.SEND_SMS"></uses-permission> TODO: NOT REQUIRED I THINK
     <uses-permission android:name="android.permission.READ_CALENDAR" />
     <uses-permission android:name="android.permission.WRITE_CALENDAR" />  
     <uses-permission android:name="android.permission.READ_CONTACTS" />
@@ -38,6 +37,14 @@
         <activity
             android:name="com.appointext.frontend.BlockedNumberDisplay"
             android:label="Numbers Excluded" >            
+        </activity>
+        <activity
+            android:name="com.appointext.frontend.ManualBlockedNumber"
+            android:label="Add Number" >            
+        </activity>
+        <activity
+            android:name="com.appointext.frontend.ReminderPeriodPicker"
+            android:label="Reminder Period">            
         </activity>
         <activity
             android:name="com.appointext.frontend.RaterDisplay"
