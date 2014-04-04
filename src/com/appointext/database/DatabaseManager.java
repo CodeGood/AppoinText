@@ -33,6 +33,7 @@ public class DatabaseManager {
 						"eventId" + " integer primary key not null," +
 						"isComplete" + " integer," +
 						"isGroup" + " integer," +
+						"trs" + " text," +
 						"extractedInfo" + " text" +
 						");";
        
@@ -110,7 +111,7 @@ public class DatabaseManager {
 
 
        //For set reminders table
-       public void addRow(String dbName,int evntId, int isComp, int isGrp, String extractedData)
+       public void addRow(String dbName,int evntId, int isComp, int isGrp, String trs, String extractedData)
        {
    		// this is a key value pair holder used by android's SQLite functions
 
@@ -118,6 +119,7 @@ public class DatabaseManager {
 	   		values.put("eventId", evntId);
 	   		values.put("isComplete", isComp);
 	   		values.put("isGroup", isGrp);
+	   		values.put("trs", trs);
 	   		values.put("extractedInfo", extractedData);
 	    
 	   		// ask the database object to insert the new data 
@@ -218,12 +220,15 @@ public class DatabaseManager {
 					dataList.add(cursor.getInt(1));
 					dataList.add(cursor.getInt(2));
 					dataList.add(cursor.getString(3));
+					dataList.add(cursor.getString(4));
  
 					dataArrays.add(dataList);
 				}
 				// move the cursor's pointer up one position.
 				while (cursor.moveToNext());
 			}
+	    	
+	    	cursor.close();
 	    	
 	    	return dataArrays;
 	    }
@@ -242,15 +247,15 @@ public class DatabaseManager {
 				{
 					ArrayList<Object> dataList = new ArrayList<Object>();
  
-					dataList.add(cursor.getInt(0));
-					dataList.add(cursor.getInt(1));
-					dataList.add(cursor.getInt(2));
-					dataList.add(cursor.getInt(3));
-					dataList.add(cursor.getString(4));
-					dataList.add(cursor.getString(5));
-					dataList.add(cursor.getString(6));
-					dataList.add(cursor.getString(7));
-					dataList.add(cursor.getString(8));
+					dataList.add(cursor.getInt(0)); //eventId
+					dataList.add(cursor.getInt(1)); //senderNumber
+					dataList.add(cursor.getInt(2)); //recieverNumber
+					dataList.add(cursor.getInt(3));	//isConfirmed
+					dataList.add(cursor.getString(4)); //attendees
+					dataList.add(cursor.getString(5)); //what(event)
+					dataList.add(cursor.getString(6)); //when 
+					dataList.add(cursor.getString(7)); //where
+					dataList.add(cursor.getString(8)); //lastAcceessed
  
 					dataArrays.add(dataList);
 				}
@@ -258,6 +263,7 @@ public class DatabaseManager {
 				while (cursor.moveToNext());
 			}
 	    	
+	    	cursor.close();
 	    	return dataArrays;
 	    }
 	    
@@ -280,7 +286,7 @@ public class DatabaseManager {
 	   				cursor = db.query
 	   				(
 	   						dbName,
-	   						new String[] { "eventId", "isComplete", "isGroup", "extractedInfo" },
+	   						new String[] { "eventId", "isComplete", "isGroup", "trs", "extractedInfo" },
 	   						"eventId" + "=" + rowID,
 	   						null, null, null, null, null
 	   				);
@@ -298,6 +304,7 @@ public class DatabaseManager {
 	   						rowArray.add(cursor.getInt(1));
 	   						rowArray.add(cursor.getInt(2));
 	   						rowArray.add(cursor.getString(3));
+	   						rowArray.add(cursor.getString(4));
 	   					}
 	   					while (cursor.moveToNext());
 	   				}
@@ -353,7 +360,7 @@ public class DatabaseManager {
 	   			Log.e("DB ERROR", e.toString());
 	   			e.printStackTrace();
 	   		}
-	    
+	   
 	   		// return the ArrayList containing the given row from the database.
 	   		return rowArray;
 	   	}
@@ -431,12 +438,13 @@ Log.i("AppoinText DB", "Was called to provide data.");
 	   	}
    	
 	   	//for the setReminders table
-	   	public void updateRow(String dbName, int evntId, int isComp, int isGrp, String extractedData)
+	   	public void updateRow(String dbName, int evntId, int isComp, int isGrp, String trs, String extractedData)
 		{
 			// this is a key value pair holder used by android's SQLite functions
 			ContentValues values = new ContentValues();
 			values.put("isComplete", isComp);
 			values.put("isGroup", isGrp);
+			values.put("trs", trs);
 			values.put("extractedInfo", extractedData);
 	 
 			// ask the database object to update the database row of given rowID
@@ -471,7 +479,7 @@ Log.i("AppoinText DB", "Was called to provide data.");
 					// ask the database object to insert the new data 
 					try{
 						db.update(dbName, values, "eventId" + "=" + evntId, null);
-						Log.i("pendingReminders","I am in addrow");
+						Log.i("pendingReminders","I am in updaterow");
 					}
 					catch(Exception e)
 					{
