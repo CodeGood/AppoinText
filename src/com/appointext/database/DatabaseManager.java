@@ -99,8 +99,6 @@ public class DatabaseManager {
        public DatabaseManager open() throws SQLException 
        {
            db = DBHelper.getWritableDatabase();
-           db.execSQL("DROP TABLE IF EXISTS settingsTable");
-           db.execSQL(DATABASE_CREATE_SETTINGSTABLE);
            return this;
        }
 
@@ -365,7 +363,7 @@ public class DatabaseManager {
 	   		
 	   		ArrayList<Object> rowArray = new ArrayList<Object>();
 	   		Cursor cursor;
-	   		
+Log.i("AppoinText DB", "Was called to provide data.");	   		
 	   		if(dbName.equalsIgnoreCase("settingsTable")){
    				cursor = db.query
    				(
@@ -386,6 +384,7 @@ public class DatabaseManager {
    					{
    						rowArray.add(cursor.getString(0));
    						rowArray.add(cursor.getString(1));
+   	Log.i("AppoinText DB", "Retrived pair <" + rowArray.get(0) + ", " + rowArray.get(1) + ">");
 
    					}
    					while (cursor.moveToNext());
@@ -394,7 +393,6 @@ public class DatabaseManager {
    				// let java know that you are through with the cursor.
    				cursor.close();
    				
-   				Log.i("setting","I am in getrow");
    			}   
 	   		
 	   		return rowArray;
