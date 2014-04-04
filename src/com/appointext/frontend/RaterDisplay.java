@@ -12,7 +12,6 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class RaterDisplay extends Activity {
 	
@@ -39,10 +38,16 @@ public class RaterDisplay extends Activity {
 	 
 			@Override
 			public void onClick(View v) {
-				String rating = String.valueOf(ratingBar.getRating()).substring(0,1);
+				float rating = ratingBar.getRating();
 				AlertDialog alertDialog = new AlertDialog.Builder(RaterDisplay.this).create();
 		        alertDialog.setTitle("AppoinText");
-		        alertDialog.setMessage("Thank you for your feedback! :)");
+		        String toAdd;
+		        if (rating < 3.0)
+		        	toAdd = "We shall try our best to improve!";
+		        else
+		        	toAdd = "We are happy that you liked it!";
+		        
+		        alertDialog.setMessage("Thank you for your feedback! :)" + toAdd);
 		        alertDialog.setButton (DialogInterface.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
 		                public void onClick(DialogInterface dialog, int which) {
 		                }

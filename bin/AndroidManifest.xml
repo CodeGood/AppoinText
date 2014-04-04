@@ -71,7 +71,7 @@
             </intent-filter>
        </receiver>
        
-              <receiver android:name="com.appointext.backend.SMSListenerInbox">   
+       <receiver android:name="com.appointext.backend.SMSListenerInbox">   
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
