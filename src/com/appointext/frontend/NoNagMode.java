@@ -21,18 +21,13 @@ public class NoNagMode extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.no_nag);
 		final ToggleButton TogButton = (ToggleButton) findViewById(R.id.NoNagStatusToggle);
-		
-Log.i("AppoinTextNN", "Created the Activity and Checking for NoNagStatus");		
-		// attach an OnClickListener
 		DatabaseManager db = new DatabaseManager(NoNagMode.this);
 		db.open();
-		ArrayList<Object> row;
-
-Log.i("AppoinTextNN", "Asking Database to get Rows before creating layout.");		
+		ArrayList<Object> row;		
 	    row = db.getRowAsArray("settingsTable", "NoNagStatusToggle");
 
 	    if(!row.isEmpty())	{
-Log.w("AppoinTextNN", "Did get the data back here.");
+
 	    	if((row.get(1).toString()).equalsIgnoreCase("On"))
 	    		TogButton.setChecked(true);
 	    	else
