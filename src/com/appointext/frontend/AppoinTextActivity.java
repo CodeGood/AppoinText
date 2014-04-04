@@ -2,20 +2,20 @@ package com.appointext.frontend;
 //import android.app.ActionBar;
 
 
-import com.bmsce.appointext.R;
-import com.appointext.backend.SMSListenerSent;
-
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.Handler;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.view.View;
+
+import com.appointext.backend.SMSListenerSent;
+import com.bmsce.appointext.R;
 //import android.view.Menu;
 //import android.view.MenuItem;
-import android.view.View;
 //import android.view.MenuInflater;
 
 
