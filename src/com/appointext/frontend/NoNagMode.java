@@ -18,20 +18,29 @@ import android.widget.ToggleButton;
 public class NoNagMode extends Activity {
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) { //Demo
+	protected void onCreate(Bundle savedInstanceState) {
+		
+		//Loading the XML File
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.no_nag);
 		DatabaseManager db = new DatabaseManager(NoNagMode.this);
 		CheckBox cb = (CheckBox) findViewById(R.id.NoNagModeScheduler);
+		
+		//Checking to see the current status of the No Nag Scheduler
 		db.open();
 		ArrayList<Object> row;
 		ArrayList<Object> checkScheduler;
-		checkScheduler = db.getRowAsArray("settingsTable", "NoNagModeScheduler");
+		checkScheduler = db.getRowAsArray("settingsTable", "NoNagModeSchedulerStatus");
 		if(!checkScheduler.isEmpty())	{
-			if(checkScheduler.get(1).toString().equals("On"))
+			Log.i("Demo",checkScheduler.get(1).toString());
+			if(checkScheduler.get(1).toString().equals("On"))	{
+				//Setting it to checked
 				cb.setChecked(true);
-			else
+			}
+			else	{
+				//Setting it to unchecked
 				cb.setChecked(false);
+			}
 		}
 		final ToggleButton TogButton = (ToggleButton) findViewById(R.id.NoNagStatusToggle);
 			
@@ -90,10 +99,12 @@ public class NoNagMode extends Activity {
 			db.open();
 			ArrayList<Object> row;
 			row = db.getRowAsArray("settingsTable", "NoNagModeSchedulerStatus");
-			if(row.isEmpty())
-				db.addRow("settingsTable","NoNagModeScheduler", "On");
+			if(row.isEmpty()){
+				db.addRow("settingsTable","NoNagModeSchedulerStatus", "On");
+				Log.i("Database Insert","No output came in on");
+			}
 			else
-				db.updateRow("settingsTable", "NoNagModeScheduler", "On");
+				db.updateRow("settingsTable", "NoNagModeSchedulerStatus", "On");
 			db.close();
 			Intent intent = new Intent(this, NoNagScheduler.class);
 			startActivity(intent); 
@@ -105,10 +116,12 @@ public class NoNagMode extends Activity {
 			db.open();
 			ArrayList<Object> row;
 			row = db.getRowAsArray("settingsTable", "NoNagModeSchedulerStatus");
-			if(row.isEmpty())
-				db.addRow("settingsTable","NoNagModeScheduler", "Off");
+			if(row.isEmpty()){
+				db.addRow("settingsTable","NoNagModeSchedulerStatus", "Off");
+				Log.i("Database Insert","No output came in on");
+			}
 			else
-				db.updateRow("settingsTable", "NoNagModeScheduler", "Off");
+				db.updateRow("settingsTable", "NoNagModeSchedulerStatus", "Off");
 			db.close();
 		}
 	}	

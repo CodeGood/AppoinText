@@ -1,15 +1,11 @@
 package com.appointext.frontend;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-
 import com.appointext.database.DatabaseManager;
 import com.bmsce.appointext.R;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.TimePicker;
-import android.widget.Toast;
 import android.widget.TimePicker.OnTimeChangedListener;
 
 public class TimeSelector extends Activity {
