@@ -322,6 +322,8 @@ public class RecognizeDate {
 	
 	public static String deDup (String answer) { //Removes duplicate dates in case they were added by any one
 	
+		if (answer.equals("")) return answer;
+		
 		HashSet<String> set = new HashSet<String>(Arrays.asList(answer.split(","))); //Get individual dates and convert them into a 'set' ... Automatically removes duplicates :D
 		answer = "";
 		

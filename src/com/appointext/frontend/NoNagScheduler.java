@@ -16,10 +16,10 @@ public class NoNagScheduler extends Activity{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.nonagscheduler);
-		
+
 		TimePicker startTime;
 		TimePicker endTime;
-		
+
 		startTime = (TimePicker)findViewById(R.id.NoNagSchedulerStartTime);
 		endTime = (TimePicker)findViewById(R.id.NoNagSchedulerEndTime);
 
@@ -50,41 +50,41 @@ public class NoNagScheduler extends Activity{
 			endTime.setCurrentHour(c.get(Calendar.HOUR));
 			endTime.setCurrentMinute(c.get(Calendar.MINUTE));
 		}
-		
-		
-		
+
+
+
 		startTime.setOnTimeChangedListener(new OnTimeChangedListener(){
 
-			   @Override
-			   public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-				   String time = hourOfDay + ":" + minute;
-				   DatabaseManager db = new DatabaseManager(NoNagScheduler.this);
-				   db.open();
-				    ArrayList<Object> row;		
-				    row = db.getRowAsArray("settingsTable", "NoNagSchedulerStartTime");
-				    if(row.isEmpty())
-				    		db.addRow("settingsTable", "NoNagSchedulerStartTime",time);
-				    else	
-				    		db.updateRow("settingsTable", "NoNagSchedulerStartTime",time);
-				    db.close();
-				    }
-			   
-			   });
-		
+			@Override
+			public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
+				String time = hourOfDay + ":" + minute;
+				DatabaseManager db = new DatabaseManager(NoNagScheduler.this);
+				db.open();
+				ArrayList<Object> row;		
+				row = db.getRowAsArray("settingsTable", "NoNagSchedulerStartTime");
+				if(row.isEmpty())
+					db.addRow("settingsTable", "NoNagSchedulerStartTime",time);
+				else	
+					db.updateRow("settingsTable", "NoNagSchedulerStartTime",time);
+				db.close();
+			}
+
+		});
+
 		endTime.setOnTimeChangedListener(new OnTimeChangedListener(){
 
-			   @Override
-			   public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-				   String time = hourOfDay + ":" + minute;
-				   DatabaseManager db = new DatabaseManager(NoNagScheduler.this);
-				   db.open();
-				    ArrayList<Object> row;		
-				    row = db.getRowAsArray("settingsTable", "NoNagSchedulerEndTime");
-				    if(row.isEmpty())
-				    		db.addRow("settingsTable", "NoNagSchedulerEndTime",time);
-				    else	
-				    		db.updateRow("settingsTable", "NoNagSchedulerEndTime",time);
-				    db.close();
-			   }});
-}
+			@Override
+			public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
+				String time = hourOfDay + ":" + minute;
+				DatabaseManager db = new DatabaseManager(NoNagScheduler.this);
+				db.open();
+				ArrayList<Object> row;		
+				row = db.getRowAsArray("settingsTable", "NoNagSchedulerEndTime");
+				if(row.isEmpty())
+					db.addRow("settingsTable", "NoNagSchedulerEndTime",time);
+				else	
+					db.updateRow("settingsTable", "NoNagSchedulerEndTime",time);
+				db.close();
+			}});
+	}
 }

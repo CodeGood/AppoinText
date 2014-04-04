@@ -41,10 +41,10 @@ public class SettingsDisplay extends PreferenceActivity {
 
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
-				Intent intent = new Intent(SettingsDisplay.this, NoNagMode.class);
-				startActivity(intent);
-				return false;
-			}
+					Intent intent = new Intent(SettingsDisplay.this, NoNagMode.class);
+					startActivity(intent);
+					return false;
+				}
 
 		});
 
