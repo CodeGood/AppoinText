@@ -38,8 +38,9 @@ public class RecognizeDay {
 			}
 			
 		}
-
-		return foundDates.substring(0, foundDates.length()-1);
+		
+		if (foundDates.equals("")) return "";
+		else 	return foundDates.substring(0, foundDates.length()-1);
 	 }
 	 
 	 public static String convertToDate(int day, String prevWord, String beforePrev) {
