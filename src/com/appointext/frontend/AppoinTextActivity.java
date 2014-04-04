@@ -22,7 +22,7 @@ public class AppoinTextActivity extends Activity  {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		Log.i("Display", "CREATED.");
+Log.i("Display", "CREATED.");
 	}
 	
 	public void viewSettings(View V) {
