@@ -29,8 +29,8 @@ public final class R {
         public static final int logo_appointext=0x7f020001;
     }
     public static final class id {
-        public static final int BlockedNumbersContacts=0x7f090013;
-        public static final int BlockedNumbersManual=0x7f090012;
+        public static final int BlockedNumbersContacts=0x7f090012;
+        public static final int BlockedNumbersManual=0x7f090013;
         public static final int EveningTimeText=0x7f090019;
         public static final int MorningTimeText=0x7f090017;
         public static final int NightTimeText=0x7f09001b;
