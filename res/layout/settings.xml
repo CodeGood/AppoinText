@@ -1,42 +1,53 @@
-<PreferenceScreen
-      xmlns:android="http://schemas.android.com/apk/res/android">	
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
     <PreferenceScreen
-        android:title="Blocked Number"
         android:id="@+id/BlockedNumbersContacts"
-        android:key = "numberBlocked"
-        android:persistent = "false">
-	    <Preference
-	        android:title = "Enter a number manually"
-	        android:key = "numberManual"
-	        android:id="@+id/BlockedNumbersManual" >
-	        <intent android:action="android.intent.action.DIAL"
-	            android:data="tel:123" />
-		</Preference>
-	      <Preference
-	        android:key = "contactChosen"
-	        android:title = "Choose from contacts"
-	        android:id="@+id/BlockedNumbersContacts" >
-	       </Preference>
-	</PreferenceScreen> 
-	
-	<ListPreference
-        android:key="PromptsPreference"
+        android:key="numberBlocked"
+        android:persistent="false"
+        android:title="Excluded Numbers" >
+
+        <Preference
+            android:id="@+id/BlockedNumbersManual"
+            android:key="numberManual"
+            android:title="Enter a number manually" >
+            <intent
+                android:action="android.intent.action.DIAL"
+                android:data="tel:123" />
+        </Preference>
+
+        <Preference
+            android:id="@+id/BlockedNumbersContacts"
+            android:key="contactChosen"
+            android:title="Choose from contacts" >
+        </Preference>
+        
+        <Preference
+            android:id="@+id/ShowBlockedNumbers"
+            android:key="ShowBlockedNumbers"
+            android:title="Excluded Numbers" >
+        </Preference>
+        
+    </PreferenceScreen>
+
+    <ListPreference
         android:id="@+id/PromptsPreference"
-        android:title="Prompt Control"
-        android:dialogTitle="Raise a prompt when:"
         android:defaultValue="pambiguity"
+        android:dialogTitle="Raise a prompt when:"
         android:entries="@array/pref_prompts_entries"
-        android:entryValues="@array/pref_prompts_values" />
-    
-	<Preference
-   	    android:id = "@+id/dayTime"
-        android:key = "day_time"
-        android:title = "Day Timings"
-        android:onClick = "pickTime" />
-	
-	<Preference
-	    android:id = "@+id/NoNag"
-   		android:title = "No Nag Mode"
-   		android:key = "no_nag"
-   		android:onClick = "NoNagHandler" />
-  </PreferenceScreen>
+        android:entryValues="@array/pref_prompts_values"
+        android:key="PromptsPreference"
+        android:title="Prompt Control" />
+
+    <Preference
+        android:id="@+id/dayTime"
+        android:key="day_time"
+        android:onClick="pickTime"
+        android:title="Day Timings" />
+
+    <Preference
+        android:id="@+id/NoNag"
+        android:key="no_nag"
+        android:onClick="NoNagHandler"
+        android:title="No Nag Mode" />
+
+</PreferenceScreen>
