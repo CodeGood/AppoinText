@@ -192,12 +192,12 @@ Log.d("Appointext Calendar", "Event" + title + " added successfully");
 
 				ContentResolver cr = con.getContentResolver();
 				
-				for (String name : attendees.split(",")) {
+				//for (String name : attendees.split(",")) {
 					values.clear();
 					values.put(Attendees.EVENT_ID, eventId);
 					values.put(Attendees.ATTENDEE_NAME, attendees); //TODO: Get attendees to work
 					cr.insert(Attendees.CONTENT_URI, values);
-				}
+				//}
 				
 			}
 			

@@ -2,22 +2,20 @@
       xmlns:android="http://schemas.android.com/apk/res/android">	
     <PreferenceScreen
         android:title="Blocked Number"
-        android:id="@+id/BlockedNumbers"
+        android:id="@+id/BlockedNumbersContacts"
         android:key = "numberBlocked"
         android:persistent = "false">
 	    <Preference
 	        android:title = "Enter a number manually"
 	        android:key = "numberManual"
-	        android:id="@+id/BlockedNumbersManual">
-	        <intent android:action="android.intent.action.EDIT"
-	            android:data="tel:" />
-			</Preference>
+	        android:id="@+id/BlockedNumbersManual" >
+	        <intent android:action="android.intent.action.DIAL"
+	            android:data="tel:123" />
+		</Preference>
 	      <Preference
 	        android:key = "contactChosen"
 	        android:title = "Choose from contacts"
-	        android:id="@+id/BlockedNumbersContacts">
-	        <intent android:action="android.intent.action.PICK"
-	            android:data="content://contacts/people/" />
+	        android:id="@+id/BlockedNumbersContacts" >
 	       </Preference>
 	</PreferenceScreen> 
 	

@@ -4,8 +4,6 @@ import com.bmsce.appointext.R;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.TimePicker.OnTimeChangedListener;
@@ -20,8 +18,6 @@ public class TimeSelector extends Activity {
 		TimePicker MorningTime;
 		TimePicker EveningTime;
 		TimePicker NightTime;
-		TextView info;
-
 		MorningTime = (TimePicker)findViewById(R.id.timePickerMorning);
 		EveningTime = (TimePicker)findViewById(R.id.timePickerEvening);
 		NightTime = (TimePicker)findViewById(R.id.timePickerNight);
