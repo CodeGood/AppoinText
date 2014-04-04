@@ -15,7 +15,7 @@ import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
 import java.util.ArrayList;
-//import com.appointext.database.CalendarInsertEvent;
+import com.appointext.database.CalendarInsertEvent;
 
 /*
  * JUSTIFICATION -->
@@ -42,14 +42,14 @@ public class AppoinTextService extends IntentService {
 	@Override
 	protected void onHandleIntent(Intent intent) {
 		//For an IntentService, all work must be in onHandleIntent. onCreate and onCommand should never be overridden.
-	Log.d("AppoinText", "Service successfully called.");
+		Log.i("AppoinText", "Service successfully called.");
 		
 		//Should have received the incoming sms as part of the Intent
-		//Bundle smsBundle = intent.getExtras();
+		Bundle smsBundle = intent.getExtras();
 		String origin = intent.getStringExtra("origin");
 		Log.i("AppoinText", "Got origin as " + origin);
 		
-/*		SmsMessage[] msgs = null;
+		SmsMessage[] msgs = null;
 		String curText = null;
 		
         if (smsBundle != null) {
@@ -290,20 +290,19 @@ public class AppoinTextService extends IntentService {
 	         		   db.close();
 	         		   return;
 	         	   }
-                }*/
+                }
              
                 /*
                  * The following values will be utilized some day or the other
                  * .getTimestampMillis(); - Will give you the time stamp of receipt in milliseconds from epoch
                  * .getOriginatingAddress(); - Will give the sender number
                  * ReceiverNumber should be known, or can be replaced by an x in all databases.
-                 
+                 */
                 
                 Log.i("AppoinText", "Result of" + curText + " was " + classify(curText));
                 
-			}
-
-		} */
+            }
+        }
 		
 	}
 

@@ -1,13 +1,13 @@
 package com.appointext.database;
 
 
-/* JUSTIFICATION
+/** JUSTIFICATION
  * 	I did think of making getCalendarID public. But then I realized each IntentService will serve exactly one sms and die. 
  * So by the time the next reminder has to be set, the previous calendar id is well forgotten.
  * So why make the user work more? May as well as call my API ... 
- */
+*/ 
 
-/* 
+ /*
  * TODO :
  * 		1. Add multiple attendees rather than a CSV
  * 		2. Check whether delete actually deletes the reminder or not.
@@ -135,7 +135,7 @@ Log.d("AppoinText", "Got Timezone as " + TimeZone.getDefault().toString());
 			
 Log.d("Appointext Calendar", "Obtained Calendar ID as " + calId);
 			
-			/* This is to create the time in milliseconds as required by the put(Events.DSTART) */
+			// This is to create the time in milliseconds as required by the put(Events.DSTART) 
 
 			Calendar cal = new GregorianCalendar(year, month, date);
 			cal.setTimeZone(TimeZone.getDefault());
@@ -145,13 +145,13 @@ Log.d("Appointext Calendar", "Obtained Calendar ID as " + calId);
 			cal.set(Calendar.MILLISECOND, 0);
 			long start = cal.getTimeInMillis();
 			
-			/* Now we start creating the entry to be sent to the calendar database */
+			 //Now we start creating the entry to be sent to the calendar database 
 			
 			ContentValues values = new ContentValues();
 			
 			values.put(Events.CALENDAR_ID, calId); //set calendar
 			
-			/* Set the mandatory values now */
+			 //Set the mandatory values now 
 			
 			values.put(Events.DTSTART, start); 
 			values.put(Events.DTEND, start);
@@ -159,19 +159,19 @@ Log.d("Appointext Calendar", "Obtained Calendar ID as " + calId);
 			if (!title.equalsIgnoreCase(""))			values.put(Events.TITLE, title);
 			else						values.put(Events.TITLE, "Default Event"); //I assume no one will be dumb enough to send title as null? 
 
-			/* Now let us set the optional values */
+			// Now let us set the optional values 
 			if (!location.equalsIgnoreCase(""))		values.put(Events.EVENT_LOCATION, location);
 			if (!desc.equalsIgnoreCase(""))			values.put(Events.DESCRIPTION, desc);
 			
 			
-			/* Some common sense values, which do not require being parameterized */
+			// Some common sense values, which do not require being parameterized 
 			values.put(Events.SELF_ATTENDEE_STATUS, Events.STATUS_CONFIRMED);
 			values.put(Events.EVENT_TIMEZONE, TimeZone.getDefault().getID());
 			values.put(Events.GUESTS_CAN_INVITE_OTHERS, 1);
 			values.put(Events.GUESTS_CAN_MODIFY, 1);
 			values.put(Events.AVAILABILITY, Events.AVAILABILITY_BUSY);
 						
-			/* Now add to calendar */
+			// Now add to calendar 
 			Uri uri = 
 			     con.getContentResolver().
 			            insert(Events.CONTENT_URI, values);
@@ -179,7 +179,7 @@ Log.d("Appointext Calendar", "Obtained Calendar ID as " + calId);
 			
 Log.d("Appointext Calendar", "Event" + title + " added successfully");
 
-			/* Now set a reminder */
+			// Now set a reminder 
 
 			values.clear();
 			values.put(Reminders.EVENT_ID, eventId);
@@ -187,7 +187,7 @@ Log.d("Appointext Calendar", "Event" + title + " added successfully");
 			values.put(Reminders.MINUTES, min_before_event);
 			con.getContentResolver().insert(Reminders.CONTENT_URI, values);
 			
-			/* Now add attendees for the reminder. I assume we have nothing to do with anything other than name */
+			// Now add attendees for the reminder. I assume we have nothing to do with anything other than name 
 			if (!attendees.equalsIgnoreCase("")) {
 
 				ContentResolver cr = con.getContentResolver();
@@ -239,7 +239,7 @@ Log.d("Appointext Calendar", "Reminder" + title + "Added Successfully");
 
 		        Log.i("AppoinText", "Updated " + iNumRowsUpdated + " calendar entry.");
 		        
-		        /* adding the reminder, if change is require */
+		        // adding the reminder, if change is require 
 		        if (min_before_event > 0) {
 		        	values.clear();
 		        	values.put(Reminders.EVENT_ID, entryID);
@@ -248,7 +248,7 @@ Log.d("Appointext Calendar", "Reminder" + title + "Added Successfully");
 		        	con.getContentResolver().insert(Reminders.CONTENT_URI, values);
 		        }
 				
-				/* adding attendees if any. In a CSV */
+				// adding attendees if any. In a CSV 
 				if (attendees != null) {
 					values.clear();
 					values.put(Attendees.EVENT_ID, entryID);
