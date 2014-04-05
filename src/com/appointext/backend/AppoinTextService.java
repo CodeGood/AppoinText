@@ -5,11 +5,13 @@ import java.util.Map;
 import com.appointext.database.DatabaseManager;
 import com.appointext.naivebayes.Classifier;
 import com.appointext.nertagger.*;
+import com.appointext.regex.RecognizeDate;
 import com.appointext.regex.RecognizeDay;
 import com.appointext.regex.RecognizeEvent;
 import com.appointext.regex.RecognizeTime;
 
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
@@ -39,7 +41,7 @@ public class AppoinTextService extends IntentService {
 	
 	public AppoinTextService() {
 		super("AppoinText"); //Apparently the name is necessary only for tracking purposes
-		//It is easier to give a default name than bothering to figure out how to raise an Intent to call a parameterised constructor
+		//It is easier to give a default name than bothering to figure out how to raise an Intent to call a parameterized constructor
 	}
 	
 	@Override
@@ -75,7 +77,7 @@ Log.i("AppoinText Service", "Got origin as " + origin);
 		String category = null;
 		Double minimumConfidence = 0 - Double.MAX_VALUE;
 
-		String taggedCurText = null;
+		String taggedCurText = "Me no get intialized";
 
 		res = this.classify(curText);
 
@@ -97,6 +99,8 @@ Log.i("AppoinText Service", "Got origin as " + origin);
 		}
 
 		if(category.equalsIgnoreCase("query")){
+			
+			Log.e("Appointext", "I am a query and the message is : " + curText);
 
 			//since this is a query, extract all the details and then store it in the pending table.
 
@@ -105,11 +109,13 @@ Log.i("AppoinText Service", "Got origin as " + origin);
 			String location = "";
 
 			try{
-				taggedCurText = NERecognizer.NERTagger(curText);
+				taggedCurText = NERecognizer.NERTagger(this, curText);
 			}
 			catch(Exception e){	
 				Log.e("NER Tagger", "Died while tagging :" + e);
 			}
+			
+			Log.d("Appointext", "The tagged text is :" + taggedCurText);
 
 			//From the tagged text find out the list of persons and the place if any mentioned. Organizations are also classified as location here
 
@@ -132,39 +138,52 @@ Log.i("AppoinText Service", "Got origin as " + origin);
 				}
 			}
 
-			int senderNumber =0, recieverNumber=0;
+			String senderNumber =null, recieverNumber = null;
 
-			//Find out if the message is either a sent message or a recieved one. And add the person who sent the message or is receiving the message also as an attendee. The host himself/ herself is not added yet.
+			//Find out if the message is either a sent message or a received one. And add the person who sent the message or is receiving the message also as an attendee. The host himself/ herself is not added yet.
 
 			if(origin == INBOX){                		
-				senderNumber = Integer.parseInt(msgs[0].getOriginatingAddress());
-				recieverNumber = 123;
+				senderNumber = (msgs[0].getOriginatingAddress().replaceAll("[^0-9]", ""));
+				recieverNumber = "123";
+				if (senderNumber.length() == 10) {
+					Log.d("NumberConversion", "Original sender number " + senderNumber);
+					senderNumber = "91" + senderNumber;
+					Log.d("NumberConversion", "New number as " + senderNumber);
+				}
 				people += senderNumber;
 			}
 
 			else{               		
-				senderNumber = 123;
-				recieverNumber = Integer.parseInt(intent.getStringExtra("receiver"));    
+				senderNumber = "123";
+				recieverNumber = (intent.getStringExtra("receiver").replaceAll("[^0-9]", "")); 
+				if (recieverNumber.length() == 10) {
+					Log.d("NumberConversion", "Original sender number " + recieverNumber);
+					recieverNumber = "91" + recieverNumber;
+					Log.d("NumberConversion", "New number as " + recieverNumber);
+				}
 				people += recieverNumber;
 			}
 
-
+			Log.d("appointext", "the numbers determined are" + senderNumber + " " + recieverNumber);
 
 			String event = RecognizeEvent.getEvent(curText);
 			String when;
 			String timeExtracted, dateExtracted;
 
 			timeExtracted = RecognizeTime.findTime(curText);
-			dateExtracted = RecognizeDay.findDay(curText);
+			dateExtracted = RecognizeDate.findDates(curText);
+			
+			Log.d("appointext", "the date and day" + timeExtracted + "" + dateExtracted );
 
-			//After extracting date and time, get it in the formad HH:MM,dd/mm/yyyy and store it in the pending reminders list
+			//After extracting date and time, get it in the format HH:MM,dd/mm/yyyy and store it in the pending reminders list
 
 			when = timeExtracted.split("[/,]")[0] + "," + dateExtracted.split("[/,]")[0]+"/"+dateExtracted.split("[/,]")[1]+"/"+dateExtracted.split("[/,]")[2];
 
 			db = new DatabaseManager(this);
 
 			db.open();
-			db.addRow("pendingReminders", senderNumber, recieverNumber, 0, people, event, when, location);  
+			db.addRow("pendingReminders", senderNumber, recieverNumber, 0, people, event, when, location); 
+			Log.e("Appointext", "db.addRow(pendingReminders, senderNumber, recieverNumber, 0, people, event, when, location);" );
 			db.close();
 
 			return;
@@ -173,38 +192,72 @@ Log.i("AppoinText Service", "Got origin as " + origin);
 
 		if(category.equalsIgnoreCase("reply")){
 
+			Log.i("Appointext", "I am a reply : "+ curText);
 			//for the category reply, we first extract all the pending list messages based on the sender and the receiver number
 
-			ArrayList<ArrayList<Object>> rows;
+			ArrayList<ArrayList<Object>> rows = new ArrayList<ArrayList<Object>>();
+			ArrayList<ArrayList<Object>> tempRows = new ArrayList<ArrayList<Object>>();
 
 			db = new DatabaseManager(this);
 			db.open();
 
-			int senderNumber =0, recieverNumber=0;
+			String senderNumber =null, recieverNumber=null;
 
 			if(origin == INBOX){                		
-				senderNumber = Integer.parseInt(msgs[0].getOriginatingAddress());
-				recieverNumber = 123;
+				senderNumber = (msgs[0].getOriginatingAddress().replaceAll("[^0-9]", ""));
+				recieverNumber = "123";
+				if (senderNumber.length() == 10) {
+					Log.d("NumberConversion", "Original sender number " + senderNumber);
+					senderNumber = "91" + senderNumber;
+					Log.d("NumberConversion", "New number as " + senderNumber);
+				}
 			}
 
 			else{               		
-				senderNumber = 123;
-				recieverNumber = Integer.parseInt(intent.getStringExtra("receiver"));    
+				senderNumber = "123";
+				recieverNumber = (intent.getStringExtra("receiver").replaceAll("[^0-9]", ""));  
+				if (recieverNumber.length() == 10) {
+					Log.d("NumberConversion", "Original sender number " + recieverNumber);
+					recieverNumber = "91" + recieverNumber;
+					Log.d("NumberConversion", "New number as " + recieverNumber);
+				}
 			}
+			
+			rows = db.getMultiplePendingReminders("SELECT * FROM pendingReminders");
+			
+			Log.d("Appointext", "The rows stored are : "+ rows.toString());
+			
+			Log.d("Appointext", "Sender number "+ senderNumber + "Reciever Number" + recieverNumber);
 
-			rows = db.getMultiplePendingReminders("SELECT * FROM pendingReminders WHERE senderNumber=" + senderNumber + " and receiverNumber=" + recieverNumber);
+			rows = db.getMultiplePendingReminders("SELECT * FROM pendingReminders WHERE senderNumber=" + "'" + senderNumber + "'" + " and receiverNumber=" + "'" + recieverNumber+"'");
+			
+			Log.d("Appointext", "the value of rows is : " + rows.toString());
 
+			tempRows = db.getMultiplePendingReminders("SELECT * FROM pendingReminders WHERE senderNumber=" + "'" + recieverNumber + "'" + " and receiverNumber=" + "'" + senderNumber +"'");
+			
+			Log.d("Appointext", "the value of tempRows : " + tempRows.toString());
+			
+			rows.addAll(tempRows);
+			
 			String reply = FindSentiment.findSentiment(curText);
 
 			//TODO : Figure out if only date and only day is give, what to do then. And take care of the situation
+			
+			if(rows.isEmpty()){
+				
+				Log.e("Appointext", "the rows are empty");
+				return;
+			}
 
 			if(reply.equalsIgnoreCase("yes")){
+				
+				Log.i("appointext","no the rows are not empty");
 
 				// if the reply is affirmative, then check if the time was found. If not, then just change the entry in the db to indicate that the meeting is confirmed
 
 				if(rows.get(0).get(6).toString().equalsIgnoreCase("") || rows.get(0).get(6).toString().startsWith(",") || rows.get(0).get(6).toString().endsWith(",")){         	    		
 
-					db.updateRow("pendingReminders", (Integer)rows.get(0).get(0), (Integer)rows.get(0).get(1), (Integer)rows.get(0).get(2), 1, rows.get(0).get(4).toString(), rows.get(0).get(5).toString(), rows.get(0).get(6).toString(), rows.get(0).get(7).toString());	
+					db.updateRow("pendingReminders", (Integer)rows.get(0).get(0), rows.get(0).get(1).toString(), rows.get(0).get(2).toString(), 1, rows.get(0).get(4).toString(), rows.get(0).get(5).toString(), rows.get(0).get(6).toString(), rows.get(0).get(7).toString());	
 					return;
 				}
 
@@ -227,9 +280,11 @@ Log.i("AppoinText Service", "Got origin as " + origin);
 					month = Integer.parseInt(dateExtract[1]);
 					year = Integer.parseInt(dateExtract[2]);
 
-					int eventId = (int) CalendarInsertEvent.addReminder(this, date, month, year, hour, minute, 30, rows.get(0).get(5).toString(), rows.get(0).get(7).toString(), null, rows.get(0).get(4).toString());
+					//	   public static long addReminder(              Context, int date, int month, int year, int hour, int minute, int min_before_event, String title,                  String location,               String desc,  String attendees) 
+					int eventId = (int) CalendarInsertEvent.addReminder(this,      date,      month,     year,     hour,     minute,        30,             rows.get(0).get(5).toString(), rows.get(0).get(7).toString(),    null,       rows.get(0).get(4).toString());
 
-					// after the reminder set, then put the entry to the set reminders table and add all the details to extractedData feild in the form of Location:xxxx-Attendees:xxxx-Event:xxxx- all of them being a CSV 
+					Log.d("appointext", "the database insert statement :" + date + "'" + month +"'"+year+"'" + "'" + hour + "'" + minute + "'" );
+					// after the reminder set, then put the entry to the set reminders table and add all the details to extractedData field in the form of Location:xxxx-Attendees:xxxx-Event:xxxx- all of them being a CSV 
 
 					int isComplete = 1, isGroup = 0;
 

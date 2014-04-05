@@ -124,6 +124,7 @@ Log.d("AppoinText", "Got Timezone as " + TimeZone.getDefault().toString());
 	   public static long addReminder(Context cont, int date, int month, int year, int hour, int minute, int min_before_event, String title, String location, String desc, String attendees) { 
 		   
 		con = cont; //Set it for use by the whole class
+		month = month-1;
 		   
 		try {
 			
@@ -155,26 +156,35 @@ Log.d("Appointext Calendar", "Obtained Calendar ID as " + calId);
 			
 			values.put(Events.DTSTART, start); 
 			values.put(Events.DTEND, start);
-			
-			if (!title.equalsIgnoreCase(""))			values.put(Events.TITLE, title);
-			else						values.put(Events.TITLE, "Default Event"); //I assume no one will be dumb enough to send title as null? 
 
+Log.d("AppoinText Calendar", "Got the basic values into it.");			
+
+			if ( title != null && !title.equalsIgnoreCase(""))			values.put(Events.TITLE, title);
+			else						values.put(Events.TITLE, "Default Event"); //I assume no one will be dumb enough to send title as null? 
+Log.d("AppoinText", "Inserted title");
 			// Now let us set the optional values 
-			if (!location.equalsIgnoreCase(""))		values.put(Events.EVENT_LOCATION, location);
-			if (!desc.equalsIgnoreCase(""))			values.put(Events.DESCRIPTION, desc);
+			if ( location !=null && !location.equalsIgnoreCase("") )		values.put(Events.EVENT_LOCATION, location);
+			Log.d("AppoinText", "Inserted location");
+			if ( desc != null && !desc.equalsIgnoreCase(""))		{ Log.d("AppoinText description", "Inserting non null" + desc);	values.put(Events.DESCRIPTION, desc); }
+			else  { 	Log.d("AppoinText", "Inserted null description"); }
 			
-			
+Log.d("AppoinText", "Got the optional values as well");			
 			// Some common sense values, which do not require being parameterized 
 			values.put(Events.SELF_ATTENDEE_STATUS, Events.STATUS_CONFIRMED);
+			Log.d("AppoinText", "Inserted attendee status");
 			values.put(Events.EVENT_TIMEZONE, TimeZone.getDefault().getID());
+			Log.d("AppoinText", "Inserted timezone");
 			values.put(Events.GUESTS_CAN_INVITE_OTHERS, 1);
+			Log.d("AppoinText", "Inserted gues invite others");
 			values.put(Events.GUESTS_CAN_MODIFY, 1);
+			Log.d("AppoinText", "Inserted guests can modify");
 			values.put(Events.AVAILABILITY, Events.AVAILABILITY_BUSY);
-						
+Log.d("AppoinText Calendar", "Attempting to add events to calendar");						
 			// Now add to calendar 
 			Uri uri = 
 			     con.getContentResolver().
 			            insert(Events.CONTENT_URI, values);
+Log.d("Inserted event", "AppoinTextCalendar");
 			long eventId =  Long.valueOf(uri.getLastPathSegment());
 			
 Log.d("Appointext Calendar", "Event" + title + " added successfully");
@@ -188,7 +198,7 @@ Log.d("Appointext Calendar", "Event" + title + " added successfully");
 			con.getContentResolver().insert(Reminders.CONTENT_URI, values);
 			
 			// Now add attendees for the reminder. I assume we have nothing to do with anything other than name 
-			if (!attendees.equalsIgnoreCase("")) {
+			if (!attendees.equalsIgnoreCase("") && attendees !=  null) {
 
 				ContentResolver cr = con.getContentResolver();
 				
@@ -208,6 +218,7 @@ Log.d("Appointext Calendar", "Reminder" + title + "Added Successfully");
 		}
 		catch(Exception e) {
 			Log.e("Appointext Calendar", "Error in Reminder " + title + " Setting : " + e.getMessage() + "\nCause may be : " + e.getCause());
+			Log.d("AppoinText Calendar", "Values are " + date+" "+ month+" "+ year+" "+hour+" "+minute+" "+min_before_event+" "+title+" "+ location+" "+ desc +" "+attendees);
 		}
 		
 		return -1;

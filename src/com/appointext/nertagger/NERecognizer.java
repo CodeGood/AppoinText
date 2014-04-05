@@ -3,13 +3,19 @@ import edu.stanford.nlp.ie.AbstractSequenceClassifier;
 import edu.stanford.nlp.ie.crf.*;
 import edu.stanford.nlp.ling.CoreLabel;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+
+import android.content.Context;
+
+import com.appointext.dataobjects.NaiveBayesKnowledgeBase;
 
 
 public class NERecognizer {
 
-    public static String NERTagger(String message) throws IOException {
+    public static String NERTagger(Context cnt, String message) throws IOException {
 
-      String serializedClassifier = "classifiers/english.all.3class.distsim.crf.ser.gz";
+      String serializedClassifier = "classifiers/english.all.3class.distsim.crf.ser";
 
       AbstractSequenceClassifier<CoreLabel> classifier = CRFClassifier.getClassifierNoExceptions(serializedClassifier);
 
@@ -18,7 +24,7 @@ public class NERecognizer {
       return(classifier.classifyToString(message));
       //return(classifier.classifyWithInlineXML(message));
       //return(classifier.classifyToString(message, "xml", true));
-        
+ 
    }
  
 }

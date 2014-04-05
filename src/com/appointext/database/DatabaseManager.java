@@ -42,8 +42,8 @@ public class DatabaseManager {
 						"pendingReminders" +
 						" (" +
 						"eventId" + " integer primary key autoincrement not null," +
-						"senderNumber" + " integer," +
-						"receiverNumber" + " integer," +
+						"senderNumber" + " text," +
+						"receiverNumber" + " text," +
 						"isConfirmed" + " integer," +
 						"attendees" + " text," +
 						"what" + " text," +
@@ -135,7 +135,7 @@ public class DatabaseManager {
    		}
 
 	       //this is for pendingReminders
-	   public void addRow(String dbName, int sender, int receiver, int isConfirmed, String attendees, String what, String whenIsIt, String whereIsIt)
+	   public void addRow(String dbName, String sender, String receiver, int isConfirmed, String attendees, String what, String whenIsIt, String whereIsIt)
 	   {
 	   			// this is a key value pair holder used by android's SQLite functions
 		  
@@ -248,8 +248,8 @@ public class DatabaseManager {
 					ArrayList<Object> dataList = new ArrayList<Object>();
  
 					dataList.add(cursor.getInt(0)); //eventId
-					dataList.add(cursor.getInt(1)); //senderNumber
-					dataList.add(cursor.getInt(2)); //recieverNumber
+					dataList.add(cursor.getString(1)); //senderNumber
+					dataList.add(cursor.getString(2)); //recieverNumber
 					dataList.add(cursor.getInt(3));	//isConfirmed
 					dataList.add(cursor.getString(4)); //attendees
 					dataList.add(cursor.getString(5)); //what(event)
@@ -336,8 +336,8 @@ public class DatabaseManager {
 	   					do
 	   					{
 	   						rowArray.add(cursor.getInt(0));
-	   						rowArray.add(cursor.getInt(1));
-	   						rowArray.add(cursor.getInt(2));
+	   						rowArray.add(cursor.getString(1));
+	   						rowArray.add(cursor.getString(2));
 	   						rowArray.add(cursor.getInt(3));
 	   						rowArray.add(cursor.getString(4));
 	   						rowArray.add(cursor.getString(5));
@@ -370,7 +370,7 @@ public class DatabaseManager {
 	   		
 	   		ArrayList<Object> rowArray = new ArrayList<Object>();
 	   		Cursor cursor;
-Log.i("AppoinText DB", "Was called to provide data.");	   		
+	   		
 	   		if(dbName.equalsIgnoreCase("settingsTable")){
    				cursor = db.query
    				(
@@ -391,7 +391,6 @@ Log.i("AppoinText DB", "Was called to provide data.");
    					{
    						rowArray.add(cursor.getString(0));
    						rowArray.add(cursor.getString(1));
-   	Log.i("AppoinText DB", "Retrived pair <" + rowArray.get(0) + ", " + rowArray.get(1) + ">");
 
    					}
    					while (cursor.moveToNext());
@@ -400,6 +399,7 @@ Log.i("AppoinText DB", "Was called to provide data.");
    				// let java know that you are through with the cursor.
    				cursor.close();
    				
+   				Log.i("setting","I am in getrow");
    			}   
 	   		
 	   		return rowArray;
@@ -460,7 +460,7 @@ Log.i("AppoinText DB", "Was called to provide data.");
 		}
 	
 		// this is for the pendingReminders table
-		public void updateRow(String dbName, int evntId, int sender, int receiver, int isConfirmed, String attendees, String what, String whenIsIt, String whereIsIt)
+		public void updateRow(String dbName, int evntId, String sender, String receiver, int isConfirmed, String attendees, String what, String whenIsIt, String whereIsIt)
 		{
 					// this is a key value pair holder used by android's SQLite functions
 	

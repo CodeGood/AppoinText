@@ -9,10 +9,7 @@
         <Preference
             android:id="@+id/BlockedNumbersManual"
             android:key="numberManual"
-            android:title="Enter a number manually" >
-            <intent
-                android:action="android.intent.action.DIAL"
-                android:data="tel:123" />
+            android:title="Enter a number manually">
         </Preference>
 
         <Preference

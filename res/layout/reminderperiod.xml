@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/remindersPeriodStart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:key="remindersPeriodStart"
+            android:text="Begin At:" >
+        </TextView>
+
+        <DatePicker
+            android:id="@+id/startDateReminders"
+            android:key = "startDateReminders"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:calendarViewShown="false" />
+
+        <TimePicker
+            android:id="@+id/startTimeReminders"
+            android:key = "startTimeReminders"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        
+        <TextView
+            android:id="@+id/remindersPeriodEnd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:key="remindersPeriodEnd"
+            android:text="End At:" >
+        </TextView>
+
+        <DatePicker
+            android:id="@+id/endDateReminders"
+            android:key = "endDateReminders"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:calendarViewShown="false" />
+
+        <TimePicker
+            android:id="@+id/endTimeReminders"
+            android:key = "endTimeReminders"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        
+        <Button
+            android:key = "PeriodRemindersShow"
+            android:id = "@+id/PeriodRemindersShow"
+            android:layout_width="match_parent"
+            android:layout_height = "wrap_content"
+            android:onClick = "ShowReminders"
+            android:text = "Show Reminders">
+         </Button>
+    </LinearLayout>
+    
+  </ScrollView>
