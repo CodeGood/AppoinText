@@ -1,17 +1,13 @@
 package com.appointext.frontend;
 
-import java.util.Calendar;
-
 import com.bmsce.appointext.R;
-
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
-import android.widget.DatePicker.OnDateChangedListener;
 import android.widget.TimePicker;
-import android.widget.TimePicker.OnTimeChangedListener;
 
 public class ReminderPeriodPicker extends Activity {
 	String startT, endT;
@@ -20,7 +16,9 @@ public class ReminderPeriodPicker extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.reminderperiod);
-		Calendar c = Calendar.getInstance();
+	}
+
+	public void ShowReminders(View V)	{
 
 		TimePicker startTime;
 		TimePicker endTime;
@@ -32,39 +30,69 @@ public class ReminderPeriodPicker extends Activity {
 		startDate = (DatePicker)findViewById(R.id.startDateReminders);
 		endDate = (DatePicker)findViewById(R.id.endDateReminders);
 
-		startTime.setOnTimeChangedListener(new OnTimeChangedListener(){
+		startTime.clearFocus();
+		int startHour = startTime.getCurrentHour();
+		int startMinute = startTime.getCurrentMinute();
 
-			@Override
-			public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-				startT = new String(hourOfDay + ":" + minute);
-			}
-		});
-		endTime.setOnTimeChangedListener(new OnTimeChangedListener(){
+		endTime.clearFocus();
+		int endHour = endTime.getCurrentHour();
+		int endMinute = endTime.getCurrentMinute();
 
-			@Override
-			public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-				endT = new String(hourOfDay + ":" + minute);
-			}
-		});
-		startDate.init(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), new OnDateChangedListener(){
+		int startingDate = startDate.getDayOfMonth();
+		int startingMonth = startDate.getMonth() + 1;
+		int startingYear = startDate.getYear();
 
-			public void onDateChanged(DatePicker view, int year, int monthOfYear,int dayOfMonth)	{
-				startD = new String(Integer.toString(dayOfMonth) + "/" + Integer.toString(monthOfYear) + "/" + Integer.toString(year));
-			}
-		});
+		int endingDate = endDate.getDayOfMonth();
+		int endingMonth = endDate.getMonth() + 1;
+		int endingYear = endDate.getYear();
+		String hourStart,minuteStart,hourEnd,minuteEnd,dateStarting,monthStarting, yearStarting,dateEnding, monthEnding, yearEnding;
+		String starting, ending;
+		if(startHour < 10)
+			hourStart = "0" + startHour;
+		else
+			hourStart = Integer.toString(startHour);
+		if(startMinute < 10)
+			minuteStart = "0" + startMinute;
+		else
+			minuteStart = Integer.toString(startMinute);
+		if(endHour < 10)
+			hourEnd = "0" + endHour;
+		else
+			hourEnd = Integer.toString(endHour);
+		if(endMinute < 10)
+			minuteEnd = "0" + endMinute;
+		else
+			minuteEnd = Integer.toString(endMinute);
+		if(startingDate < 10)
+			dateStarting = "0" + startingDate;
+		else
+			dateStarting = Integer.toString(startingDate);
+		if(startingMonth < 10)
+			monthStarting = "0" + startingMonth;
+		else
+			monthStarting = Integer.toString(startingMonth);
+		if(endingDate < 10)
+			dateEnding = "0" + endingDate;
+		else
+			dateEnding = Integer.toString(endingDate);
+		if(endingMonth < 10)
+			monthEnding = "0" + endingMonth;
+		else
+			monthEnding = Integer.toString(endingMonth);
+		
+		String dateOfStart = dateStarting + "/" + monthStarting + "/" + "/" + Integer.toString(startingYear);
+		String dateOfEnd = dateEnding + "/" + monthEnding + "/" + "/" + Integer.toString(endingYear);
+		String timeOfStart = hourStart + ":" + minuteStart;
+		String timeOfEnd = hourEnd + ":" + minuteEnd;
+		
+		starting = dateOfStart + " " + timeOfStart;
+		ending = dateOfStart + " " + timeOfStart;
 
-		endDate.init(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), new OnDateChangedListener(){
+		Intent intent = new Intent(this, RemindersPeriodDisplay.class);
+		intent.putExtra("startTime", starting);
+		intent.putExtra("endTime", ending);
 
-			public void onDateChanged(DatePicker view, int year, int monthOfYear,int dayOfMonth)	{
-				endD = new  String(Integer.toString(dayOfMonth) + "/" + Integer.toString(monthOfYear) + "/" + Integer.toString(year));
-			}
-		});
-	}
-	
-	public void ShowReminders(View V)	{
-		String start = startD + " " + startT;
-		String end = endD + " " + endT;
-		Log.i("Start Time",start);
-		Log.i("End Time", end);
+		startActivity(intent);
+
 	}
 }

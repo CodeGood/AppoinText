@@ -55,7 +55,8 @@
             android:id = "@+id/PeriodRemindersShow"
             android:layout_width="match_parent"
             android:layout_height = "wrap_content"
-            android:onClick = "ShowReminders" >
+            android:onClick = "ShowReminders"
+            android:text = "Show Reminders">
          </Button>
     </LinearLayout>
     
