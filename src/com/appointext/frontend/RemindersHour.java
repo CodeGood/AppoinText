@@ -43,8 +43,21 @@ public class RemindersHour extends Activity {
 			Log.i("Called Event", event);
 		}
 		else	{
-				String hourStart, minuteStart;
-				
+				String hourStart, minuteStart, hourEnd;
+				if(startHour < 10)
+					hourStart = "0" + startHour;
+				else
+					hourStart = Integer.toString(startHour);
+				if(startMinute < 10)
+					minuteStart = "0" + startMinute;
+				else
+					minuteStart = Integer.toString(startMinute);
+				if(startHour + 1 < 10)
+					hourEnd = "0" + (startHour + 1);
+				else
+					hourEnd = Integer.toString(startHour + 1);
+				startTime = todayAsString + " " + hourStart + ":" + minuteStart;
+				endTime = todayAsString + " " + hourEnd + ":" + minuteStart;
 				
 			Log.i("End Time",endTime);
 			Log.i("Start Time",startTime);

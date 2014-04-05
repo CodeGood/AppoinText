@@ -1,12 +1,10 @@
 package com.appointext.regex;
 
-/** ASSUMPTIONS AND WARNINGS
-Some of the return a character index rather than a word index. They are preceeded by c
+/** ASSUMPTIONS
 day after = day after tomorrow
 24th = 24th of this month
 */
 
-import android.annotation.SuppressLint;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Arrays;
@@ -14,7 +12,6 @@ import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@SuppressLint({ "SimpleDateFormat", "DefaultLocale" })
 public class RecognizeDate {
 	
 	private static int thisDay, thisMonth, thisYear;
@@ -29,7 +26,7 @@ public class RecognizeDate {
 		thisMonth = Integer.parseInt(today[1]);
 		thisDay = Integer.parseInt(today[0]);
 	}
-
+	
 	/**
 	* Returns a Comma Separated list of dates found - including keywords like today. Returns an EMPTY String - NOT null - if no date found.
 	*@param msg - The SMS to analyze
@@ -41,6 +38,8 @@ public class RecognizeDate {
 		String foundDates = "";		
 		msg = msg.replaceAll("(\\w+)\\p{Punct}(\\s|$)", "$1$2"); //I hope there is no pain lurking around the corner :-|
 
+		foundDates = RecognizeDay.findDay(msg);
+		if (!foundDates.equals("")) foundDates += ",";
 		foundDates += findByKeywords(msg);
 		foundDates += findByMonthName(msg);
 		foundDates += findByDDMMYY(msg);
@@ -55,7 +54,6 @@ public class RecognizeDate {
 	* @return - CSV list of dates
 	*/
 	
-	@SuppressLint("DefaultLocale")
 	public static String findByKeywords(String msg) {
 	
 		msg = msg.toLowerCase().trim(); //Since I do not see how preserving capitalisation will help
@@ -114,7 +112,7 @@ public class RecognizeDate {
 		String[] words = msg.split(" ");
 		String foundDates = "";
 		String date = "xx";
-		
+
 		for (int i = 0; i < words.length; i++) {
 		
 			if ((words[i].indexOf("Jan")) != -1) {
@@ -321,15 +319,15 @@ public class RecognizeDate {
 	*/
 	
 	public static String deDup (String answer) { //Removes duplicate dates in case they were added by any one
+
+		if (answer.equals(""))	return answer;
 	
-		if (answer.equals("")) return answer;
-		
 		HashSet<String> set = new HashSet<String>(Arrays.asList(answer.split(","))); //Get individual dates and convert them into a 'set' ... Automatically removes duplicates :D
 		answer = "";
 		
 		for (String val : set)
 			answer += val + ",";
 		
-		return answer.substring(0, answer.length()-1);
+		return answer.substring(0, answer.length()-1).replaceAll("xx", "00");
 	}
 }

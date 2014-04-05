@@ -1,14 +1,9 @@
 package com.appointext.regex;
 
-import android.annotation.SuppressLint;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-@SuppressLint("SimpleDateFormat")
 public class RecognizeDay {
-
-	private static Calendar c = Calendar.getInstance(); //Got the current date
-	private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy"); //to parse dates
 
 	/**
 	 * Returns a String of Days (of the week) found, and AN EMPTY STRING (NOT equal to null) if none are found
@@ -26,25 +21,18 @@ public class RecognizeDay {
 		
 			for (int j = 0; j < dotw.length; j++) {			
 			
-				if (dotw[j].equals(words[i])) {
-					
-					if (i == 0 || !(words[i-1].equalsIgnoreCase("last"))) { //am not interested in 'past' dates!
-						
-							foundDates += convertToDate((j > 6 ? j-7 : j), words[i-1], (i > 3 ? (words[i-3]+words[i-2]) : null));
-							foundDates += ("/" + i + ","); //adding the location using a slash in case you require further processing
-							
-					}
-				}
+				if (dotw[j].equals(words[i]) && !(words[i-1].equalsIgnoreCase("last"))) //am not interested in 'past' dates!
+					foundDates += convertToDate((j > 6 ? j-7 : j), words[i-1]) + ",";
 			}
 			
 		}
-		
-		if (foundDates.equals("")) return "";
-		else 	return foundDates.substring(0, foundDates.length()-1);
+
+		return foundDates;
 	 }
 	 
-	 public static String convertToDate(int day, String prevWord, String beforePrev) {
-
+	 public static String convertToDate(int day, String prevWord) {
+	 
+		Calendar c = Calendar.getInstance(); //Got the current date
 		int today = c.get(Calendar.DAY_OF_WEEK); //Got the day out of it.
 		
 		int toAdd = 0;
@@ -59,18 +47,12 @@ public class RecognizeDay {
 			
 			if (toAdd < 0) //Perform the modulo 7 thing
 				toAdd = 7 + toAdd;
+
+System.out.println("Day + toAdd is " + (day+toAdd));
 				
-/*
-THIS APPROACH SEEMS TOO BUGGY TO BOTHER WITH MORE. LETS FIND THE NEXT SUNDAY AND CHECK.				
-System.out.println("ToDay + toAdd is " + (today+toAdd));				
-			if (today+toAdd > 7) //and generally next week means, AFTER sunday, so add 7 to it.
+			if (day + toAdd > 7)
+				if (toAdd < 7) //and add 7 to it.
 					toAdd += 7;
-*/
-			int addToGetToNextSunday = 8-today; //this is the number to be added to get to the next Sunday (Rember the guy needs 1 extra).
-
-			if (toAdd <= addToGetToNextSunday)
-				toAdd += 7;
-
 		
 		}
 		else { //Today is Sunday. I say Wednesday. 3 - 0 = 3. Today is Sunday, I say Thursday. 4 - 0 = 4
@@ -80,10 +62,8 @@ System.out.println("ToDay + toAdd is " + (today+toAdd));
 				toAdd = 7 + toAdd;
 		}
 		
-		if (beforePrev != null && beforePrev.equalsIgnoreCase("nextto")) //Deal with next to next :P
-			toAdd += 7;
-		
 		c.add(Calendar.DATE, toAdd+1); //Okay looks like it needs one extra
-		return sdf.format(c.getTime());
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+		return formatter.format(c.getTime());
 	 }
 }
