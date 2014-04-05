@@ -24,6 +24,8 @@ public class RemindersToday extends Activity {
 		Log.i("Today Date",todayAsString);
 		String startTime = todayAsString + " 00:00";
 		String endTime = todayAsString + " 23:59";
+		Log.i("Start Time",startTime);
+		Log.i("End Time",endTime);
 		String event = ((GetCalendarEvents.getEvent(this, startTime, endTime, new String[] {Events.TITLE})).replaceAll(",","\t")).replaceAll("#","\n");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.remindersdisplay);

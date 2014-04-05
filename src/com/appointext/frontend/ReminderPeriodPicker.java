@@ -80,13 +80,16 @@ public class ReminderPeriodPicker extends Activity {
 		else
 			monthEnding = Integer.toString(endingMonth);
 		
-		String dateOfStart = dateStarting + "/" + monthStarting + "/" + "/" + Integer.toString(startingYear);
-		String dateOfEnd = dateEnding + "/" + monthEnding + "/" + "/" + Integer.toString(endingYear);
+		String dateOfStart = dateStarting + "/" + monthStarting + "/" + Integer.toString(startingYear);
+		String dateOfEnd = dateEnding + "/" + monthEnding + "/" + Integer.toString(endingYear);
 		String timeOfStart = hourStart + ":" + minuteStart;
 		String timeOfEnd = hourEnd + ":" + minuteEnd;
 		
 		starting = dateOfStart + " " + timeOfStart;
-		ending = dateOfStart + " " + timeOfStart;
+		ending = dateOfEnd + " " + timeOfEnd;
+		
+		Log.i("Start Time",starting);
+		Log.i("End Time",ending);
 
 		Intent intent = new Intent(this, RemindersPeriodDisplay.class);
 		intent.putExtra("startTime", starting);
