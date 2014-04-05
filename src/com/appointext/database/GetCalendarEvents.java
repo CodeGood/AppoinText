@@ -18,8 +18,15 @@ public class GetCalendarEvents {
 	 * @param con - The Context. If you are calling it from  an Activity or Service, pass 'this'
 	 * @param sTime - The Start date passed as "dd/MM/yyyy HH:mm"
 	 * @param etime - End time, passed in same format
-	 * @param fields - A String array mentioning which fields are required. Fields returned will be in order specified here. 
-	 * 					Look at http://developer.android.com/reference/android/provider/CalendarContract.EventsColumns.html for field names
+	 * @param fields - A String array mentioning which fields are required. Fields returned will be in order specified here.
+	 * 					You can use Events._ID to get the event id, which you require to set reminder, modify event or anything else
+	 * 					Events.TITLE or "title" will return the title
+	 * 					Similarly other column names can be found at http://developer.android.com/reference/android/provider/CalendarContract.EventsColumns.html
+	 * 
+	 * COMMON  USAGE - GetCalendarEvents.getEvent(this, start, end, new String[] {Events._ID, Events.TITLE});
+	 * 					For Events.something to work, you must import android.provider.CalendarContract.Events;
+	 * 					Or you can directly use their values - "_id" and "title"
+	 *  
 	 * @return - A String where fields are separated by comma and rows are separated by hashes
 	 */
 	

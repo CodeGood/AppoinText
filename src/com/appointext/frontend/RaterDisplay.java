@@ -17,12 +17,12 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 public class RaterDisplay extends Activity {
-	
+
 	private RatingBar ratingBar;
-	  @SuppressWarnings("unused")
+	@SuppressWarnings("unused")
 	private TextView txtRatingValue;
-	  private Button btnSubmit;
-	
+	private Button btnSubmit;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.i("Display", "Reached Rater Method");
@@ -37,17 +37,17 @@ public class RaterDisplay extends Activity {
 			int stars = Integer.parseInt((row.get(1).toString()).split("\\.")[0]);
 			ratingBar.setRating(stars);
 		}
-			
+
 		addListenerOnButton();
 	}
 
-	 
-	  public void addListenerOnButton() {
-		  
+
+	public void addListenerOnButton() {
+
 		txtRatingValue = (TextView) findViewById(R.id.txtRatingValue);
 		btnSubmit = (Button) findViewById(R.id.btnSubmit);
 		btnSubmit.setOnClickListener(new OnClickListener() {
-	 
+
 			@Override
 			public void onClick(View v) {
 				float rating = ratingBar.getRating();
@@ -61,21 +61,21 @@ public class RaterDisplay extends Activity {
 					db.updateRow("settingsTable", "RatingBar", Float.toString(rating));
 				db.close();
 				AlertDialog alertDialog = new AlertDialog.Builder(RaterDisplay.this).create();
-		        alertDialog.setTitle("AppoinText");
-		        String toAdd;
-		        if (rating < 3.0)
-		        	toAdd = "We shall try our best to improve!";
-		        else
-		        	toAdd = "We are happy that you liked it!";
-		     
-		        alertDialog.setMessage("Thank you for your feedback! :)" + "\n" + toAdd);
-		        alertDialog.setButton (DialogInterface.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
-		                public void onClick(DialogInterface dialog, int which) {
+				alertDialog.setTitle("AppoinText");
+				String toAdd;
+				if (rating < 3.0)
+					toAdd = "We shall try our best to improve!";
+				else
+					toAdd = "We are happy that you liked it!";
 
-		                }
-		        });
-		        alertDialog.show();
-		    }
-	  });
-	  }
+				alertDialog.setMessage("Thank you for your feedback! :)" + "\n" + toAdd);
+				alertDialog.setButton (DialogInterface.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+
+					}
+				});
+				alertDialog.show();
+			}
+		});
+	}
 }

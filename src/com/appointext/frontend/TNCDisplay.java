@@ -11,5 +11,5 @@ public class TNCDisplay extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tnc);
 
-}
+	}
 }

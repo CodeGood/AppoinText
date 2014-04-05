@@ -1,9 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" 
-    android:text="reminders come here">
-    
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
 
-</TextView>
+    <Button
+        android:key = "viewTodayReminders"
+        android:id = "@+id/viewTodayReminders"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="viewRemindersToday"
+        android:text="Today" >
+    </Button>
+    
+    <Button
+        android:key = "viewNextHourReminders"
+        android:id = "@+id/viewNextHourReminders"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="viewRemindersHour"
+        android:text="Next Hour" >
+    </Button>
+    
+    <Button
+        android:key = "viewPeriodReminders"
+        android:id = "@+id/viewPeriodReminders"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="viewRemindersPeriod"
+        android:text="Specified Period" >
+    </Button>
+    
+ </LinearLayout>
