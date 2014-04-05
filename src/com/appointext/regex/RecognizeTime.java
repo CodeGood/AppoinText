@@ -8,11 +8,7 @@ import java.util.regex.Pattern;
 public class RecognizeTime {
 	
 	protected static String sms;
-	
-	public static void main(String[] args) {
-		System.out.println(findTime(args[0]));
-	}
-	
+		
 	public static String findTime(String msg) {
 		
 		sms = msg.toLowerCase(Locale.US).trim().replaceAll("(\\w+)\\p{Punct}(\\s|$)", "$1$2");
@@ -97,7 +93,43 @@ public class RecognizeTime {
 		
 		while (m.find()) {
 			match=m.group().trim();			
+System.out.println("Match in HH:mm = " + match);
 			if (match.endsWith("pm")) {
+				try {
+					int time = Integer.parseInt(match.replaceAll("[^0-9]", ""));
+					if (time < 12) { time = time + 12; match = time + ":00"; }
+					else if (time < 119) { time = time + 120; match = time/10 + ":0" + time%10; }
+					else if (time > 119 && time <= 129 ) { match = "00:0" + time%10; }
+					else if (time < 1200) { time = time + 1200; match = time/100 + ":" + time%100; } //boundary case of 12 not screwed
+					else { match = match.replaceAll("[^0-9:]", ""); }//1200 left as it is.
+				}
+				catch (NumberFormatException e) {
+					continue;
+				}
+			}
+			else if (match.endsWith("am")){
+				try {
+					int time = Integer.parseInt(match.replaceAll("[^0-9]", ""));
+					if (time == 12) { match = "00:00"; }
+					else	match = match.replaceAll("[^0-9:]", "");
+				}
+				catch (NumberFormatException e) {
+					continue;
+				}
+			}
+				
+			foundTime +=(match + "/c" + sms.indexOf(m.group()) + ","); //I can't return word count here, and returning indexOf everywhere else would be too time consuming. So c107 means I am returning character 107. 
+		
+		}
+		
+		p = Pattern.compile(" ([0-2])?[0-9]([^0-9a-zA-Z\\:])?(pm|am)"); //HH
+		m = p.matcher(sms);
+		
+		while (m.find()) {
+			match=m.group().trim();			
+System.out.println("Match is HH = " + match);
+			if (match.endsWith("pm")) {
+			
 				try {
 					int time = Integer.parseInt(match.replaceAll("[^0-9]", ""));
 					if (time < 12) { time = time + 12; match = time + ":00"; }
