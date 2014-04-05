@@ -108,18 +108,18 @@ Log.i("AppoinText Service", "Got origin as " + origin);
 			String people = "";
 			String location = "";
 
-			try{
+			/*try{
 				taggedCurText = NERecognizer.NERTagger(this, curText);
 			}
 			catch(Exception e){	
 				Log.e("NER Tagger", "Died while tagging :" + e);
 			}
 			
-			Log.d("Appointext", "The tagged text is :" + taggedCurText);
+			Log.d("Appointext", "The tagged text is :" + taggedCurText);*/
 
 			//From the tagged text find out the list of persons and the place if any mentioned. Organizations are also classified as location here
 
-			if(taggedCurText != null) {
+			/*if(taggedCurText != null) {
 				
 				taggedWords = taggedCurText.split(" ");
 
@@ -136,7 +136,7 @@ Log.i("AppoinText Service", "Got origin as " + origin);
 						location += word.split("/")[0] + ",";
 					}
 				}
-			}
+			}*/
 
 			String senderNumber =null, recieverNumber = null;
 
@@ -167,25 +167,29 @@ Log.i("AppoinText Service", "Got origin as " + origin);
 			Log.d("appointext", "the numbers determined are" + senderNumber + " " + recieverNumber);
 
 			String event = RecognizeEvent.getEvent(curText);
-			String when;
-			String timeExtracted, dateExtracted;
+			String when = null;
+			String timeExtracted = null, dateExtracted = null;
 
 			timeExtracted = RecognizeTime.findTime(curText);
 			dateExtracted = RecognizeDate.findDates(curText);
 			
-			Log.d("appointext", "the date and day" + timeExtracted + "" + dateExtracted );
+			Log.d("appointext", "the date and day : " + timeExtracted + " " + dateExtracted );
 
 			//After extracting date and time, get it in the format HH:MM,dd/mm/yyyy and store it in the pending reminders list
-
-			when = timeExtracted.split("[/,]")[0] + "," + dateExtracted.split("[/,]")[0]+"/"+dateExtracted.split("[/,]")[1]+"/"+dateExtracted.split("[/,]")[2];
+			
+			
+			if(!timeExtracted.equalsIgnoreCase("") && !dateExtracted.equalsIgnoreCase("")){
+			
+				when = timeExtracted.split("[/,]")[0] + "," + dateExtracted.split("[/,]")[0]+"/"+dateExtracted.split("[/,]")[1]+"/"+dateExtracted.split("[/,]")[2];
+			}
 
 			db = new DatabaseManager(this);
 
 			db.open();
 			db.addRow("pendingReminders", senderNumber, recieverNumber, 0, people, event, when, location); 
-			Log.e("Appointext", "db.addRow(pendingReminders, senderNumber, recieverNumber, 0, people, event, when, location);" );
+			Log.e("Appointext", "db.addRow  : " + " " + senderNumber+ " " +recieverNumber+ " " +0+ " " + people+ " " + event+ " " + when+ " " +location+ " "  );
 			db.close();
-
+			
 			return;
 
 		}
@@ -241,6 +245,8 @@ Log.i("AppoinText Service", "Got origin as " + origin);
 			
 			String reply = FindSentiment.findSentiment(curText);
 
+			Log.d("Appointext", "The sentiment is : "+ reply);
+			
 			//TODO : Figure out if only date and only day is give, what to do then. And take care of the situation
 			
 			if(rows.isEmpty()){
@@ -251,11 +257,11 @@ Log.i("AppoinText Service", "Got origin as " + origin);
 
 			if(reply.equalsIgnoreCase("yes")){
 				
-				Log.i("appointext","no the rows are not empty");
+				Log.i("appointext","no the rows are not empty and the 7th element : " + rows.get(0).get(6).toString());
 
 				// if the reply is affirmative, then check if the time was found. If not, then just change the entry in the db to indicate that the meeting is confirmed
 
-				if(rows.get(0).get(6).toString().equalsIgnoreCase("") || rows.get(0).get(6).toString().startsWith(",") || rows.get(0).get(6).toString().endsWith(",")){         	    		
+				if(rows.get(0).get(6).toString()!= null && rows.get(0).get(6).toString().equalsIgnoreCase("") && (rows.get(0).get(6).toString().equalsIgnoreCase("") || rows.get(0).get(6).toString().startsWith(",") || rows.get(0).get(6).toString().endsWith(","))){         	    		
 
 					db.updateRow("pendingReminders", (Integer)rows.get(0).get(0), rows.get(0).get(1).toString(), rows.get(0).get(2).toString(), 1, rows.get(0).get(4).toString(), rows.get(0).get(5).toString(), rows.get(0).get(6).toString(), rows.get(0).get(7).toString());	
 					return;
