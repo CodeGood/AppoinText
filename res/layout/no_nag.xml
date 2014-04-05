@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="horizontal" >
     
     <LinearLayout
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
-		    android:orientation="horizontal" >
+		    android:orientation="horizontal">
     
 	    <TextView
 	        android:id = "@+id/NoNagStatusText"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:text = "No Nag Mode" />
+	        android:text = "No Nag Mode" 
+	        android:textSize = "20.0sp"/>
 	    
 	    <ToggleButton
 	        android:id="@+id/NoNagStatusToggle"
@@ -24,13 +24,13 @@
 	 </LinearLayout>
 	 
     <CheckBox
-        
+        android:gravity="center"
         android:id = "@+id/NoNagModeScheduler"
         android:key = "+@id/NoNagModeScheduler"
        	android:layout_width = "match_parent"
         android:layout_height="wrap_content"
         android:text = "No Nag Scheduler"
-        android:onClick = "NoNagSchedule" />
+        android:onClick = "NoNagSchedule"/>
 	 
     
 	   

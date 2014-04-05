@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Generated with http://android-holo-colors.com -->
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <style name="ButtonAppoinText" parent="android:Widget.Holo.Button">
+	  <item name="android:background">@drawable/appointext_btn_default_holo_dark</item>
+  </style>
+
+  <style name="ImageButtonAppoinText" parent="android:Widget.Holo.ImageButton">
+	  <item name="android:background">@drawable/appointext_btn_default_holo_dark</item>
+  </style>
+
+  <style name="RatingBarAppoinText" parent="android:Widget.Holo.RatingBar">
+      <item name="android:progressDrawable">@drawable/appointext_ratingbar_full_holo_dark</item>
+      <item name="android:indeterminateDrawable">@drawable/appointext_ratingbar_full_holo_dark</item>
+  </style>
+
+  <style name="ToggleAppoinText" parent="android:Widget.Holo.Button.Toggle">
+      <item name="android:background">@drawable/appointext_btn_toggle_holo_dark</item>
+  </style>
+
+</resources>
