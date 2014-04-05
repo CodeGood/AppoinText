@@ -5,31 +5,67 @@ package com.appointext.backend;
 import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.PendingIntent;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Handler;
+import android.os.IBinder;
 import android.text.format.DateUtils;
 import android.text.format.Time;
 import android.util.Log;
 
-public class MyUpdateService extends IntentService {
+public class MyUpdateService extends Service {
 
-  public MyUpdateService() {
+
+	@Override
+	public IBinder onBind(Intent arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	public void onStart(Intent intent, int startID) {
+		
+		Log.d("AppoinTextUpdateService", "Started");
+		smsObserver = new SMSListenerSent(new Handler(), this);
+		this.getContentResolver().registerContentObserver(Uri.parse("content://sms/"), true, smsObserver);
+		scheduleNextUpdate();
+		
+	}
+	
+	public int onStartCommand(Intent intent, int flags, int startID) {
+		
+		Log.d("AppoinText Service", "Registering content observer");
+		if (smsObserver == null) smsObserver = new SMSListenerSent(new Handler(), this);
+		this.getContentResolver().registerContentObserver(Uri.parse("content://sms/"), true, smsObserver);
+		scheduleNextUpdate();
+		
+		return START_STICKY;
+		
+	}
+	
+	public void onDestroy() {
+		Log.d("AppoinText", "Buh bye :( I was killed by this merciless phone :-/");
+		super.onDestroy();
+	}
+	
+	private SMSListenerSent smsObserver = null;
+	
+/*  public MyUpdateService() {
 	super(MyUpdateService.class.getSimpleName());
   }
 
   @Override
   protected void onHandleIntent(Intent intent) {
 	  
-	  SMSListenerSent smsObserver = new SMSListenerSent(new Handler(), this);
+	  smsObserver = new SMSListenerSent(new Handler(), this);
 	  
 Log.d("AppoinText UpdateService", "Started. Registering ContentObserver");
 
 	  this.getContentResolver().registerContentObserver(Uri.parse("content://sms/"), true, smsObserver);
 	  scheduleNextUpdate();
 	  
-  }
+  }*/
 
   private void scheduleNextUpdate()  {
 	  
@@ -39,7 +75,7 @@ Log.d("AppoinText UpdateService", "Started. Registering ContentObserver");
     // The update frequency should often be user configurable.  This is not.
 
     long currentTimeMillis = System.currentTimeMillis();
-    long nextUpdateTimeMillis = currentTimeMillis + 10* DateUtils.MINUTE_IN_MILLIS; //Updates every 1 minute.
+    long nextUpdateTimeMillis = currentTimeMillis + 5* DateUtils.MINUTE_IN_MILLIS; //Updates every 1 minute.
     Time nextUpdateTime = new Time();
     nextUpdateTime.set(nextUpdateTimeMillis);
 
@@ -54,4 +90,6 @@ Log.d("AppoinText UpdateService", "Started. Registering ContentObserver");
     AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
     alarmManager.set(AlarmManager.RTC, nextUpdateTimeMillis, pendingIntent);
   }
+
+  
 }
