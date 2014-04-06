@@ -10,6 +10,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.view.View;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 
 public class BlockedNumberDisplay extends Activity {
@@ -20,36 +23,71 @@ public class BlockedNumberDisplay extends Activity {
 		setContentView(R.layout.blockednumberdisplay);
 		LinearLayout linear = (LinearLayout)findViewById(R.id.linearLayout);
 		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-	            LinearLayout.LayoutParams.MATCH_PARENT,
-	            LinearLayout.LayoutParams.WRAP_CONTENT);
-		DatabaseManager db = new DatabaseManager(this);
+				LinearLayout.LayoutParams.MATCH_PARENT,
+				LinearLayout.LayoutParams.WRAP_CONTENT);
+		final DatabaseManager db = new DatabaseManager(this);
 		db.open();
 		ArrayList<Object> row;
 		row = db.getRowAsArray("settingsTable", "BlockedNumbers");
+		db.close();
 		if(row.isEmpty())	{
 			TextView text = new TextView(this);
 			text.setText("No Numbers Have Been Excluded!");
 		}
 		else	{
 			int i=0;
-			String[] numbers = row.get(1).toString().split(",");
+			final String num = row.get(1).toString();
+			final String[] numbers = num.split(",");
 			//.setText(numbers);
 			for(String number : numbers)	{
+				Button btn = new Button(this);
+				btn.setId(i);
+				final int id_ = btn.getId();
 				i++;
-			    Button btn = new Button(this);
-			    btn.setId(i);
-			    final int id_ = btn.getId();
-			    btn.setText(number);
-			    linear.addView(btn, params);
-			    Button btn1 = ((Button) findViewById(id_));
-			    btn1.setOnClickListener(new View.OnClickListener() {
-			        public void onClick(View view) {
-			            Toast.makeText(view.getContext(),
-			                    "Button clicked index = " + id_, Toast.LENGTH_SHORT)
-			                    .show();
+				btn.setText(number);
+				linear.addView(btn, params);
+				Button btn1 = ((Button) findViewById(id_));
+				btn1.setOnLongClickListener(new View.OnLongClickListener() {
+					public boolean onLongClick(View view) {
+						AlertDialog.Builder alertDialog = new AlertDialog.Builder(BlockedNumberDisplay.this);
+						// Setting Dialog Title
+						alertDialog.setTitle("Deletion");
+						// Setting Dialog Message
+						alertDialog.setMessage("Delete this number from Excluded List?");
+						// Setting Positive "Yes" Button
+						alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								Toast.makeText(getApplicationContext(), numbers[id_] + " has been deleted", Toast.LENGTH_SHORT).show();
+								// User pressed YES button. Write Logic Here
+								String update = "";
+								for(String temp: numbers)	{
+									if(!temp.equals(numbers[id_]))
+										if(update.equals(""))
+											update = update + temp;
+										else
+											update = update + "," + temp;
+								}
+								db.open();
+								db.updateRow("settingsTable", "BlockedNumbers", update);
+								db.close();
+								Intent intent = getIntent();
+								finish();
+								startActivity(intent);
+							}
+						});
+
+						// Setting Negative "NO" Button
+						alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								//Do nothing! :P
+							}
+						});
+						// Showing Alert Message
+						alertDialog.show();
+						return false;
+					}
+				});
 			}
-		});
-	}
-}
+		}
 	}
 }
