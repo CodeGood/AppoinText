@@ -28,7 +28,8 @@
           android:summary="Invite friend(s)!"
           android:text="Invite Friends"
           android:onClick="viewInviter"
-          android:id="@+id/buttonInvite" />  
+          android:id="@+id/buttonInvite"
+/>  
               
       <Button
          android:layout_width="fill_parent"
@@ -44,13 +45,15 @@
           android:summary="Terms and Conditions"
           android:text="Terms and Conditions"
           android:onClick="viewTnc"
-          android:id="@+id/buttonTnc"/>
+          android:id="@+id/buttonTnc"
+/>
       
       <Button
           android:layout_width="fill_parent"
           android:layout_height="wrap_content"
           android:summary="About the application"
           android:text="About"
-          android:onClick="viewAbout"/>
+          android:onClick="viewAbout"
+/>
       
  </LinearLayout>
