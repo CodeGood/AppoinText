@@ -19,7 +19,7 @@ public class RecognizeEvent {
 			}
 		}
 			
-		return eventsList;
+		return eventsList.substring(0, eventsList.length()-1);
 	}
 
 }

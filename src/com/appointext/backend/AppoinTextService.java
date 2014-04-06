@@ -49,6 +49,8 @@ public class AppoinTextService extends IntentService {
 		//For an IntentService, all work must be in onHandleIntent. onCreate and onCommand should never be overridden.
 		
 		String originS = intent.getStringExtra("origin");
+		Long timeStamp = intent.getLongExtra("timestamp", 0);
+		Log.i("Appointext", "The vlaue of the time stamp when the messge was detected this time is : " + timeStamp);
 		
 		String curText;
 		
@@ -70,7 +72,49 @@ public class AppoinTextService extends IntentService {
 		else 
 			curText = intent.getStringExtra("body");
 
-Log.i("AppoinText Service", "Got origin as " + origin);
+        Log.i("AppoinText Service", "Got origin as " + origin);
+
+		db = new DatabaseManager(this);
+
+		db.open();
+		
+		ArrayList<Object> row = new ArrayList<Object>();
+		row = db.getRowAsArray("timeStampTable", "lastTimeStamp");
+		
+		Log.d("appointext","I am trying to get the value of the last time stamp : " + row.toString() );
+		
+		if(row.isEmpty()){
+			
+		Log.d("appointext", "I am in the empty clause of timeStamp");
+			
+			db.addRow("timeStampTable", "lastTimeStamp", timeStamp.toString());
+		}
+		
+		
+		else{
+			
+		Log.d("appointext", "I am in the same clause of timeStamp");
+		
+			if(Long.parseLong(row.get(1).toString()) == timeStamp){
+		Log.d("appointext", "I am duplicate");	
+				db.close();
+				return;
+			}
+			
+			else{
+				
+		Log.d("appointext", "I am updating the last acessed to " + timeStamp +"and the last message was : " + curText);
+		
+				if(timeStamp !=  0){
+					
+					db.updateRow("timeStampTable", "lastTimeStamp", timeStamp.toString());
+					row = db.getRowAsArray("timeStampTable", "lastTimeStamp");
+					Log.d("appointext", "updated timestamp " + row.toString());
+					
+				}
+				
+			}
+		}
 		
 
 		Map<String, Double> res;
@@ -151,6 +195,7 @@ Log.i("AppoinText Service", "Got origin as " + origin);
 					Log.d("NumberConversion", "New number as " + senderNumber);
 				}
 				people += senderNumber;
+			
 			}
 
 			else{               		
@@ -163,12 +208,13 @@ Log.i("AppoinText Service", "Got origin as " + origin);
 				}
 				people += recieverNumber;
 			}
-
+			
+		
 			Log.d("appointext", "the numbers determined are" + senderNumber + " " + recieverNumber);
 
 			String event = RecognizeEvent.getEvent(curText);
-			String when = null;
-			String timeExtracted = null, dateExtracted = null;
+			String when = "";
+			String timeExtracted = "", dateExtracted = "";
 
 			timeExtracted = RecognizeTime.findTime(curText);
 			dateExtracted = RecognizeDate.findDates(curText);
@@ -186,8 +232,19 @@ Log.i("AppoinText Service", "Got origin as " + origin);
 			db = new DatabaseManager(this);
 
 			db.open();
-			db.addRow("pendingReminders", senderNumber, recieverNumber, 0, people, event, when, location); 
-			Log.e("Appointext", "db.addRow  : " + " " + senderNumber+ " " +recieverNumber+ " " +0+ " " + people+ " " + event+ " " + when+ " " +location+ " "  );
+			
+			ArrayList<ArrayList<Object>> rows = new ArrayList<ArrayList<Object>>();
+			
+			rows = db.getMultiplePendingReminders("SELECT * FROM pendingReminders WHERE senderNumber=" + "'" + senderNumber + "'" + " and receiverNumber=" + "'" + recieverNumber+"'" + " and whenIsIt=" + "'" + when + "'");
+			
+			Log.d("Appointext", "I am trying to figure out duplicate rows : " + rows.toString());
+			
+			if(rows.isEmpty()){
+				
+				db.addRow("pendingReminders", senderNumber, recieverNumber, 0, people, event, when, location); 
+				Log.e("Appointext", "db.addRow  : " + " " + senderNumber+ " " +recieverNumber+ " " +0+ " " + people+ " " + event+ " " + when+ " " +location+ " "  );
+
+			}
 			db.close();
 			
 			return;
@@ -344,8 +401,18 @@ Log.i("AppoinText Service", "Got origin as " + origin);
 					// the event-sender-receiver string to retrieve the data from the set reminders table later
 
 					String trs = rows.get(0).get(5).toString() + "-" + senderNumber + "-" + recieverNumber;
+					
+					db.deleteRow("pendingReminders", (Integer)rows.get(0).get(0));
 
 					db.addRow("setReminders", eventId, isComplete, isGroup, trs, extractedInfo);
+					
+					rows = db.getMultipleSetReminders("SELECT * FROM setReminders");
+					
+					Log.d("Appointext", " The set reminder database is like this : " + rows.toString());
+					
+					rows = db.getMultiplePendingReminders("SELECT * FROM pendingReminders");
+					
+					Log.d("Appointext", " The pending reminder database is like this : " + rows.toString());
 
 					return;
 				}

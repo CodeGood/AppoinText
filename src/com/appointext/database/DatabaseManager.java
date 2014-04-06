@@ -52,7 +52,13 @@ public class DatabaseManager {
 						"lastAccessed" + " text" +
 						");";
 
-       
+       private static final String DATABASE_CREATE_TIMESTAMPTABLE = 
+    		   			"create table " +
+						"timeStampTable" +
+						" (" +
+						"lastTimeStamp" + " text primary key not null," +
+						"timeStamp" + " text" +
+						");";
        public DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
        public Calendar cal = Calendar.getInstance();
   		
@@ -79,6 +85,7 @@ public class DatabaseManager {
                db.execSQL(DATABASE_CREATE_SETTINGSTABLE);
                db.execSQL(DATABASE_CREATE_SETREMINDERS);
                db.execSQL(DATABASE_CREATE_PENDINGREMINDERS);
+               db.execSQL(DATABASE_CREATE_TIMESTAMPTABLE);
            }
 
            @Override
@@ -108,7 +115,7 @@ public class DatabaseManager {
        {
            DBHelper.close();
        }
-
+   
 
        //For set reminders table
        public void addRow(String dbName,int evntId, int isComp, int isGrp, String trs, String extractedData)
@@ -168,6 +175,8 @@ public class DatabaseManager {
 	    public void addRow(String dbName, String name, String value)
 	    {
 	   			// this is a key value pair holder used by android's SQLite functions
+	    	
+	    	if(dbName.equalsIgnoreCase("settingsTable")){
 	
 	   			ContentValues values = new ContentValues();
 	   			//values.put("settingId", settingId);
@@ -184,6 +193,24 @@ public class DatabaseManager {
 	   				Log.e("DB ERROR", e.toString());
 	   				e.printStackTrace();
 	   			}
+	    	}
+	    	
+	    	if(dbName.equalsIgnoreCase("timeStampTable")){
+	    		
+	    		ContentValues values = new ContentValues();
+	     	   	values.put("lastTimeStamp", name);
+	     	   	values.put("timeStamp", value);
+	     	   
+	     	   try{
+	 	   			db.insert(dbName, null, values);
+	 	   			Log.i("timeStampTable","I am in addrow");
+	 	   		}
+	 	   		catch(Exception e)
+	 	   		{
+	 	   			Log.e("DB ERROR", e.toString());
+	 	   			e.printStackTrace();
+	 	   		}
+	    	}
 	    }
        
 	    public int getId(String query){
@@ -402,6 +429,37 @@ public class DatabaseManager {
    				Log.i("setting","I am in getrow");
    			}   
 	   		
+
+	   		if(dbName.equalsIgnoreCase("timeStampTable")){
+   				cursor = db.query
+   				(
+   						dbName,
+   						new String[] { "lastTimeStamp", "timeStamp" },
+   						"lastTimeStamp" + "=" + "'" + name + "'",
+   						null, null, null, null, null
+   				);
+   				
+   				// move the pointer to position zero in the cursor.
+   				cursor.moveToFirst();
+   	 
+   				// if there is data available after the cursor's pointer, add
+   				// it to the ArrayList that will be returned by the method.
+   				if (!cursor.isAfterLast())
+   				{
+   					do
+   					{
+   						rowArray.add(cursor.getString(0));
+   						rowArray.add(cursor.getString(1));
+
+   					}
+   					while (cursor.moveToNext());
+   				}
+   	 
+   				// let java know that you are through with the cursor.
+   				cursor.close();
+   				
+   				Log.i("setting","I am in getrow");
+   			}  
 	   		return rowArray;
 	   	}
    	
@@ -433,6 +491,11 @@ public class DatabaseManager {
 	   		if(dbName.equalsIgnoreCase("settingsTable")){				
 				db.delete(dbName, "name" + "=" + "'" + name + "'", null);
 				Log.i("sharedPreferences","I am in deleterow");
+			}
+	   		
+	   		if(dbName.equalsIgnoreCase("timeStampTable")){				
+				db.delete(dbName, "lastTimeStamp" + "=" + "'" + name + "'", null);
+				Log.i("timeStampTable","I am in deleterow");
 			}
 	   		
 	   	}
@@ -492,6 +555,8 @@ public class DatabaseManager {
 		public void updateRow(String dbName, String name, String value)
 		{
 				// this is a key value pair holder used by android's SQLite functions
+			
+			if(dbName.equalsIgnoreCase("settingsTable")){
 				ContentValues values = new ContentValues();
 				values.put("value", value);
 		 
@@ -505,5 +570,23 @@ public class DatabaseManager {
 					Log.e("DB Error", e.toString());
 					e.printStackTrace();
 				}
+			}
+			
+
+			if(dbName.equalsIgnoreCase("timeStampTable")){
+				ContentValues values = new ContentValues();
+				values.put("timeStamp", value);
+		 
+				// ask the database object to update the database row of given rowID
+				try {
+						db.update(dbName, values, "lastTimeStamp" + "=" + "'" + name + "'", null);
+						Log.i("timeStampTable","I am in updaterow");
+					}
+				catch (Exception e)
+				{
+					Log.e("DB Error", e.toString());
+					e.printStackTrace();
+				}
+			}
 		}
 }
