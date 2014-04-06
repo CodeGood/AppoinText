@@ -3,9 +3,6 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
-    android:id="@+id/linearLayout"
-    android:key="linearLayout">
-
-
-
+    android:id="@+id/blockedNumberDisplay"
+    android:key="blockedNumberDisplay">
 </LinearLayout>

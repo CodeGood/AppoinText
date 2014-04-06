@@ -26,7 +26,7 @@ public class ManualBlockedNumber extends Activity {
 				db.open();
 				ArrayList<Object> row;
 				row = db.getRowAsArray("settingsTable", "BlockedNumbers");
-				if(row.isEmpty())	{
+				if(row.get(1).toString().length() == 0)	{
 					db.addRow("settingsTable", "BlockedNumbers", number);
 					Toast.makeText(getApplicationContext(), number + " added to excluded list!", Toast.LENGTH_SHORT).show();
 				}

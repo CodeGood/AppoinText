@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.util.Log;
 import android.view.View;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -21,7 +22,7 @@ public class BlockedNumberDisplay extends Activity {
 	protected void onCreate(Bundle savedInstanceState) { //Demo
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.blockednumberdisplay);
-		LinearLayout linear = (LinearLayout)findViewById(R.id.linearLayout);
+		LinearLayout linear = (LinearLayout)findViewById(R.id.blockedNumberDisplay);
 		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
 				LinearLayout.LayoutParams.MATCH_PARENT,
 				LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -30,13 +31,14 @@ public class BlockedNumberDisplay extends Activity {
 		ArrayList<Object> row;
 		row = db.getRowAsArray("settingsTable", "BlockedNumbers");
 		db.close();
-		if(row.isEmpty())	{
+		if(row.get(1).toString().length() == 0)	{
 			TextView text = new TextView(this);
 			text.setText("No Numbers Have Been Excluded!");
 		}
 		else	{
 			int i=0;
 			final String num = row.get(1).toString();
+			Log.i("Blocked Number String from DB",num);
 			final String[] numbers = num.split(",");
 			//.setText(numbers);
 			for(String number : numbers)	{
@@ -69,6 +71,7 @@ public class BlockedNumberDisplay extends Activity {
 								}
 								db.open();
 								db.updateRow("settingsTable", "BlockedNumbers", update);
+								Log.i("Blocked Number DB Updated with", update);
 								db.close();
 								Intent intent = getIntent();
 								finish();
