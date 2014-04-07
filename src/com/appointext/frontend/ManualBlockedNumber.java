@@ -6,6 +6,7 @@ import com.appointext.database.DatabaseManager;
 import com.bmsce.appointext.R;
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -17,7 +18,7 @@ public class ManualBlockedNumber extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.manualblockednumber);
-		EditText editText = (EditText) findViewById(R.id.ManualBlockNumber);
+		final EditText editText = (EditText) findViewById(R.id.ManualBlockNumber);
 		editText.setOnEditorActionListener(new OnEditorActionListener() {
 			@Override
 			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -26,15 +27,23 @@ public class ManualBlockedNumber extends Activity {
 				db.open();
 				ArrayList<Object> row;
 				row = db.getRowAsArray("settingsTable", "BlockedNumbers");
-				if(row.get(1).toString().length() == 0)	{
+				db.close();
+				if(row.isEmpty())	{
+					Log.i("Enter where I should't", ":(");
+					db.open();
 					db.addRow("settingsTable", "BlockedNumbers", number);
+					db.close();
 					Toast.makeText(getApplicationContext(), number + " added to excluded list!", Toast.LENGTH_SHORT).show();
+					editText.setText("");
 				}
 				else	{
 					String existingNumber = row.get(1).toString();
 					if(!existingNumber.contains(number))	{
+						db.open();
 						db.updateRow("settingsTable", "BlockedNumbers", existingNumber + "," + number);
+						db.close();
 						Toast.makeText(getApplicationContext(), number + " added to excluded list!", Toast.LENGTH_SHORT).show();
+						editText.setText("");
 					}
 					else
 						Toast.makeText(getApplicationContext(), number + " already exists in excluded list!", Toast.LENGTH_SHORT).show();

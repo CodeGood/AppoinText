@@ -32,8 +32,11 @@ public class BlockedNumberDisplay extends Activity {
 		row = db.getRowAsArray("settingsTable", "BlockedNumbers");
 		db.close();
 		if(row.get(1).toString().length() == 0)	{
-			TextView text = new TextView(this);
-			text.setText("No Numbers Have Been Excluded!");
+			AlertDialog alertDialog = new AlertDialog.Builder(
+					BlockedNumberDisplay.this).create();
+			 alertDialog.setTitle("Excluded Numbers");
+			 alertDialog.setMessage("No Excluded Numbers!");
+			 alertDialog.show();
 		}
 		else	{
 			int i=0;
@@ -52,11 +55,8 @@ public class BlockedNumberDisplay extends Activity {
 				btn1.setOnLongClickListener(new View.OnLongClickListener() {
 					public boolean onLongClick(View view) {
 						AlertDialog.Builder alertDialog = new AlertDialog.Builder(BlockedNumberDisplay.this);
-						// Setting Dialog Title
 						alertDialog.setTitle("Deletion");
-						// Setting Dialog Message
 						alertDialog.setMessage("Delete this number from Excluded List?");
-						// Setting Positive "Yes" Button
 						alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int which) {
 								Toast.makeText(getApplicationContext(), numbers[id_] + " has been deleted", Toast.LENGTH_SHORT).show();

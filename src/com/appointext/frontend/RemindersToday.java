@@ -9,9 +9,12 @@ import com.appointext.database.GetCalendarEvents;
 import com.bmsce.appointext.R;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.provider.CalendarContract.Events;
 import android.util.Log;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class RemindersToday extends Activity {
@@ -26,10 +29,30 @@ public class RemindersToday extends Activity {
 		String endTime = todayAsString + " 23:59";
 		Log.i("Start Time",startTime);
 		Log.i("End Time",endTime);
-		String event = ((GetCalendarEvents.getEvent(this, startTime, endTime, new String[] {Events.TITLE})).replaceAll(",","\t")).replaceAll("#","\n");
+		String[] event = ((GetCalendarEvents.getEvent(this, startTime, endTime, new String[] {Events.TITLE})).replaceAll(",","\t")).split("#");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.remindersdisplay);
-		TextView text = (TextView) findViewById(R.id.remindersDisplay);
-		text.setText(event);
+		LinearLayout text = (LinearLayout) findViewById(R.id.remindersDisplay);
+		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+				LinearLayout.LayoutParams.MATCH_PARENT,
+				LinearLayout.LayoutParams.WRAP_CONTENT);
+		int i = 0;
+		if(event.length == 1 && event[0].equals(""))	{
+			AlertDialog alertDialog = new AlertDialog.Builder(
+					RemindersToday.this).create();
+			alertDialog.setTitle("Reminders");
+			alertDialog.setMessage("No Reminders Set!");
+			alertDialog.show();
+		}
+		else	{
+			for(String events : event){
+				Button btn = new Button(this);
+				btn.setId(i);
+				btn.setClickable(false);
+				btn.setText(events);
+				text.addView(btn, params);
+			}
+		}
+
 	}
-	}
+}

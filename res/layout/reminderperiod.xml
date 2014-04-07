@@ -8,13 +8,15 @@
         android:layout_height="match_parent"
         android:orientation="vertical" >
 
-        <TextView
+        <Button
             android:id="@+id/remindersPeriodStart"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:key="remindersPeriodStart"
-            android:text="Begin At:" >
-        </TextView>
+            android:text="Begin At:"
+            android:clickable = "false"
+            style="?android:attr/borderlessButtonStyle">
+        </Button>
 
         <DatePicker
             android:id="@+id/startDateReminders"
@@ -29,13 +31,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         
-        <TextView
+        <Button
             android:id="@+id/remindersPeriodEnd"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:key="remindersPeriodEnd"
-            android:text="End At:" >
-        </TextView>
+            android:text="End At:"
+            android:clickable = "false"
+            style="?android:attr/borderlessButtonStyle" >
+        </Button>
 
         <DatePicker
             android:id="@+id/endDateReminders"
