@@ -102,7 +102,7 @@ public class SettingsDisplay extends PreferenceActivity {
 				db.open();
 				ArrayList<Object> row;
 				row = db.getRowAsArray("settingsTable", "BlockedNumbers");
-				if(row.isEmpty())	{
+				if(row.get(1).toString().length() == 0)	{
 					finalData = number + " - " + name;
 					db.addRow("settingsTable", "BlockedNumbers", finalData);
 					Toast.makeText(getApplicationContext(), number + " added to excluded list!", Toast.LENGTH_SHORT).show();
