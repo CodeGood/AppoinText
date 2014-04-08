@@ -3,7 +3,6 @@ package com.appointext.backend;
 //FIXME - Check if this actually works 
 
 import android.app.AlarmManager;
-import android.app.IntentService;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
@@ -39,12 +38,14 @@ public class MyUpdateService extends Service {
 		if (smsObserver == null) smsObserver = new SMSListenerSent(new Handler(), this);
 		this.getContentResolver().registerContentObserver(Uri.parse("content://sms/"), true, smsObserver);
 		scheduleNextUpdate();
+
 		
 		return START_STICKY;
 		
 	}
 	
 	public void onDestroy() {
+		this.getContentResolver().unregisterContentObserver(smsObserver);
 		Log.d("AppoinText", "Buh bye :( I was killed by this merciless phone :-/");
 		super.onDestroy();
 	}

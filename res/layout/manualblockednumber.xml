@@ -6,6 +6,5 @@
     android:layout_height="wrap_content"
     android:inputType = "phone"
     android:hint = "Enter the number here"
-    android:phoneNumber = "true"
     android:imeActionLabel = "Add" >
 </EditText>

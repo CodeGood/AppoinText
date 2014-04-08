@@ -4,13 +4,16 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
+import android.provider.CalendarContract.Events;
 import android.util.Log;
 
+@SuppressLint("SimpleDateFormat")
 public class GetCalendarEvents {
 	
 	/**
@@ -73,6 +76,56 @@ public class GetCalendarEvents {
 				  for (int i = 0; i < fields.length; i++)
 					  result += cursor.getString(i) + ",";
 				  result += "#";
+			   } while (cursor.moveToNext());
+			}	
+			
+	    } catch (AssertionError ex) {
+	            Log.e("AppoinText", "Assertion Error " + ex);
+	    } catch (Exception e) {
+	            Log.e("AppoinText", "Non assertion error " + e);
+	    }
+		
+		return result;
+	}
+	
+	/**
+	 * 
+	 * @param con - The context, from which this method is being called 
+	 * @param eventID - The eventID for which you want the details
+	 * @param fields - The specific details that you want. Please do not ask for what time the reminder is set. You don't need to know.
+	 * 					Reminder time is as +- event time, so it is automatically updated. Or you can manually update if the event type changes. Just don't ask me.
+	 * @return - A Comma separated values, in the same order that the fields were passed.
+	 * 			Returns the title followed by a comma if no field were passed.
+	 */
+	
+	public static String getEventByID (Context con, String eventID, String[] fields) {
+		
+		String result = "";
+		
+		if (fields == null) {
+			fields = new String[1];
+			fields[0] = "title";
+		}
+		
+		try {
+			
+	        Uri l_eventUri; 
+			
+			if (Build.VERSION.SDK_INT >= 8) {
+				l_eventUri = Uri.parse("content://com.android.calendar/events");
+			} else {
+				l_eventUri = Uri.parse("content://calendar/events");
+			}
+			ContentResolver contentResolver = con.getContentResolver();
+
+			Cursor cursor= contentResolver.query(l_eventUri, fields,
+				"(" + Events._ID + "=" + eventID + ")", null,
+	            "dtstart ASC");
+				
+			if (cursor.moveToFirst()) {
+			   do {
+				  for (int i = 0; i < fields.length; i++)
+					  result += cursor.getString(i) + ",";
 			   } while (cursor.moveToNext());
 			}	
 			

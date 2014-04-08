@@ -3,42 +3,47 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-    
+
     <LinearLayout
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:orientation="horizontal" >
-		    	<TextView
-			        android:id="@+id/NoNagSchedulerStart"
-			        android:key="NoNagSchedulerStart"
-			        android:layout_width="wrap_content"
-			        android:layout_height="wrap_content"
-			        android:text="Start Time"/>
-		    	
-				<TimePicker
-			        android:id="@+id/NoNagSchedulerStartTime"
-			        android:key = "NoNagSchedulerStartTime"
-			        android:layout_width="wrap_content"
-			        android:layout_height="wrap_content"/>
-			</LinearLayout>
-			<LinearLayout
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:orientation="horizontal" >
-		    	<TextView
-			        android:id="@+id/NoNagSchedulerEnd"
-			        android:key="NoNagSchedulerEnd"
-			        android:layout_width="wrap_content"
-			        android:layout_height="wrap_content"
-			        android:text="End Time"/>
-		    	
-				<TimePicker
-			        android:id="@+id/NoNagSchedulerEndTime"
-			        android:key = "NoNagSchedulerEndTime"
-			        android:layout_width="wrap_content"
-			        android:layout_height="wrap_content"/>
-			</LinearLayout>
-    
-    
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/NoNagSchedulerStart"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:key="NoNagSchedulerStart"
+            android:text="Start Time" />
+
+        <TimePicker
+            android:id="@+id/NoNagSchedulerStartTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:key="NoNagSchedulerStartTime" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/NoNagSchedulerEnd"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:key="NoNagSchedulerEnd"
+            android:text="End Time" />
+
+        <TimePicker
+            android:id="@+id/NoNagSchedulerEndTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:key="NoNagSchedulerEndTime" />
+    </LinearLayout>
 
 </LinearLayout>

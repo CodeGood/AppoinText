@@ -7,15 +7,18 @@ import java.util.Date;
 import com.appointext.database.GetCalendarEvents;
 import com.bmsce.appointext.R;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.provider.CalendarContract.Events;
 import android.util.Log;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class RemindersHour extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		String event;
+		String[] event;
 		Calendar c = Calendar.getInstance();
 		Date today = c.getTime();
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -37,10 +40,26 @@ public class RemindersHour extends Activity {
 				endTime = dateFormat.format(tomorrow) + " 00:" + endMinute;
 				startTime = todayAsString + " " + Integer.toString(startHour) + ":" + Integer.toString(startMinute);
 			}
-			Log.i("End Time",endTime);
-			Log.i("Start Time",startTime);
-			event = ((GetCalendarEvents.getEvent(this, startTime, endTime, new String[] {Events.TITLE})).replaceAll(",","\t")).replaceAll("#","\n");
-			Log.i("Called Event", event);
+			event = ((GetCalendarEvents.getEvent(this, startTime, endTime, new String[] {Events.TITLE})).replaceAll(",","\t")).split("#");
+			LinearLayout text = (LinearLayout) findViewById(R.id.remindersDisplay);
+			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+					LinearLayout.LayoutParams.MATCH_PARENT,
+					LinearLayout.LayoutParams.WRAP_CONTENT);
+			if(event.length == 1 && event[0].equals(""))	{
+				AlertDialog alertDialog = new AlertDialog.Builder(
+						RemindersHour.this).create();
+				alertDialog.setTitle("Reminders");
+				alertDialog.setMessage("No Reminders Set!");
+				alertDialog.show();
+			}
+			else	{
+				for(String events : event){
+					Button btn = new Button(this);
+					btn.setClickable(false);
+					btn.setText(events);
+					text.addView(btn, params);
+				}
+			}
 		}
 		else	{
 				String hourStart, minuteStart, hourEnd;
@@ -58,16 +77,31 @@ public class RemindersHour extends Activity {
 					hourEnd = Integer.toString(startHour + 1);
 				startTime = todayAsString + " " + hourStart + ":" + minuteStart;
 				endTime = todayAsString + " " + hourEnd + ":" + minuteStart;
-				
-			Log.i("End Time",endTime);
-			Log.i("Start Time",startTime);
-			event = ((GetCalendarEvents.getEvent(this, startTime, endTime, new String[] {Events.TITLE})).replaceAll(",","\t")).replaceAll("#","\n");
-			Log.i("Called Event", event);
+			event = ((GetCalendarEvents.getEvent(this, startTime, endTime, new String[] {Events.TITLE})).replaceAll(",","\t")).split("#");
 		}
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.remindersdisplay);
-		TextView text = (TextView) findViewById(R.id.remindersDisplay);
-		text.setText(event);
+		LinearLayout text = (LinearLayout) findViewById(R.id.remindersDisplay);
+		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+				LinearLayout.LayoutParams.MATCH_PARENT,
+				LinearLayout.LayoutParams.WRAP_CONTENT);
+		int i = 0;
+		if(event.length == 1 && event[0].equals(""))	{
+			AlertDialog alertDialog = new AlertDialog.Builder(
+					RemindersHour.this).create();
+			alertDialog.setTitle("Reminders");
+			alertDialog.setMessage("No Reminders Set!");
+			alertDialog.show();
+		}
+		else	{
+			for(String events : event){
+				Button btn = new Button(this);
+				btn.setId(i);
+				btn.setClickable(false);
+				btn.setText(events);
+				text.addView(btn, params);
+			}
+		}
 	}
 
 }
