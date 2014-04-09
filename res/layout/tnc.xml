@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/displayTC"
+    android:gravity="center"
+    android:textSize="18sp"
+    android:textColor="#ffffff"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" 
-    android:text="AppoinText is not to be held responsible if you lose your job or breakup with your bf/gf. :P">
-    
-
+    android:layout_height="match_parent"
+	android:background="@drawable/gnu" 
+	android:scrollbars="vertical"
+>   
 </TextView>

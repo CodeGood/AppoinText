@@ -45,7 +45,7 @@ public class ReminderPeriodPicker extends Activity {
 		int endingDate = endDate.getDayOfMonth();
 		int endingMonth = endDate.getMonth() + 1;
 		int endingYear = endDate.getYear();
-		String hourStart,minuteStart,hourEnd,minuteEnd,dateStarting,monthStarting, yearStarting,dateEnding, monthEnding, yearEnding;
+		String hourStart,minuteStart,hourEnd,minuteEnd,dateStarting,monthStarting, dateEnding, monthEnding;
 		String starting, ending;
 		if(startHour < 10)
 			hourStart = "0" + startHour;

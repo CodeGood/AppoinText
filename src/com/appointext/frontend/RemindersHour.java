@@ -4,8 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import com.appointext.database.GetCalendarEvents;
-import com.bmsce.appointext.R;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.os.Bundle;
@@ -13,7 +12,9 @@ import android.provider.CalendarContract.Events;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TextView;
+
+import com.appointext.database.GetCalendarEvents;
+import com.bmsce.appointext.R;
 
 public class RemindersHour extends Activity {
 	@Override
