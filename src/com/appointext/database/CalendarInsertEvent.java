@@ -24,6 +24,7 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.CalendarContract;
@@ -105,6 +106,43 @@ Log.d("AppoinText", "Got Timezone as " + TimeZone.getDefault().toString());
 		return -1;
 		
 	   }
+	 
+	   public static long addReminderViaCalendarApp(Context cont, int date, int month, int year, int hour, int minute, int min_before_event, String title, String location, String desc, String attendees) { 
+		   
+		   /* I don't see any easy way of adding the reminder time and attendees */
+		   
+		   Intent intent = new Intent(Intent.ACTION_INSERT);
+		   intent.setData(Events.CONTENT_URI); 
+
+		   if (date >= 0 && hour >= 0) {
+			    Calendar cal = new GregorianCalendar(year, month-1, date);
+				cal.setTimeZone(TimeZone.getDefault());
+				cal.set(Calendar.HOUR, hour);
+				cal.set(Calendar.MINUTE, minute);
+				cal.set(Calendar.SECOND, 0);
+				cal.set(Calendar.MILLISECOND, 0);
+				long start = cal.getTimeInMillis();
+				intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, start); 
+				intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, start);
+		   }
+		   
+		   //if (min_before_event > 0 )
+			 //  intent.putExtra
+			   
+		   if (title != null && !title.equals(""))
+			   intent.putExtra(Events.TITLE, title);
+		   
+		   if (location != null && !location.equals(""))
+			   intent.putExtra(Events.EVENT_LOCATION, location);
+		   
+		   if (desc != null && !desc.equals(""))
+			   intent.putExtra(Events.DESCRIPTION, desc);
+		   
+		   intent.putExtra(Events.ALL_DAY, false); 
+		   cont.startActivity(intent);
+		   
+		   return -2; //because we have no control on what the user chose to do with this! 
+	   }
 		
 		/**
 		 * Adds a Reminder to the calendar
@@ -116,18 +154,35 @@ Log.d("AppoinText", "Got Timezone as " + TimeZone.getDefault().toString());
 		 * @param hour - Mandatory
 		 * @param minute - Mandatory. I assume you do not want milisecond precesion? However that can be provided too!
 		 * @param min_before_event - Mandatory. Time before the event that the reminder must be set. Has to be given in minutes
-		 * @param title - Mandatory. Title of the reminder. What you are shown when you open a calendar page
+		 * @param title - Optional. If null or empty string, calendar intent shall be raised.
 		 * @param location - Optional. Can be null
 		 * @param desc - Optional. Can be null. Description of the event. What you are shown when you tap an event
 		 * @param attendees - Optional. Comma seperated list of attendees. Can be null
-		 * @return eventID. You may want to store it somewhere or just ignore it. However a value of -1 means reminder was not set
+		 * @return eventID. You may want to store it somewhere or just ignore it. 
+		 * 						However a value of -1 means reminder was not set, while -2 means it was sent as an Intent
 		 */
 	
 	   public static long addReminder(Context cont, int date, int month, int year, int hour, int minute, int min_before_event, String title, String location, String desc, String attendees) { 
-Log.i("AppoinTextReminder", "Came to add reminders at least");		   
+
 		con = cont; //Set it for use by the whole class
 		month = month-1;
-		   
+		
+		//Get ahold of prompt settings and act accordingly
+		final DatabaseManager dbPrompt = new DatabaseManager(cont);
+		String prompt;
+		dbPrompt.open();
+		ArrayList<Object> row;
+		row = dbPrompt.getRowAsArray("settingsTable", "PromptControl");
+		dbPrompt.close();
+		if(row == null || row.isEmpty())
+			prompt = "ambiguity";
+		else
+			prompt = (String)row.get(1);
+		
+		if (prompt.equalsIgnoreCase("always")) //Not my head ache at ALL. Let's just ignore this :D
+			return addReminderViaCalendarApp(cont, date, month, year, hour, minute, min_before_event, title, location, desc, attendees);
+
+		
 		try {
 			
 			long calId = getCalendarId();
@@ -138,6 +193,15 @@ Log.i("AppoinTextReminder", "Came to add reminders at least");
 			
 Log.d("AppointextReminder", "Obtained Calendar ID as " + calId);
 			
+
+			/* Now that we know which calendar we are talking about, let's go ahead and check whether any of the required fields are missing. If they are, we go via the intent path. */
+			if (date < 1 || hour < 1) { 
+				if (!prompt.equalsIgnoreCase("never"))//If date and/or time are unknown, and prompt is not for never
+					return addReminderViaCalendarApp(cont, date, month, year, hour, minute, min_before_event, title, location, desc, attendees);
+				else
+					return -1;
+			}
+
 			// This is to create the time in milliseconds as required by the put(Events.DSTART) 
 
 			Calendar cal = new GregorianCalendar(year, month, date);
@@ -155,7 +219,6 @@ Log.d("AppointextReminder", "Obtained Calendar ID as " + calId);
 			final DatabaseManager db = new DatabaseManager(cont);
 			long timeInMins;
 			db.open();
-			ArrayList<Object> row;
 			row = db.getRowAsArray("settingsTable", "MinimumTime");
 			db.close();
 			if(row == null || row.isEmpty())
@@ -174,6 +237,13 @@ Log.d("AppointextReminder", "Obtained Calendar ID as " + calId);
 			/* Now, we move on if a reminder is required. */
 			
 			 //Now we start creating the entry to be sent to the calendar database 
+			
+			if (title == null || title.equals("") || min_before_event < 0) {
+					if (!prompt.equalsIgnoreCase("never")) //If title is unknown or you have ambiguity about the time of reminder
+						return addReminderViaCalendarApp(cont, date, month, year, hour, minute, min_before_event, title, location, desc, attendees);
+					else
+						return -1;
+			}
 			
 			ContentValues values = new ContentValues();
 			
