@@ -6,6 +6,7 @@ import com.appointext.database.DatabaseManager;
 import com.bmsce.appointext.R;
 import android.widget.LinearLayout;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.util.Log;
 import android.view.View;
@@ -30,7 +31,7 @@ public class BlockedNumberDisplay extends Activity {
 		ArrayList<Object> row;
 		row = db.getRowAsArray("settingsTable", "BlockedNumbers");
 		db.close();
-		if(row.get(1).toString().length() == 0)	{
+		if(row.get(1) == null)	{
 			AlertDialog alertDialog = new AlertDialog.Builder(
 					BlockedNumberDisplay.this).create();
 			 alertDialog.setTitle("Excluded Numbers");

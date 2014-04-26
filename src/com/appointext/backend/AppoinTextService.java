@@ -1,6 +1,9 @@
 package com.appointext.backend;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Map;
+import java.util.TimeZone;
 
 import com.appointext.database.DatabaseManager;
 import com.appointext.naivebayes.Classifier;
@@ -152,18 +155,18 @@ public class AppoinTextService extends IntentService {
 			String people = "";
 			String location = "";
 
-			/*try{
+			try{
 				taggedCurText = NERecognizer.NERTagger(this, curText);
 			}
 			catch(Exception e){	
 				Log.e("NER Tagger", "Died while tagging :" + e);
 			}
 			
-			Log.d("Appointext", "The tagged text is :" + taggedCurText);*/
+			Log.d("Appointext", "The tagged text is :" + taggedCurText);
 
 			//From the tagged text find out the list of persons and the place if any mentioned. Organizations are also classified as location here
 
-			/*if(taggedCurText != null) {
+			if(taggedCurText != null) {
 				
 				taggedWords = taggedCurText.split(" ");
 
@@ -180,7 +183,7 @@ public class AppoinTextService extends IntentService {
 						location += word.split("/")[0] + ",";
 					}
 				}
-			}*/
+			}
 
 			String senderNumber =null, recieverNumber = null;
 
@@ -233,7 +236,41 @@ public class AppoinTextService extends IntentService {
 
 			db.open();
 			
+			boolean val = FindPostponement.findPostponement(curText);
+			
 			ArrayList<ArrayList<Object>> rows = new ArrayList<ArrayList<Object>>();
+			
+			if(val){
+				
+				rows = db.getMultipleSetReminders("SELECT * FROM setReminders WHERE trs="+ "'" + event + "-" + senderNumber + "-" + recieverNumber+ "'");
+				
+				Log.d("Postpone: Appointext", "the rows fetched form the setReminders db are: " + rows.toString());
+				
+				String[] updateValues = {};
+				
+				if(!timeExtracted.equalsIgnoreCase("")){
+					
+					String[] timeExtract;
+
+					timeExtract = timeExtracted.split(":");
+
+					int hour = Integer.parseInt(timeExtract[0]);
+					int minute = Integer.parseInt(timeExtract[1]);
+					
+				}
+				
+				if(!timeExtracted.equalsIgnoreCase("")){
+					
+					String[] dateExtract;
+
+					dateExtract = dateExtracted.split(":");
+
+					int dd = Integer.parseInt(dateExtract[0]);
+					int mm = Integer.parseInt(dateExtract[1]);
+					int yy = Integer.parseInt(dateExtract[2]);
+					
+				}
+			}
 			
 			rows = db.getMultiplePendingReminders("SELECT * FROM pendingReminders WHERE senderNumber=" + "'" + senderNumber + "'" + " and receiverNumber=" + "'" + recieverNumber+"'" + " and whenIsIt=" + "'" + when + "'");
 			
