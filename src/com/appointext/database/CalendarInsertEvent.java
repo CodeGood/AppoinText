@@ -11,10 +11,11 @@ package com.appointext.database;
  * TODO :
  * 		1. Add multiple attendees rather than a CSV
  * 		2. Check whether delete actually deletes the reminder or not.
- * 		3. Check whether updating the start time actually updates the reminder time.
+ * 		3. Check whether updating the start time actually updates the reminder time. - DONE.
  * 	I am 99.99% sure of the last two, but then who knows! Always better to check or at least document unchecked  
  */
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
@@ -30,6 +31,7 @@ import android.provider.CalendarContract.Attendees;
 import android.provider.CalendarContract.Calendars;
 import android.provider.CalendarContract.Events;
 import android.provider.CalendarContract.Reminders;
+import android.text.format.DateUtils;
 import android.util.Log;
 
 public class CalendarInsertEvent {
@@ -118,11 +120,11 @@ Log.d("AppoinText", "Got Timezone as " + TimeZone.getDefault().toString());
 		 * @param location - Optional. Can be null
 		 * @param desc - Optional. Can be null. Description of the event. What you are shown when you tap an event
 		 * @param attendees - Optional. Comma seperated list of attendees. Can be null
-		 * @return eventID. You may want to store it somewhere or just ignore it.
+		 * @return eventID. You may want to store it somewhere or just ignore it. However a value of -1 means reminder was not set
 		 */
 	
 	   public static long addReminder(Context cont, int date, int month, int year, int hour, int minute, int min_before_event, String title, String location, String desc, String attendees) { 
-		   
+Log.i("AppoinTextReminder", "Came to add reminders at least");		   
 		con = cont; //Set it for use by the whole class
 		month = month-1;
 		   
@@ -134,7 +136,7 @@ Log.d("AppoinText", "Got Timezone as " + TimeZone.getDefault().toString());
 				calId = getCalendarId();
 			}
 			
-Log.d("Appointext Calendar", "Obtained Calendar ID as " + calId);
+Log.d("AppointextReminder", "Obtained Calendar ID as " + calId);
 			
 			// This is to create the time in milliseconds as required by the put(Events.DSTART) 
 
@@ -145,6 +147,31 @@ Log.d("Appointext Calendar", "Obtained Calendar ID as " + calId);
 			cal.set(Calendar.SECOND, 0);
 			cal.set(Calendar.MILLISECOND, 0);
 			long start = cal.getTimeInMillis();
+			
+			/*Now that I have a time, first lets check if a reminder will at all be required. */
+			
+			//First let's figure out what is the mininum time period for which a reminder is required
+			
+			final DatabaseManager db = new DatabaseManager(cont);
+			long timeInMins;
+			db.open();
+			ArrayList<Object> row;
+			row = db.getRowAsArray("settingsTable", "MinimumTime");
+			db.close();
+			if(row == null || row.isEmpty())
+				timeInMins = 60;
+			else
+				timeInMins = (Integer)row.get(1);			
+			
+			Log.i("AppoinTextReminder", "Okay, time in Mins is " + timeInMins);
+			
+			long curTime = System.currentTimeMillis(); //get current time
+			if (start - curTime < timeInMins* DateUtils.MINUTE_IN_MILLIS) { //if requisite time is not there
+				Log.i("AppoinTextReminder", "Too soon");
+				return -1; //Reminder not set. But not an error.
+			}
+			
+			/* Now, we move on if a reminder is required. */
 			
 			 //Now we start creating the entry to be sent to the calendar database 
 			
@@ -157,18 +184,18 @@ Log.d("Appointext Calendar", "Obtained Calendar ID as " + calId);
 			values.put(Events.DTSTART, start); 
 			values.put(Events.DTEND, start);
 
-Log.d("AppoinText Calendar", "Got the basic values into it.");			
+Log.d("AppoinTextReminder", "Got the basic values into it.");			
 
 			if ( title != null && !title.equalsIgnoreCase(""))			values.put(Events.TITLE, title);
 			else						values.put(Events.TITLE, "Default Event"); //I assume no one will be dumb enough to send title as null? 
-Log.d("AppoinText", "Inserted title");
+Log.d("AppoinTextReminder", "Inserted title");
 			// Now let us set the optional values 
 			if ( location !=null && !location.equalsIgnoreCase("") )		values.put(Events.EVENT_LOCATION, location);
 			Log.d("AppoinText", "Inserted location");
 			if ( desc != null && !desc.equalsIgnoreCase(""))		{ Log.d("AppoinText description", "Inserting non null" + desc);	values.put(Events.DESCRIPTION, desc); }
 			else  { 	Log.d("AppoinText", "Inserted null description"); }
 			
-Log.d("AppoinText", "Got the optional values as well");			
+Log.d("AppoinTextReminder", "Got the optional values as well");			
 			// Some common sense values, which do not require being parameterized 
 			values.put(Events.SELF_ATTENDEE_STATUS, Events.STATUS_CONFIRMED);
 			Log.d("AppoinText", "Inserted attendee status");
@@ -179,15 +206,15 @@ Log.d("AppoinText", "Got the optional values as well");
 			values.put(Events.GUESTS_CAN_MODIFY, 1);
 			Log.d("AppoinText", "Inserted guests can modify");
 			values.put(Events.AVAILABILITY, Events.AVAILABILITY_BUSY);
-Log.d("AppoinText Calendar", "Attempting to add events to calendar");						
+Log.d("AppoinTextReminder", "Attempting to add events to calendar");						
 			// Now add to calendar 
 			Uri uri = 
 			     con.getContentResolver().
 			            insert(Events.CONTENT_URI, values);
-Log.d("Inserted event", "AppoinTextCalendar");
+Log.d("AppoinTextReminder", "AppoinTextCalendar");
 			long eventId =  Long.valueOf(uri.getLastPathSegment());
 			
-Log.d("Appointext Calendar", "Event" + title + " added successfully");
+Log.d("AppoinTextReminder", "Event" + title + " added successfully");
 
 			// Now set a reminder 
 
@@ -217,8 +244,8 @@ Log.d("Appointext Calendar", "Reminder" + title + "Added Successfully");
 			
 		}
 		catch(Exception e) {
-			Log.e("Appointext Calendar", "Error in Reminder " + title + " Setting : " + e.getMessage() + "\nCause may be : " + e.getCause());
-			Log.d("AppoinText Calendar", "Values are " + date+" "+ month+" "+ year+" "+hour+" "+minute+" "+min_before_event+" "+title+" "+ location+" "+ desc +" "+attendees);
+			Log.e("AppointextReminder", "Error in Reminder " + title + " Setting : " + e.getMessage() + "\nCause may be : " + e.getCause());
+			Log.d("AppoinTextReminder", "Values are " + date+" "+ month+" "+ year+" "+hour+" "+minute+" "+min_before_event+" "+title+" "+ location+" "+ desc +" "+attendees);
 		}
 		
 		return -1;

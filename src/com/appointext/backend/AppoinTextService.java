@@ -219,7 +219,7 @@ public class AppoinTextService extends IntentService {
 			String when = "";
 			String timeExtracted = "", dateExtracted = "";
 
-			timeExtracted = RecognizeTime.findTime(curText);
+			timeExtracted = RecognizeTime.findTime(this, curText);
 			dateExtracted = RecognizeDate.findDates(curText);
 			
 			Log.d("appointext", "the date and day : " + timeExtracted + " " + dateExtracted );

@@ -6,7 +6,6 @@ import com.appointext.database.DatabaseManager;
 import com.bmsce.appointext.R;
 import android.widget.LinearLayout;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.util.Log;
 import android.view.View;

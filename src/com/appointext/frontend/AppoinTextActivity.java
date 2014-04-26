@@ -26,11 +26,9 @@ public class AppoinTextActivity extends Activity  {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-Log.i("AT MainActivity", "CREATED. Starting UpdateService");
-
 		Intent i = new Intent(this, com.appointext.backend.MyUpdateService.class);
 		startService(i);
-		
+Log.i("AppoinTextReminder", "Started Service");
 Log.i("AT MainActivity", "Registering Content Resolver.");
 		
 		final Uri SMS_STATUS_URI = Uri.parse("content://sms");
