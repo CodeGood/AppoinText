@@ -42,17 +42,17 @@ public class SettingsDisplay extends PreferenceActivity {
 		promptControl.setOnPreferenceChangeListener(new OnPreferenceChangeListener(){    
 		    @Override
 		    public boolean onPreferenceChange(Preference preference, Object newValue) {
-		        ArrayList<Object> row;
+		    	Log.i("PromptControl", "Entering into the listener");
+		    	ArrayList<Object> row;
 		        DatabaseManager db = new DatabaseManager(SettingsDisplay.this);
 		        db.open();
 		        row = db.getRowAsArray("settingsTable", "PromptControl");
 		        if(row.isEmpty())
 		        	db.addRow("settingsTable", "PromptControl", newValue.toString());
 		        else
-		        	db.updateRow("settingsTable", "PromptControl", newValue.toString());
-		        db.close();
-		        
+		        	db.updateRow("settingsTable", "PromptControl", newValue.toString());		        
 		        Log.i("Prompt Control", db.getRowAsArray("settingsTable", "PromptControl").get(1).toString());
+		        db.close();
 		        return false;
 		    }
 		});
@@ -118,11 +118,11 @@ public class SettingsDisplay extends PreferenceActivity {
 				cursor.moveToFirst();
 				String number = (cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER))).replaceAll("[^0-9]", "");
 				String name = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME_PRIMARY));
-				Log.i("BlockedName",name);
 				DatabaseManager db = new DatabaseManager(SettingsDisplay.this);
 				db.open();
 				ArrayList<Object> row;
 				row = db.getRowAsArray("settingsTable", "BlockedNumbers");
+				
 				if(row.isEmpty())	{
 					if(number.length() < 11)
 						number = "91" + number;
@@ -130,7 +130,7 @@ public class SettingsDisplay extends PreferenceActivity {
 					db.addRow("settingsTable", "BlockedNumbers", finalData);
 					Toast.makeText(getApplicationContext(), number + " added to excluded list!", Toast.LENGTH_SHORT).show();
 				}
-				if(row.get(1) == null)	{
+				else if(row.get(1).toString().equals("NoNumbers"))	{
 					if(number.length() < 11)
 						number = "91" + number;
 					finalData = number + " - " + name;
