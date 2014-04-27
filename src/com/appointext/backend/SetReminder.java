@@ -80,7 +80,7 @@ public class SetReminder {
 		String when = "";
 		String timeExtracted = "", dateExtracted = "";
 
-		timeExtracted = RecognizeTime.findTime(curText);
+		timeExtracted = RecognizeTime.findTime(con, curText);
 		dateExtracted = RecognizeDate.findDates(curText);
 		
 		Log.d("appointext", "the date and day : " + timeExtracted + " " + dateExtracted );

@@ -1,23 +1,112 @@
 package com.appointext.regex;
 
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import android.content.Context;
+import android.util.Log;
+
+import com.appointext.database.DatabaseManager;
 
 
 public class RecognizeTime {
 	
 	protected static String sms;
 		
-	public static String findTime(String msg) {
+	public static String findTime(Context con, String msg) {
 		
 		sms = msg.toLowerCase(Locale.US).trim().replaceAll("(\\w+)\\p{Punct}(\\s|$)", "$1$2");
 		String foundTime = "";
 		foundTime += findOClock();
 		foundTime += getTimeByRegex();
+		foundTime += getMEN(con); //get Morning, Evening, Night - kindly ignore the unintended puny function name
 		
 		return foundTime;
 		
+	}
+
+	private static String getMEN(Context con) {
+		
+		String foundTime = "";		
+		final DatabaseManager db = new DatabaseManager(con);
+Log.w("AppoinTextReminder", "In GetMEN");		
+		/* Get the values or set it to defaults ...
+		 * May save time if I get a value only if the string includes the world morning!!
+		 * Chose to do it this way, because multiple occurences of afternoon or morning is unlikely IMO 
+		 */
+		
+		db.open();
+		ArrayList<Object> row;
+		
+		String[] words = sms.toLowerCase().split(" ");
+		
+		for (int i = 0; i < words.length; i++) {
+		
+			if (words[i].equals("morning")) {
+			
+				row = db.getRowAsArray("settingsTable", "DayTimeMorning");
+				if(row == null || row.isEmpty())
+					foundTime += "09:00";
+				else {
+					String[] fromDB = ((String) row.get(1)).split(":");
+					if (fromDB[0].length() < 2) fromDB[0] = "0" + fromDB[0];
+					if (fromDB[1].length() < 2) fromDB[1] = "0" + fromDB[1];
+					foundTime += fromDB[0] + ":" + fromDB[1];
+				}
+				foundTime += ",";
+			
+			}
+			if (words[i].equals("afternoon")) {
+				
+				row = db.getRowAsArray("settingsTable", "DayTimeAfternoon");
+				if(row == null || row.isEmpty())
+					foundTime += "13:00";
+				else {
+					String[] fromDB = ((String) row.get(1)).split(":");
+					if (fromDB[0].length() < 2) fromDB[0] = "0" + fromDB[0];
+					if (fromDB[1].length() < 2) fromDB[1] = "0" + fromDB[1];
+					foundTime += fromDB[0] + ":" + fromDB[1];
+				}
+				foundTime += ",";			
+			
+			}
+			if (words[i].equals("evening")) {
+				
+				row = db.getRowAsArray("settingsTable", "DayTimeEvening");
+				if(row == null || row.isEmpty())
+					foundTime += "18:00";
+				else {
+					String[] fromDB = ((String) row.get(1)).split(":");
+					if (fromDB[0].length() < 2) fromDB[0] = "0" + fromDB[0];
+					if (fromDB[1].length() < 2) fromDB[1] = "0" + fromDB[1];
+					foundTime += fromDB[0] + ":" + fromDB[1];
+				}
+				foundTime += ",";			
+			
+			}
+			if (words[i].equals("night") || words[i].equals("tonight")) {
+				
+				row = db.getRowAsArray("settingsTable", "DayTimeNight");
+				if(row == null || row.isEmpty())
+					foundTime += "21:00";
+				else {
+					String[] fromDB = ((String) row.get(1)).split(":");
+					if (fromDB[0].length() < 2) fromDB[0] = "0" + fromDB[0];
+					if (fromDB[1].length() < 2) fromDB[1] = "0" + fromDB[1];
+					foundTime += fromDB[0] + ":" + fromDB[1];
+				}
+				foundTime += ",";		
+			
+			}
+			if (words[i].equals("noon")) {
+				foundTime += "12:00";						
+			}
+			
+		}
+		db.close();
+		return foundTime;
 	}
 	
 	/* Checks for o'clock and half past */

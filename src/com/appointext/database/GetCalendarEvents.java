@@ -1,5 +1,6 @@
 package com.appointext.database;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -124,8 +125,17 @@ Log.i("AppoinTextReminder", "Got eventID as " + eventID);
 Log.i("AppoinTextReminder", "Got cursor as null? " + (cursor == null));				
 			if (cursor.moveToFirst()) {
 			   do {
-				  for (int i = 0; i < fields.length; i++)
-					  result += cursor.getString(i) + ",";
+				  for (int i = 0; i < fields.length; i++) {
+					  if (fields.equals(Events.DTSTART) || fields.equals(Events.DTEND)) {
+						 DateFormat formatter = new SimpleDateFormat("dd/MM/YYYY hh:mm");
+   					     // Create a calendar object that will convert the date and time value in milliseconds to date. 
+						 Calendar calendar = Calendar.getInstance();
+						 calendar.setTimeInMillis(cursor.getLong(i));
+						 result += formatter.format(calendar.getTime());
+					  }
+					  else
+						  result += cursor.getString(i) + ",";
+				  }
 			   } while (cursor.moveToNext());
 			}	
 			

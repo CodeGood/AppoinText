@@ -144,6 +144,25 @@ public class AppoinTextService extends IntentService {
 			return;
 		}
 		
+<<<<<<< HEAD
+			Log.d("appointext", "the numbers determined are" + senderNumber + " " + recieverNumber);
+
+			String event = RecognizeEvent.getEvent(curText);
+			String when = "";
+			String timeExtracted = "", dateExtracted = "";
+
+			timeExtracted = RecognizeTime.findTime(this, curText);
+			dateExtracted = RecognizeDate.findDates(curText);
+			
+			Log.d("appointext", "the date and day : " + timeExtracted + " " + dateExtracted );
+
+			//After extracting date and time, get it in the format HH:MM,dd/mm/yyyy and store it in the pending reminders list
+			
+			
+			if(!timeExtracted.equalsIgnoreCase("") && !dateExtracted.equalsIgnoreCase("")){
+			
+				when = timeExtracted.split("[/,]")[0] + "," + dateExtracted.split("[/,]")[0]+"/"+dateExtracted.split("[/,]")[1]+"/"+dateExtracted.split("[/,]")[2];
+=======
 		String senderNumber =null, recieverNumber = null;
 		
 		if(origin == INBOX){                		
@@ -153,6 +172,7 @@ public class AppoinTextService extends IntentService {
 				Log.d("NumberConversion", "Original sender number " + senderNumber);
 				senderNumber = "91" + senderNumber;
 				Log.d("NumberConversion", "New number as " + senderNumber);
+>>>>>>> e0ad6e0a3e1e95b9aceabc38e905aadc84a6bc4e
 			}
 			
 			db.open();

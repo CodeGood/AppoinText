@@ -7,9 +7,12 @@ import java.util.Date;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CalendarContract.Events;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
@@ -41,11 +44,12 @@ public class RemindersHour extends Activity {
 				endTime = dateFormat.format(tomorrow) + " 00:" + endMinute;
 				startTime = todayAsString + " " + Integer.toString(startHour) + ":" + Integer.toString(startMinute);
 			}
-			event = ((GetCalendarEvents.getEvent(this, startTime, endTime, new String[] {Events.TITLE})).replaceAll(",","\t")).split("#");
+			event = GetCalendarEvents.getEvent(this, startTime, endTime, new String[] {Events._ID, Events.TITLE}).split("#");
 			LinearLayout text = (LinearLayout) findViewById(R.id.remindersDisplay);
 			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
 					LinearLayout.LayoutParams.MATCH_PARENT,
 					LinearLayout.LayoutParams.WRAP_CONTENT);
+
 			if(event.length == 1 && event[0].equals(""))	{
 				AlertDialog alertDialog = new AlertDialog.Builder(
 						RemindersHour.this).create();
@@ -56,8 +60,31 @@ public class RemindersHour extends Activity {
 			else	{
 				for(String events : event){
 					Button btn = new Button(this);
-					btn.setClickable(false);
-					btn.setText(events);
+					
+					/*EDIT STARTS */
+					btn.setId(0);
+					final String[] parts = events.split(",");
+					
+					btn.setEnabled(true);
+					btn.setClickable(true); //make it clickable.
+					btn.setOnClickListener(new View.OnClickListener() { //Set what to do on touch!
+						@Override
+						public void onClick(View v) { //Raise an Intent for the Calendar to handle.
+							
+							Log.d("AppoinTextReminder", "Touched my dear sir, touched!" + parts[1]);
+							Intent intent = new Intent(Intent.ACTION_VIEW);
+							Uri.Builder uri = Events.CONTENT_URI.buildUpon();
+							uri.appendPath(parts[0]);
+							intent.setData(uri.build());
+							startActivity(intent);
+							
+						}
+					});
+					
+					btn.setText(parts[1]);
+					
+					/*EDIT ENDS */
+					
 					text.addView(btn, params);
 				}
 			}
@@ -78,7 +105,7 @@ public class RemindersHour extends Activity {
 					hourEnd = Integer.toString(startHour + 1);
 				startTime = todayAsString + " " + hourStart + ":" + minuteStart;
 				endTime = todayAsString + " " + hourEnd + ":" + minuteStart;
-			event = ((GetCalendarEvents.getEvent(this, startTime, endTime, new String[] {Events.TITLE})).replaceAll(",","\t")).split("#");
+			event = GetCalendarEvents.getEvent(this, startTime, endTime, new String[] {Events._ID, Events.TITLE}).split("#");
 		}
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.remindersdisplay);
@@ -98,8 +125,31 @@ public class RemindersHour extends Activity {
 			for(String events : event){
 				Button btn = new Button(this);
 				btn.setId(i);
-				btn.setClickable(false);
-				btn.setText(events);
+				
+				/*EDIT STARTS */
+				
+				final String[] parts = events.split(",");
+				
+				btn.setEnabled(true);
+				btn.setClickable(true); //make it clickable.
+				btn.setOnClickListener(new View.OnClickListener() { //Set what to do on touch!
+					@Override
+					public void onClick(View v) { //Raise an Intent for the Calendar to handle.
+						
+						Log.d("AppoinTextReminder", "Touched my dear sir, touched!" + parts[1]);
+						Intent intent = new Intent(Intent.ACTION_VIEW);
+						Uri.Builder uri = Events.CONTENT_URI.buildUpon();
+						uri.appendPath(parts[0]);
+						intent.setData(uri.build());
+						startActivity(intent);
+						
+					}
+				});
+				
+				btn.setText(parts[1]);
+				
+				/*EDIT ENDS */
+				
 				text.addView(btn, params);
 			}
 		}

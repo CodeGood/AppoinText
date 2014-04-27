@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.appointext.backend.SMSListenerSent;
+import com.appointext.database.CalendarInsertEvent;
 import com.appointext.database.GetCalendarEvents;
 import com.bmsce.appointext.R;
 //import android.view.Menu;
@@ -28,30 +29,29 @@ public class AppoinTextActivity extends Activity  {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-Log.i("AT MainActivity", "CREATED. Starting UpdateService");
-
 		Intent i = new Intent(this, com.appointext.backend.MyUpdateService.class);
 		startService(i);
-		
+Log.i("AppoinTextReminder", "Started Service");
+Log.i("AppoinTextReminder", "Result : " + GetCalendarEvents.getEventByID(this, "3", new String[] {Events.DTSTART} ));
 Log.i("AT MainActivity", "Registering Content Resolver.");
-		
+
 		final Uri SMS_STATUS_URI = Uri.parse("content://sms");
 		SMSListenerSent smsSentObserver = new SMSListenerSent(new Handler(), this);
 		this.getContentResolver().registerContentObserver(SMS_STATUS_URI, true, smsSentObserver);
 
 
 	}
-	
+
 	public void viewSettings(View V) {
 		Intent intent = new Intent(this, SettingsDisplay.class);
 		startActivity(intent);        
 	}
-	
+
 	public void viewReminders(View v) {
 		Intent intent = new Intent(this, RemindersDisplay.class);
 		startActivity(intent); 
     }
-	
+
 	public void viewInviter(View v) {
 		Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
 	    shareIntent.setType("text/plain");
@@ -83,6 +83,5 @@ Log.i("AT MainActivity", "Registering Content Resolver.");
         });
         alertDialog.show();
     }
-	
-}
 
+}

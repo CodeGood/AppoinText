@@ -62,7 +62,7 @@ public class RecognizeDate {
 		
 		for (int i = 0; i < words.length; i++) {
 		
-			if (words[i].equals("today")) {
+			if (words[i].equals("today") || words[i].equals("tonight")) {
 				foundDates += (thisDay + "/" + thisMonth + "/" + thisYear + "/" + i + ",");
 			}
 			else if (words[i].equals("tomorrow")) {
