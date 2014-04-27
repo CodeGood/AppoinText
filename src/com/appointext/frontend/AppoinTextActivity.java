@@ -32,25 +32,26 @@ public class AppoinTextActivity extends Activity  {
 		Intent i = new Intent(this, com.appointext.backend.MyUpdateService.class);
 		startService(i);
 Log.i("AppoinTextReminder", "Started Service");
+Log.i("AppoinTextReminder", "Result : " + GetCalendarEvents.getEventByID(this, "3", new String[] {Events.DTSTART} ));
 Log.i("AT MainActivity", "Registering Content Resolver.");
-		
+
 		final Uri SMS_STATUS_URI = Uri.parse("content://sms");
 		SMSListenerSent smsSentObserver = new SMSListenerSent(new Handler(), this);
 		this.getContentResolver().registerContentObserver(SMS_STATUS_URI, true, smsSentObserver);
 
 
 	}
-	
+
 	public void viewSettings(View V) {
 		Intent intent = new Intent(this, SettingsDisplay.class);
 		startActivity(intent);        
 	}
-	
+
 	public void viewReminders(View v) {
 		Intent intent = new Intent(this, RemindersDisplay.class);
 		startActivity(intent); 
     }
-	
+
 	public void viewInviter(View v) {
 		Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
 	    shareIntent.setType("text/plain");
@@ -74,7 +75,7 @@ Log.i("AT MainActivity", "Registering Content Resolver.");
     
 	public void viewAbout(View v) {
     	AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-        alertDialog.setTitle("AppoinText v2 ®™");
+        alertDialog.setTitle("AppoinText v2 Â®â„¢");
         alertDialog.setMessage("Developed by Abhishek Kasargod, Aparajita Raychaudhury, Ashwin S and Manasa G.\n 2013-2014 Project at BMSCE\nUnder guidance of Ms. Saritha AN");
         alertDialog.setButton (DialogInterface.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
@@ -83,5 +84,9 @@ Log.i("AT MainActivity", "Registering Content Resolver.");
         alertDialog.show();
     }
 	
-}
+	public void viewHelp(View v) {
+    	Intent intent = new Intent(this, HelpDisplay.class);
+		startActivity(intent); 
+    }
 
+}

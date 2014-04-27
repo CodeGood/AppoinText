@@ -1,18 +1,24 @@
 package com.appointext.backend;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import android.content.Context;
+import android.provider.CalendarContract.Events;
 import android.util.Log;
 
 import com.appointext.database.CalendarInsertEvent;
 import com.appointext.database.DatabaseManager;
+import com.appointext.database.GetCalendarEvents;
 import com.appointext.nertagger.NERecognizer;
 import com.appointext.regex.RecognizeDate;
 import com.appointext.regex.RecognizeEvent;
 import com.appointext.regex.RecognizeTime;
 
 public class SetReminder {
+
 
 	static DatabaseManager db;
 	public static int addToPendingTable(Context con, String curText, String senderNumber, String recieverNumber){
@@ -26,6 +32,7 @@ public class SetReminder {
 		String location = "";
 		String taggedCurText = "";
 		ArrayList<ArrayList<Object>> rows = new ArrayList<ArrayList<Object>>();
+		ArrayList<ArrayList<Object>> tempRows = new ArrayList<ArrayList<Object>>();
 
 		try{
 			taggedCurText = NERecognizer.NERTagger(con, curText);
@@ -94,41 +101,69 @@ public class SetReminder {
 
 		db.open();
 		
-		/*boolean val = FindPostponement.findPostponement(curText);
+		boolean val = FindPostponement.findPostponement(curText);
 		
-		ArrayList<ArrayList<Object>> rows = new ArrayList<ArrayList<Object>>();
+		//ArrayList<ArrayList<Object>> rows = new ArrayList<ArrayList<Object>>();
 		
 		if(val){
 			
-			rows = db.getMultipleSetReminders("SELECT * FROM setReminders WHERE trs="+ "'" + event + "-" + senderNumber + "-" + recieverNumber+ "'");
 			
-			Log.d("Postpone: Appointext", "the rows fetched form the setReminders db are: " + rows.toString());
+			String trs = event + "-" + senderNumber + "-" + recieverNumber;			
+			rows = db.getMultipleSetReminders("SELECT * FROM setReminders WHERE trs="+ "'" + trs + "'");
 			
+			
+			trs = event + "-" + recieverNumber + "-" + senderNumber;
+			tempRows = db.getMultipleSetReminders("SELECT * FROM setReminders WHERE trs="+ "'" + trs + "'"); 
+			
+			rows.addAll(tempRows);
+			
+			int eventId = Integer.parseInt(rows.get(0).get(0).toString());
+			String[] fields = {Events.DTSTART};
+						
+			String result = GetCalendarEvents.getEventByID(con, eventId+"", fields);
+			
+			Log.d("Postpone: Appointext", "the rows fetched form the setReminders db are: " + rows.toString() + " The value of trs is : " + trs);
+					
 			String[] updateValues = {};
+			String[] dateExtract = {},timeExtract={};
+			int hour=0 , minute=0, dd=0, mm=0, yy=0;
+			String finalTime=null, finalDate=null;
 			
 			if(!timeExtracted.equalsIgnoreCase("")){
-				
-				String[] timeExtract;
+			
+				timeExtract = timeExtracted.split(",")[0].split(":");
 
-				timeExtract = timeExtracted.split(":");
-
-				int hour = Integer.parseInt(timeExtract[0]);
-				int minute = Integer.parseInt(timeExtract[1]);
+				hour = Integer.parseInt(timeExtract[0]);
+				minute = Integer.parseInt(timeExtract[1]);
 				
+				finalTime = hour + ":" + minute;
 			}
 			
 			if(!dateExtracted.equalsIgnoreCase("")){
 				
-				String[] dateExtract;
+				dateExtract = dateExtracted.split(",")[0].split("/");
 
-				dateExtract = dateExtracted.split(":");
-
-				int dd = Integer.parseInt(dateExtract[0]);
-				int mm = Integer.parseInt(dateExtract[1]);
-				int yy = Integer.parseInt(dateExtract[2]);
+				dd = Integer.parseInt(dateExtract[0]);
+				mm = Integer.parseInt(dateExtract[1]);
+				yy = Integer.parseInt(dateExtract[2]);
+				
+				finalDate = dd +"/" + mm + "/" + yy;				
+			}
+			
+			try{
+				long tim = inMiliseconds(result, finalDate, finalTime);
+				
+				Log.i("Postpone: Appointext", "No exception" + tim);
+				CalendarInsertEvent.updateCalendarEntry(con, eventId, new String[] {Events.DTSTART + "," + tim,  Events.DTEND + "," + tim},30, "");
 				
 			}
-		}*/
+			catch(Exception e){
+				Log.i("Postpone: Appointext", "I got an exception");
+			}
+			Log.d("Postpone: Appointext", "the values extracted : hour: " + hour + "minute: " + minute + "dd: " + dd + "mm: " + mm + "yy: " + yy );
+			
+			return -1;
+		}
 		
 		rows = db.getMultiplePendingReminders("SELECT * FROM pendingReminders WHERE senderNumber=" + "'" + senderNumber + "'" + " and receiverNumber=" + "'" + recieverNumber+"'" + " and whenIsIt=" + "'" + when + "'");
 		
@@ -176,7 +211,6 @@ public class SetReminder {
 
 		Log.d("AppoinText", "The sentiment is : "+ reply);
 		
-		//TODO : Figure out if only date and only day is give, what to do then. And take care of the situation
 		
 		if(rows.isEmpty()){
 			
@@ -303,5 +337,22 @@ public class SetReminder {
 		db.close();
 		
 		return 0;
+	}
+	
+	private static long inMiliseconds(String oldDT, String newDate, String newTime)throws Exception {
+
+		String[] dt = oldDT.split(" ");
+	
+		if (newDate != null && !newDate.equals(""))
+			dt[0] = newDate;
+			
+		if (newTime != null && !newTime.equals(""))
+			dt[1] = newTime;
+			
+		oldDT = dt[0] + " " + dt[1];
+		DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		Date finalDate = formatter.parse(oldDT);
+		return finalDate.getTime();
+	
 	}
 }

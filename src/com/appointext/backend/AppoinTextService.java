@@ -162,6 +162,20 @@ public class AppoinTextService extends IntentService {
 
 			String[] numbers  = blockedNumbers.toString().split(",");
 
+			
+			Log.i("Appointext block numbers", "The strings are " + numbers.toString());
+			
+			for(int i=0; i<numbers.length; i++){
+				
+				if(numbers[i].equalsIgnoreCase(senderNumber)){
+					
+					Log.d("Appointext block numbers", "Entered if");
+					return;
+				}
+			}
+			db.close();
+
+
 			for(int i=0; i<numbers.length; i++){
 
 			}
@@ -176,6 +190,25 @@ public class AppoinTextService extends IntentService {
 				recieverNumber = "91" + recieverNumber;
 				Log.d("NumberConversion", "New number as " + recieverNumber);
 			}
+			
+			db.open();
+			
+			ArrayList<Object> blockedNumbers;			
+			blockedNumbers = db.getRowAsArray("settingsTable", "BlockedNumbers");
+			
+			String[] numbers  = blockedNumbers.toString().split(",");
+			Log.i("Appointext block numbers", "The strings are " + numbers.toString());
+			
+			for(int i=0; i<numbers.length; i++){
+				
+				if(numbers[i].equalsIgnoreCase(recieverNumber)){
+					
+					Log.d("Appointext block numbers", "Entered if");
+					return;
+				}
+			}
+			db.close();
+			
 
 		}
 
@@ -191,7 +224,8 @@ public class AppoinTextService extends IntentService {
 		}
 
 		if(category.equalsIgnoreCase("meeting")){
-
+			
+			Log.i("Appointext meeting", "I am in meeting ");
 			SetReminder.addToPendingTable(this, curText, senderNumber, recieverNumber);
 		}
 

@@ -2,7 +2,7 @@ package com.appointext.backend;
 
 public class FindPostponement {
 	
-	private static String[] postponeWords = {"Instead","Changed","Postponed"};
+	private static String[] postponeWords = {"instead","changed","postponed","preponed"};
 	
 	static boolean findPostponement(String msg){
 		
@@ -15,15 +15,11 @@ public class FindPostponement {
 				if(msgStr.equalsIgnoreCase(yesStr)){
 					
 					val = true;
-					
 					return val;
 					
-				}
-				
+				}				
 			}
-			
-		}
-		
+		}		
 		return val;
 	}
 }
