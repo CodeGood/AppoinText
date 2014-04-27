@@ -140,7 +140,7 @@ public class GetCalendarEvents {
 						 Calendar calendar = Calendar.getInstance();
 						 calendar.setTimeInMillis(cursor.getLong(i));
 Log.d("AppoinTextReminder", "Got date as " + formatter.format(calendar.getTime()));						 
-						 result += cursor.getString(i) + "#" + formatter.format(calendar.getTime()) + ",";
+						 result += formatter.format(calendar.getTime()) + ",";
 					  }
 					  else
 						  result += cursor.getString(i) + ",";
