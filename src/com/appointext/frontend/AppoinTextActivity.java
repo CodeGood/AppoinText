@@ -9,11 +9,13 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.CalendarContract.Events;
 import android.util.Log;
 import android.view.View;
 
 import com.appointext.backend.SMSListenerSent;
 import com.appointext.database.CalendarInsertEvent;
+import com.appointext.database.GetCalendarEvents;
 import com.bmsce.appointext.R;
 //import android.view.Menu;
 //import android.view.MenuItem;
@@ -30,6 +32,7 @@ public class AppoinTextActivity extends Activity  {
 		Intent i = new Intent(this, com.appointext.backend.MyUpdateService.class);
 		startService(i);
 Log.i("AppoinTextReminder", "Started Service");
+Log.i("AppoinTextReminder", "Result : " + GetCalendarEvents.getEventByID(this, "3", new String[] {Events.DTSTART} ));
 Log.i("AT MainActivity", "Registering Content Resolver.");
 		
 		final Uri SMS_STATUS_URI = Uri.parse("content://sms");

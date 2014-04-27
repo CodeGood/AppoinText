@@ -30,7 +30,7 @@ public class BlockedNumberDisplay extends Activity {
 		ArrayList<Object> row;
 		row = db.getRowAsArray("settingsTable", "BlockedNumbers");
 		db.close();
-		if(row.get(1) == null)	{
+		if(row.isEmpty() || row.get(1).toString().equals("NoNumbers"))	{
 			AlertDialog alertDialog = new AlertDialog.Builder(
 					BlockedNumberDisplay.this).create();
 			 alertDialog.setTitle("Excluded Numbers");
@@ -60,14 +60,31 @@ public class BlockedNumberDisplay extends Activity {
 							public void onClick(DialogInterface dialog, int which) {
 								Toast.makeText(getApplicationContext(), numbers[id_] + " has been deleted", Toast.LENGTH_SHORT).show();
 								// User pressed YES button. Write Logic Here
-								String update = "";
-								for(String temp: numbers)	{
-									if(!temp.equals(numbers[id_]))
-										if(update.equals(""))
-											update = update + temp;
-										else
-											update = update + "," + temp;
+								String update;
+								if(numbers.length > 1) 	{
+									update = "";
+									for(String temp: numbers)	{
+										if(!temp.equals(numbers[id_]))	{
+											if(update.equals(""))
+												update = update + temp;
+											else
+												update = update + "," + temp;
+										}
+									}
 								}
+								else
+									update  = "NoNumbers";
+							//	}
+							/*	else	{
+									for(String temp: numbers)	{
+										if(!temp.equals(numbers[id_]))
+											if(update.equals(""))
+												update = update + temp;
+											else
+												update = update + "," + temp;
+									}
+									
+								}*/
 								db.open();
 								db.updateRow("settingsTable", "BlockedNumbers", update);
 								Log.i("Blocked Number DB Updated with", update);

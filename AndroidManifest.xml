@@ -64,11 +64,11 @@
         </activity>
         <activity
             android:name="com.appointext.frontend.NoNagMode"
-            android:label="No Nag Mode" >            
+            android:label="Quiet Hours" >            
         </activity>
         <activity
             android:name="com.appointext.frontend.NoNagScheduler"
-            android:label="No Nag Mode Scheduler" >            
+            android:label="Quiet Hours Scheduler" >            
         </activity>
         <activity
             android:name="com.appointext.frontend.RemindersDisplay"

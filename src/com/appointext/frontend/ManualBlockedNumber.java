@@ -27,27 +27,49 @@ public class ManualBlockedNumber extends Activity {
 				db.open();
 				ArrayList<Object> row;
 				row = db.getRowAsArray("settingsTable", "BlockedNumbers");
-				db.close();
-				if(row.isEmpty())	{
-					Log.i("Enter where I should't", ":(");
-					db.open();
-					db.addRow("settingsTable", "BlockedNumbers", number);
-					db.close();
-					Toast.makeText(getApplicationContext(), number + " added to excluded list!", Toast.LENGTH_SHORT).show();
-					editText.setText("");
-				}
-				else	{
-					String existingNumber = row.get(1).toString();
-					if(!existingNumber.contains(number))	{
-						db.open();
-						db.updateRow("settingsTable", "BlockedNumbers", existingNumber + "," + number);
+				if(!number.equals(""))	{
+					if(row.isEmpty())	{
+						Log.i("onEditorAction", "null case");
+						if(number.length() < 11)
+							number = "91" + number;
+						db.addRow("settingsTable", "BlockedNumbers", number);
 						db.close();
 						Toast.makeText(getApplicationContext(), number + " added to excluded list!", Toast.LENGTH_SHORT).show();
 						editText.setText("");
+						return false;
 					}
-					else
-						Toast.makeText(getApplicationContext(), number + " already exists in excluded list!", Toast.LENGTH_SHORT).show();
-					}			
+
+					else if(row.get(1).toString().equals("NoNumbers"))	{
+						Log.i("onEditorAction", "null case");
+						if(number.length() < 11)
+							number = "91" + number;
+						db.updateRow("settingsTable", "BlockedNumbers", number);
+						db.close();
+						Toast.makeText(getApplicationContext(), number + " added to excluded list!", Toast.LENGTH_SHORT).show();
+						editText.setText("");
+						return false;
+					}
+
+					else	{
+						int flag = 0;
+						String retrieveNumber = row.get(1).toString();
+						String[] existingNumber = retrieveNumber.split(",");
+						for(String temp: existingNumber)
+							if(number.equals(temp))	
+								flag = 1;
+						if(flag == 0)	{
+							if(number.length() < 11)
+								number = "91" + number;
+							db.updateRow("settingsTable", "BlockedNumbers", retrieveNumber + "," + number);
+							Log.i("Number that is being added", retrieveNumber + "," + number);
+							db.close();
+							Toast.makeText(getApplicationContext(), number + " added to excluded list!", Toast.LENGTH_SHORT).show();
+							editText.setText("");
+						}
+						else
+							Toast.makeText(getApplicationContext(), number + " already exists in excluded list!", Toast.LENGTH_SHORT).show();		
+					}
+				}
 				return false;
 			}
 		});

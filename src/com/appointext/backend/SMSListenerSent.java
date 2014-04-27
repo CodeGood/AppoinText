@@ -27,10 +27,12 @@ public class SMSListenerSent extends ContentObserver {
 
 	public void onChange(boolean selfChange) {
 		
+		Cursor sms_sent_cursor = null;
+		
 		try{
 			
 Log.e("AppoinText Content Observer","Notification on SMS observer");
-			Cursor sms_sent_cursor = mContext.getContentResolver().query(SMS_STATUS_URI, null, null, null, null);
+			sms_sent_cursor = mContext.getContentResolver().query(SMS_STATUS_URI, null, null, null, null);
 			if (sms_sent_cursor != null) {
 				
 				if (sms_sent_cursor.moveToFirst()) {
@@ -73,7 +75,13 @@ Log.e("AppoinText Content Observer","Notification on SMS observer");
 		catch(Exception sggh){
 			Log.e("Error", "Error on onChange : "+sggh.toString());
 		}
+		finally {
+			if (sms_sent_cursor != null)
+				sms_sent_cursor.close();
+		}
 		super.onChange(selfChange);
+		
+		Log.d("AppoinText", "Sending msg " + smsBodyStr);
 		
 		Intent i = new Intent(mContext, AppoinTextService.class);
 		i.putExtra("origin", "sent");

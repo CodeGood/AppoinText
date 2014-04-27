@@ -15,7 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="false"
-            android:text="No Nag Mode" />
+            android:text="Quiet Hours" />
 
         <ToggleButton
             android:id="@+id/NoNagStatusToggle"
@@ -34,7 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="false"
-            android:text="No Nag Mode Scheduler" />
+            android:text="Quiet Hours Scheduler" />
 
         <CheckBox
             android:id="@+id/NoNagModeScheduler"

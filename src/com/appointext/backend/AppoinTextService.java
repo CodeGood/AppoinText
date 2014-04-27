@@ -1,26 +1,18 @@
 package com.appointext.backend;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+
 import java.util.Map;
-import java.util.TimeZone;
+
 
 import com.appointext.database.DatabaseManager;
 import com.appointext.naivebayes.Classifier;
-import com.appointext.nertagger.*;
-import com.appointext.regex.RecognizeDate;
-import com.appointext.regex.RecognizeDay;
-import com.appointext.regex.RecognizeEvent;
-import com.appointext.regex.RecognizeTime;
 
 import android.app.IntentService;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
 import java.util.ArrayList;
-import com.appointext.database.CalendarInsertEvent;
 
 /*
  * JUSTIFICATION -->
@@ -53,9 +45,9 @@ public class AppoinTextService extends IntentService {
 		
 		String originS = intent.getStringExtra("origin");
 		Long timeStamp = intent.getLongExtra("timestamp", 0);
-		Log.i("Appointext", "The vlaue of the time stamp when the messge was detected this time is : " + timeStamp);
+		Log.i("AppoinText", "The vlaue of the time stamp when the messge was detected this time is : " + timeStamp);
 		
-		String curText;
+		String curText = null;
 		
 		if (originS.equals("inbox"))
 			origin = INBOX;
@@ -75,7 +67,13 @@ public class AppoinTextService extends IntentService {
 		else 
 			curText = intent.getStringExtra("body");
 
-        Log.i("AppoinText Service", "Got origin as " + origin);
+        Log.i("AppoinText", "Got origin as " + origin);
+        
+        if(curText == null || curText.equals(""))
+		{
+			Log.e("appointext", "curText is null or empty sorry :(");
+			return;
+		}
 
 		db = new DatabaseManager(this);
 
@@ -84,7 +82,7 @@ public class AppoinTextService extends IntentService {
 		ArrayList<Object> row = new ArrayList<Object>();
 		row = db.getRowAsArray("timeStampTable", "lastTimeStamp");
 		
-		Log.d("appointext","I am trying to get the value of the last time stamp : " + row.toString() );
+		Log.d("AppoinText","I am trying to get the value of the last time stamp : " + row.toString() );
 		
 		if(row.isEmpty()){
 			
@@ -106,16 +104,15 @@ public class AppoinTextService extends IntentService {
 			
 			else{
 				
-		Log.d("appointext", "I am updating the last acessed to " + timeStamp +"and the last message was : " + curText);
+		Log.d("AppoinText", "I am updating the last acessed to " + timeStamp +"and the last message was : " + curText);
 		
 				if(timeStamp !=  0){
 					
 					db.updateRow("timeStampTable", "lastTimeStamp", timeStamp.toString());
 					row = db.getRowAsArray("timeStampTable", "lastTimeStamp");
 					Log.d("appointext", "updated timestamp " + row.toString());
-					
 				}
-				
+				db.close();
 			}
 		}
 		
@@ -123,8 +120,6 @@ public class AppoinTextService extends IntentService {
 		Map<String, Double> res;
 		String category = null;
 		Double minimumConfidence = 0 - Double.MAX_VALUE;
-
-		String taggedCurText = "Me no get intialized";
 
 		res = this.classify(curText);
 
@@ -136,83 +131,20 @@ public class AppoinTextService extends IntentService {
 
 				minimumConfidence = value;
 				category = key;
+				
+				Log.d("Confidence Value", "The values are minimumConfidence :" + minimumConfidence + " category :" + category);
 			}
 
 		}// get the category and the confidence in case it is required
+		
+		Log.d("AppoinText", "The final values are minimumConfidence :" + minimumConfidence + " category :" + category);
 
 		if(category.equalsIgnoreCase("irrelevant")){
 			// this is not important to us, so stop the service by returning.
 			return;
 		}
-
-		if(category.equalsIgnoreCase("query")){
-			
-			Log.e("Appointext", "I am a query and the message is : " + curText);
-
-			//since this is a query, extract all the details and then store it in the pending table.
-
-			String[] taggedWords; 
-			String people = "";
-			String location = "";
-
-			try{
-				taggedCurText = NERecognizer.NERTagger(this, curText);
-			}
-			catch(Exception e){	
-				Log.e("NER Tagger", "Died while tagging :" + e);
-			}
-			
-			Log.d("Appointext", "The tagged text is :" + taggedCurText);
-
-			//From the tagged text find out the list of persons and the place if any mentioned. Organizations are also classified as location here
-
-			if(taggedCurText != null) {
-				
-				taggedWords = taggedCurText.split(" ");
-
-				for(String word : taggedWords){
-					if(word.contains("PERSON")){  
-						people += word.split("/")[0] + ",";
-					}
-
-					if(word.contains("LOCATION")){   			
-						location += word.split("/")[0] + ",";
-					}
-
-					if(word.contains("ORGANISATION")){   			
-						location += word.split("/")[0] + ",";
-					}
-				}
-			}
-
-			String senderNumber =null, recieverNumber = null;
-
-			//Find out if the message is either a sent message or a received one. And add the person who sent the message or is receiving the message also as an attendee. The host himself/ herself is not added yet.
-
-			if(origin == INBOX){                		
-				senderNumber = (msgs[0].getOriginatingAddress().replaceAll("[^0-9]", ""));
-				recieverNumber = "123";
-				if (senderNumber.length() == 10) {
-					Log.d("NumberConversion", "Original sender number " + senderNumber);
-					senderNumber = "91" + senderNumber;
-					Log.d("NumberConversion", "New number as " + senderNumber);
-				}
-				people += senderNumber;
-			
-			}
-
-			else{               		
-				senderNumber = "123";
-				recieverNumber = (intent.getStringExtra("receiver").replaceAll("[^0-9]", "")); 
-				if (recieverNumber.length() == 10) {
-					Log.d("NumberConversion", "Original sender number " + recieverNumber);
-					recieverNumber = "91" + recieverNumber;
-					Log.d("NumberConversion", "New number as " + recieverNumber);
-				}
-				people += recieverNumber;
-			}
-			
 		
+<<<<<<< HEAD
 			Log.d("appointext", "the numbers determined are" + senderNumber + " " + recieverNumber);
 
 			String event = RecognizeEvent.getEvent(curText);
@@ -230,239 +162,57 @@ public class AppoinTextService extends IntentService {
 			if(!timeExtracted.equalsIgnoreCase("") && !dateExtracted.equalsIgnoreCase("")){
 			
 				when = timeExtracted.split("[/,]")[0] + "," + dateExtracted.split("[/,]")[0]+"/"+dateExtracted.split("[/,]")[1]+"/"+dateExtracted.split("[/,]")[2];
+=======
+		String senderNumber =null, recieverNumber = null;
+		
+		if(origin == INBOX){                		
+			senderNumber = (msgs[0].getOriginatingAddress().replaceAll("[^0-9]", ""));
+			recieverNumber = "123";
+			if (senderNumber.length() == 10) {
+				Log.d("NumberConversion", "Original sender number " + senderNumber);
+				senderNumber = "91" + senderNumber;
+				Log.d("NumberConversion", "New number as " + senderNumber);
+>>>>>>> e0ad6e0a3e1e95b9aceabc38e905aadc84a6bc4e
 			}
-
-			db = new DatabaseManager(this);
-
+			
 			db.open();
 			
-			boolean val = FindPostponement.findPostponement(curText);
+			ArrayList<Object> blockedNumbers;			
+			blockedNumbers = db.getRowAsArray("settingsTable", "BlockedNumbers");
 			
-			ArrayList<ArrayList<Object>> rows = new ArrayList<ArrayList<Object>>();
+			String[] numbers  = blockedNumbers.toString().split(",");
 			
-			if(val){
+			for(int i=0; i<numbers.length; i++){
 				
-				rows = db.getMultipleSetReminders("SELECT * FROM setReminders WHERE trs="+ "'" + event + "-" + senderNumber + "-" + recieverNumber+ "'");
-				
-				Log.d("Postpone: Appointext", "the rows fetched form the setReminders db are: " + rows.toString());
-				
-				String[] updateValues = {};
-				
-				if(!timeExtracted.equalsIgnoreCase("")){
-					
-					String[] timeExtract;
-
-					timeExtract = timeExtracted.split(":");
-
-					int hour = Integer.parseInt(timeExtract[0]);
-					int minute = Integer.parseInt(timeExtract[1]);
-					
-				}
-				
-				if(!timeExtracted.equalsIgnoreCase("")){
-					
-					String[] dateExtract;
-
-					dateExtract = dateExtracted.split(":");
-
-					int dd = Integer.parseInt(dateExtract[0]);
-					int mm = Integer.parseInt(dateExtract[1]);
-					int yy = Integer.parseInt(dateExtract[2]);
-					
-				}
 			}
 			
-			rows = db.getMultiplePendingReminders("SELECT * FROM pendingReminders WHERE senderNumber=" + "'" + senderNumber + "'" + " and receiverNumber=" + "'" + recieverNumber+"'" + " and whenIsIt=" + "'" + when + "'");
-			
-			Log.d("Appointext", "I am trying to figure out duplicate rows : " + rows.toString());
-			
-			if(rows.isEmpty()){
-				
-				db.addRow("pendingReminders", senderNumber, recieverNumber, 0, people, event, when, location); 
-				Log.e("Appointext", "db.addRow  : " + " " + senderNumber+ " " +recieverNumber+ " " +0+ " " + people+ " " + event+ " " + when+ " " +location+ " "  );
+		}
 
+		else{               		
+			senderNumber = "123";
+			recieverNumber = (intent.getStringExtra("receiver").replaceAll("[^0-9]", "")); 
+			if (recieverNumber.length() == 10) {
+				Log.d("NumberConversion", "Original sender number " + recieverNumber);
+				recieverNumber = "91" + recieverNumber;
+				Log.d("NumberConversion", "New number as " + recieverNumber);
 			}
-			db.close();
 			
-			return;
+		}
 
+		if(category.equalsIgnoreCase("query")){
+			
+			SetReminder.addToPendingTable(this, curText, senderNumber, recieverNumber);
+			
 		}
 
 		if(category.equalsIgnoreCase("reply")){
-
-			Log.i("Appointext", "I am a reply : "+ curText);
-			//for the category reply, we first extract all the pending list messages based on the sender and the receiver number
-
-			ArrayList<ArrayList<Object>> rows = new ArrayList<ArrayList<Object>>();
-			ArrayList<ArrayList<Object>> tempRows = new ArrayList<ArrayList<Object>>();
-
-			db = new DatabaseManager(this);
-			db.open();
-
-			String senderNumber =null, recieverNumber=null;
-
-			if(origin == INBOX){                		
-				senderNumber = (msgs[0].getOriginatingAddress().replaceAll("[^0-9]", ""));
-				recieverNumber = "123";
-				if (senderNumber.length() == 10) {
-					Log.d("NumberConversion", "Original sender number " + senderNumber);
-					senderNumber = "91" + senderNumber;
-					Log.d("NumberConversion", "New number as " + senderNumber);
-				}
-			}
-
-			else{               		
-				senderNumber = "123";
-				recieverNumber = (intent.getStringExtra("receiver").replaceAll("[^0-9]", ""));  
-				if (recieverNumber.length() == 10) {
-					Log.d("NumberConversion", "Original sender number " + recieverNumber);
-					recieverNumber = "91" + recieverNumber;
-					Log.d("NumberConversion", "New number as " + recieverNumber);
-				}
-			}
 			
-			rows = db.getMultiplePendingReminders("SELECT * FROM pendingReminders");
+			SetReminder.setReminderBasedOnReply(this, curText, senderNumber, recieverNumber);
+		}
+		
+		if(category.equalsIgnoreCase("meeting")){
 			
-			Log.d("Appointext", "The rows stored are : "+ rows.toString());
-			
-			Log.d("Appointext", "Sender number "+ senderNumber + "Reciever Number" + recieverNumber);
-
-			rows = db.getMultiplePendingReminders("SELECT * FROM pendingReminders WHERE senderNumber=" + "'" + senderNumber + "'" + " and receiverNumber=" + "'" + recieverNumber+"'");
-			
-			Log.d("Appointext", "the value of rows is : " + rows.toString());
-
-			tempRows = db.getMultiplePendingReminders("SELECT * FROM pendingReminders WHERE senderNumber=" + "'" + recieverNumber + "'" + " and receiverNumber=" + "'" + senderNumber +"'");
-			
-			Log.d("Appointext", "the value of tempRows : " + tempRows.toString());
-			
-			rows.addAll(tempRows);
-			
-			String reply = FindSentiment.findSentiment(curText);
-
-			Log.d("Appointext", "The sentiment is : "+ reply);
-			
-			//TODO : Figure out if only date and only day is give, what to do then. And take care of the situation
-			
-			if(rows.isEmpty()){
-				
-				Log.e("Appointext", "the rows are empty");
-				return;
-			}
-
-			if(reply.equalsIgnoreCase("yes")){
-				
-				Log.i("appointext","no the rows are not empty and the 7th element : " + rows.get(0).get(6).toString());
-
-				// if the reply is affirmative, then check if the time was found. If not, then just change the entry in the db to indicate that the meeting is confirmed
-
-				if(rows.get(0).get(6).toString()!= null && rows.get(0).get(6).toString().equalsIgnoreCase("") && (rows.get(0).get(6).toString().equalsIgnoreCase("") || rows.get(0).get(6).toString().startsWith(",") || rows.get(0).get(6).toString().endsWith(","))){         	    		
-
-					db.updateRow("pendingReminders", (Integer)rows.get(0).get(0), rows.get(0).get(1).toString(), rows.get(0).get(2).toString(), 1, rows.get(0).get(4).toString(), rows.get(0).get(5).toString(), rows.get(0).get(6).toString(), rows.get(0).get(7).toString());	
-					return;
-				}
-
-				else{
-
-					//else extract the details required for the add reminder function and add the reminder
-
-					String whenStamp = rows.get(0).get(6).toString();	         	    		
-					String[] extractedData = whenStamp.split(",");	         	    		
-					int date=0, month=0, year=0, hour=0, minute=0;
-					String[] dateExtract, timeExtract;
-
-					timeExtract = extractedData[0].split(":");
-					dateExtract = extractedData[1].split("/");
-
-					hour = Integer.parseInt(timeExtract[0]);
-					minute = Integer.parseInt(timeExtract[1]);
-
-					date = Integer.parseInt(dateExtract[0]);
-					month = Integer.parseInt(dateExtract[1]);
-					year = Integer.parseInt(dateExtract[2]);
-
-					//	   public static long addReminder(              Context, int date, int month, int year, int hour, int minute, int min_before_event, String title,                  String location,               String desc,  String attendees) 
-					int eventId = (int) CalendarInsertEvent.addReminder(this,      date,      month,     year,     hour,     minute,        30,             rows.get(0).get(5).toString(), rows.get(0).get(7).toString(),    null,       rows.get(0).get(4).toString());
-
-					Log.d("appointext", "the database insert statement :" + date + "'" + month +"'"+year+"'" + "'" + hour + "'" + minute + "'" );
-					// after the reminder set, then put the entry to the set reminders table and add all the details to extractedData field in the form of Location:xxxx-Attendees:xxxx-Event:xxxx- all of them being a CSV 
-
-					int isComplete = 1, isGroup = 0;
-
-					String people;
-					String extractedInfo = "";
-
-					people = rows.get(0).get(4).toString();
-
-					int number = people.split(",").length;
-
-					if(number > 1){
-						isGroup = 1;
-					}
-
-					if(!people.equalsIgnoreCase("")){
-
-						Log.i("blah", people);
-
-						extractedInfo += ("Attendees:" + people+"-");
-					}
-
-					else{
-
-						isComplete = 0;
-					}
-
-					if(!rows.get(0).get(7).toString().equalsIgnoreCase("")){
-
-						Log.i("blah",  rows.get(0).get(7).toString());
-
-						extractedInfo += ("Location:" + rows.get(0).get(7).toString() + "-");
-					}
-
-					else{
-
-						isComplete = 0;
-					}
-
-					if(!rows.get(0).get(5).toString().equalsIgnoreCase("")){
-
-						Log.i("blah",  rows.get(0).get(5).toString());
-
-						extractedInfo += ("Occasion:" + rows.get(0).get(5).toString() + "-");
-					}
-
-					else{
-
-						isComplete = 0;
-					}
-
-					// the event-sender-receiver string to retrieve the data from the set reminders table later
-
-					String trs = rows.get(0).get(5).toString() + "-" + senderNumber + "-" + recieverNumber;
-					
-					db.deleteRow("pendingReminders", (Integer)rows.get(0).get(0));
-
-					db.addRow("setReminders", eventId, isComplete, isGroup, trs, extractedInfo);
-					
-					rows = db.getMultipleSetReminders("SELECT * FROM setReminders");
-					
-					Log.d("Appointext", " The set reminder database is like this : " + rows.toString());
-					
-					rows = db.getMultiplePendingReminders("SELECT * FROM pendingReminders");
-					
-					Log.d("Appointext", " The pending reminder database is like this : " + rows.toString());
-
-					return;
-				}
-			}
-
-			if(reply.equalsIgnoreCase("no")){
-
-				//if the reply is a no, then delete the entry form the pending reminders table
-
-				db.deleteRow("pendingReminders", (Integer)rows.get(0).get(0));
-				db.close();
-				return;
-			}
+			SetReminder.addToPendingTable(this, curText, senderNumber, recieverNumber);
 		}
 
 		/*
