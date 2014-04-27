@@ -75,7 +75,7 @@ public class RecognizeDate {
 				foundDates += (dateFormat.format(cal.getTime()) + "/" + i + ",");
 				cal = Calendar.getInstance();
 				i++; //Ignore after
-				if (i != words.length && words[i].equals("tomorrow"))
+				if (i != words.length && words[i+1].equals("tomorrow"))
 					i++; //Ignore tomorrow, since day after means the same thing as day after tomorrow
 			}
 			else if (words[i].equals("week")) {
