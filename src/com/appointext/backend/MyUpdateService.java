@@ -28,7 +28,7 @@ public class MyUpdateService extends Service {
 		Log.d("AppoinTextUpdateService", "Started");
 		smsObserver = new SMSListenerSent(new Handler(), this);
 		this.getContentResolver().registerContentObserver(Uri.parse("content://sms/"), true, smsObserver);
-		scheduleNextUpdate();
+		//scheduleNextUpdate();
 		
 	}
 	
@@ -37,7 +37,7 @@ public class MyUpdateService extends Service {
 		Log.d("AppoinText Service", "Registering content observer");
 		if (smsObserver == null) smsObserver = new SMSListenerSent(new Handler(), this);
 		this.getContentResolver().registerContentObserver(Uri.parse("content://sms/"), true, smsObserver);
-		scheduleNextUpdate();
+		//scheduleNextUpdate();
 
 		
 		return START_STICKY;
@@ -46,6 +46,7 @@ public class MyUpdateService extends Service {
 	
 	public void onDestroy() {
 		this.getContentResolver().unregisterContentObserver(smsObserver);
+		scheduleNextUpdate();
 		Log.d("AppoinText", "Buh bye :( I was killed by this merciless phone :-/");
 		super.onDestroy();
 	}
@@ -76,7 +77,7 @@ Log.d("AppoinText UpdateService", "Started. Registering ContentObserver");
     // The update frequency should often be user configurable.  This is not.
 
     long currentTimeMillis = System.currentTimeMillis();
-    long nextUpdateTimeMillis = currentTimeMillis + 5* DateUtils.MINUTE_IN_MILLIS; //Updates every 1 minute.
+    long nextUpdateTimeMillis = currentTimeMillis + 5*DateUtils.SECOND_IN_MILLIS; //DateUtils.MINUTE_IN_MILLIS; //Updates every 1 minute.
     Time nextUpdateTime = new Time();
     nextUpdateTime.set(nextUpdateTimeMillis);
 

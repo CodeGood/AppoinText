@@ -18,6 +18,11 @@ public class RecognizeEvent {
 				}
 			}
 		}
+		
+		if(eventsList.equalsIgnoreCase("")){
+			
+			return "";
+		}
 			
 		return eventsList.substring(0, eventsList.length()-1);
 	}
