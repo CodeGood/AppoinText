@@ -101,7 +101,7 @@ public class GetCalendarEvents {
 	public static String getEventByID (Context con, String eventID, String[] fields) {
 		
 		String result = "";
-		
+Log.i("AppoinTextReminder", "Got eventID as " + eventID);		
 		if (fields == null) {
 			fields = new String[1];
 			fields[0] = "title";
@@ -121,7 +121,7 @@ public class GetCalendarEvents {
 			Cursor cursor= contentResolver.query(l_eventUri, fields,
 				"(" + Events._ID + "=" + eventID + ")", null,
 	            "dtstart ASC");
-				
+Log.i("AppoinTextReminder", "Got cursor as null? " + (cursor == null));				
 			if (cursor.moveToFirst()) {
 			   do {
 				  for (int i = 0; i < fields.length; i++)
@@ -134,7 +134,7 @@ public class GetCalendarEvents {
 	    } catch (Exception e) {
 	            Log.e("AppoinText", "Non assertion error " + e);
 	    }
-		
+Log.d("AppoinTextReminder", "Got result as " + result);		
 		return result;
 	}
 	

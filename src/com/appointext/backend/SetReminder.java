@@ -3,10 +3,12 @@ package com.appointext.backend;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.provider.CalendarContract.Events;
 import android.util.Log;
 
 import com.appointext.database.CalendarInsertEvent;
 import com.appointext.database.DatabaseManager;
+import com.appointext.database.GetCalendarEvents;
 import com.appointext.nertagger.NERecognizer;
 import com.appointext.regex.RecognizeDate;
 import com.appointext.regex.RecognizeEvent;
@@ -26,6 +28,7 @@ public class SetReminder {
 		String location = "";
 		String taggedCurText = "";
 		ArrayList<ArrayList<Object>> rows = new ArrayList<ArrayList<Object>>();
+		ArrayList<ArrayList<Object>> tempRows = new ArrayList<ArrayList<Object>>();
 
 		try{
 			taggedCurText = NERecognizer.NERTagger(con, curText);
@@ -94,17 +97,33 @@ public class SetReminder {
 
 		db.open();
 		
-		/*boolean val = FindPostponement.findPostponement(curText);
+		boolean val = FindPostponement.findPostponement(curText);
 		
-		ArrayList<ArrayList<Object>> rows = new ArrayList<ArrayList<Object>>();
+		//ArrayList<ArrayList<Object>> rows = new ArrayList<ArrayList<Object>>();
 		
 		if(val){
 			
-			rows = db.getMultipleSetReminders("SELECT * FROM setReminders WHERE trs="+ "'" + event + "-" + senderNumber + "-" + recieverNumber+ "'");
 			
-			Log.d("Postpone: Appointext", "the rows fetched form the setReminders db are: " + rows.toString());
+			String trs = event + "-" + senderNumber + "-" + recieverNumber;			
+			rows = db.getMultipleSetReminders("SELECT * FROM setReminders WHERE trs="+ "'" + trs + "'");
 			
-			String[] updateValues = {};
+			
+			trs = event + "-" + recieverNumber + "-" + senderNumber;
+			tempRows = db.getMultipleSetReminders("SELECT * FROM setReminders WHERE trs="+ "'" + trs + "'"); 
+			
+			rows.addAll(tempRows);
+			
+			Log.d("Postpone: Appointext", "the rows fetched form the setReminders db are: " + rows.toString() + " The value of trs is : " + trs);
+			
+			int eventId = Integer.parseInt(rows.get(0).get(0).toString());
+			
+			String[] feilds = {Events.DTSTART};
+			
+			String result = GetCalendarEvents.getEventByID(con, eventId+"", feilds);
+			
+			Log.d("Postpone: Appointext", "Got the value of feilds as : " + result);
+			
+			/*String[] updateValues = {};
 			
 			if(!timeExtracted.equalsIgnoreCase("")){
 				
@@ -127,8 +146,10 @@ public class SetReminder {
 				int mm = Integer.parseInt(dateExtract[1]);
 				int yy = Integer.parseInt(dateExtract[2]);
 				
-			}
-		}*/
+			}*/
+			
+			return -1;
+		}
 		
 		rows = db.getMultiplePendingReminders("SELECT * FROM pendingReminders WHERE senderNumber=" + "'" + senderNumber + "'" + " and receiverNumber=" + "'" + recieverNumber+"'" + " and whenIsIt=" + "'" + when + "'");
 		
