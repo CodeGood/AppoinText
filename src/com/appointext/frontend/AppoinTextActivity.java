@@ -84,9 +84,9 @@ Log.i("AT MainActivity", "Registering Content Resolver.");
         alertDialog.show();
     }
 	
-	public void viewHelp(View v) {
+	/*public void viewHelp(View v) {
     	Intent intent = new Intent(this, HelpDisplay.class);
 		startActivity(intent); 
-    }
+    }*/
 
 }
