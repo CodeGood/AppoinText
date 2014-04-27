@@ -27,6 +27,7 @@ public class SettingsDisplay extends PreferenceActivity {
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.layout.settings);
 
+
 		//Preferences to select the times for various times of the day
 		Preference dateTime = (Preference) findPreference("day_time");
 		dateTime.setOnPreferenceClickListener(new OnPreferenceClickListener() {
@@ -37,30 +38,43 @@ public class SettingsDisplay extends PreferenceActivity {
 				return false;
 			}
 		});
-		
-		ListPreference promptControl = (ListPreference) findPreference("PromptsPreference");
-		promptControl.setOnPreferenceChangeListener(new OnPreferenceChangeListener(){    
-		    @Override
-		    public boolean onPreferenceChange(Preference preference, Object newValue) {
-		    	Log.i("PromptControl", "Entering into the listener");
-		    	ArrayList<Object> row;
-		        DatabaseManager db = new DatabaseManager(SettingsDisplay.this);
-		        db.open();
-		        row = db.getRowAsArray("settingsTable", "PromptControl");
-		        if(row.isEmpty())
-		        	db.addRow("settingsTable", "PromptControl", newValue.toString());
-		        else
-		        	db.updateRow("settingsTable", "PromptControl", newValue.toString());		        
-		        Log.i("Prompt Control", db.getRowAsArray("settingsTable", "PromptControl").get(1).toString());
-		        db.close();
-		        return false;
-		    }
-		});
 
+		final ListPreference promptControl = (ListPreference) findPreference("PromptsPreference");
+		promptControl.setOnPreferenceChangeListener(new OnPreferenceChangeListener(){    
+			@Override
+			public boolean onPreferenceChange(Preference preference, Object newValue) {
+				Log.i("PromptControl", "Entering into the listener");
+				ArrayList<Object> row;
+				DatabaseManager db = new DatabaseManager(SettingsDisplay.this);
+				db.open();
+				row = db.getRowAsArray("settingsTable", "PromptControl");
+				if(row.isEmpty())	{
+					db.addRow("settingsTable", "PromptControl", newValue.toString());
+					promptControl.setValue(newValue.toString());
+				}
+				else	{
+					db.updateRow("settingsTable", "PromptControl", newValue.toString());
+					promptControl.setValue(newValue.toString());
+				}
+				Log.i("Prompt Control", db.getRowAsArray("settingsTable", "PromptControl").get(1).toString());
+				db.close();
+				return false;
+			}
+		});
+	
 		//Preferences for No Nag Mode
 		Preference noNag = (Preference) findPreference("no_nag");
 		noNag.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				Intent intent = new Intent(SettingsDisplay.this, NoNagMode.class);
+				startActivity(intent);
+				return false;
+			}
 
+		});
+		
+		noNag.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
 				Intent intent = new Intent(SettingsDisplay.this, NoNagMode.class);
@@ -122,7 +136,7 @@ public class SettingsDisplay extends PreferenceActivity {
 				db.open();
 				ArrayList<Object> row;
 				row = db.getRowAsArray("settingsTable", "BlockedNumbers");
-				
+
 				if(row.isEmpty())	{
 					if(number.length() < 11)
 						number = "91" + number;

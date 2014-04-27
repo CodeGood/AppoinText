@@ -46,7 +46,7 @@ public class TimeSelector extends Activity {
 
 				ArrayList<Object> returnedAfternoonTime;
 				db.open();
-				returnedAfternoonTime = db.getRowAsArray("settingsTable", "DayTimeMorning");
+				returnedAfternoonTime = db.getRowAsArray("settingsTable", "DayTimeAfternoon");
 				if(!returnedAfternoonTime.isEmpty())	{
 					String[] time = (returnedAfternoonTime.get(1)).toString().split(":");
 					AfternoonTime.setCurrentHour(Integer.parseInt(time[0]));
