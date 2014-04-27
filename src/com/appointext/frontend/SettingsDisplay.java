@@ -9,7 +9,9 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.ListPreference;
 import android.preference.Preference;
+import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.provider.ContactsContract;
@@ -34,6 +36,25 @@ public class SettingsDisplay extends PreferenceActivity {
 				startActivity(intent);
 				return false;
 			}
+		});
+		
+		ListPreference promptControl = (ListPreference) findPreference("PromptsPreference");
+		promptControl.setOnPreferenceChangeListener(new OnPreferenceChangeListener(){    
+		    @Override
+		    public boolean onPreferenceChange(Preference preference, Object newValue) {
+		        ArrayList<Object> row;
+		        DatabaseManager db = new DatabaseManager(SettingsDisplay.this);
+		        db.open();
+		        row = db.getRowAsArray("settingsTable", "PromptControl");
+		        if(row.isEmpty())
+		        	db.addRow("settingsTable", "PromptControl", newValue.toString());
+		        else
+		        	db.updateRow("settingsTable", "PromptControl", newValue.toString());
+		        db.close();
+		        
+		        Log.i("Prompt Control", db.getRowAsArray("settingsTable", "PromptControl").get(1).toString());
+		        return false;
+		    }
 		});
 
 		//Preferences for No Nag Mode
@@ -102,7 +123,9 @@ public class SettingsDisplay extends PreferenceActivity {
 				db.open();
 				ArrayList<Object> row;
 				row = db.getRowAsArray("settingsTable", "BlockedNumbers");
-				if(row.get(1).toString().length() == 0)	{
+				if(row.isEmpty() || row.get(1) == null)	{
+					if(number.length() < 11)
+						number = "91" + number;
 					finalData = number + " - " + name;
 					db.addRow("settingsTable", "BlockedNumbers", finalData);
 					Toast.makeText(getApplicationContext(), number + " added to excluded list!", Toast.LENGTH_SHORT).show();
@@ -110,6 +133,8 @@ public class SettingsDisplay extends PreferenceActivity {
 				else	{
 					String numbersExisting = row.get(1).toString();
 					if(!numbersExisting.contains(number))	{
+						if(number.length() < 11)
+							number = "91" + number;
 						finalData = number + " - " + name;
 						String toBeAdded = numbersExisting + "," + finalData;
 						db.updateRow("settingsTable", "BlockedNumbers", toBeAdded);
