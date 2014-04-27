@@ -117,36 +117,30 @@ public class SetReminder {
 			
 			int eventId = Integer.parseInt(rows.get(0).get(0).toString());
 			
-			String[] feilds = {Events.DTSTART};
-			
-			String result = GetCalendarEvents.getEventByID(con, eventId+"", feilds);
-			
-			Log.d("Postpone: Appointext", "Got the value of feilds as : " + result);
-			
-			/*String[] updateValues = {};
+			String[] updateValues = {};
+			String[] dateExtract = {},timeExtract={};
+			int hour=0 , minute=0, dd=0, mm=0, yy=0;
 			
 			if(!timeExtracted.equalsIgnoreCase("")){
-				
-				String[] timeExtract;
+			
+				timeExtract = timeExtracted.split(",")[0].split(":");
 
-				timeExtract = timeExtracted.split(":");
-
-				int hour = Integer.parseInt(timeExtract[0]);
-				int minute = Integer.parseInt(timeExtract[1]);
+				hour = Integer.parseInt(timeExtract[0]);
+				minute = Integer.parseInt(timeExtract[1]);
 				
 			}
 			
 			if(!dateExtracted.equalsIgnoreCase("")){
 				
-				String[] dateExtract;
+				dateExtract = dateExtracted.split(",")[0].split("/");
 
-				dateExtract = dateExtracted.split(":");
-
-				int dd = Integer.parseInt(dateExtract[0]);
-				int mm = Integer.parseInt(dateExtract[1]);
-				int yy = Integer.parseInt(dateExtract[2]);
+				dd = Integer.parseInt(dateExtract[0]);
+				mm = Integer.parseInt(dateExtract[1]);
+				yy = Integer.parseInt(dateExtract[2]);
 				
-			}*/
+			}
+			
+			Log.d("Postpone: Appointext", "the values extracted : hour: " + hour + "minute: " + minute + "dd: " + dd + "mm: " + mm + "yy: " + yy );
 			
 			return -1;
 		}
