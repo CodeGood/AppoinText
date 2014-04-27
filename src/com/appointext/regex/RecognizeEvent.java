@@ -2,7 +2,13 @@ package com.appointext.regex;
 
 public class RecognizeEvent {
 	
-	private static String[] listOfEvents = {"Anniversary", "Birthday", "Movie", "Trip", "Outing", "Marriage", "Date", "Dinner", "Lunch", "Breakfast", "Sleepover", "Drink", "Project Submission", "Submission", "Meeting", "Flight", "Drinks"};
+	private static String[] listOfEvents = {"Anniversary", "Birthday", "Movie", "Trip", "Outing", "Marriage",
+								"Date", "Dinner", "Lunch", "Breakfast", "Sleepover", "Drink", 
+								"Project Submission", "Submission", "Meeting", "Flight", "Drinks", 
+								/* Aparajita added */
+								"Training", "Interview", "Wedding", "Party", "Cinema", "catch up", "Theatre", "Mall",
+								"Funeral", "Festival", "Carnival", "Sports", "Function", "Doctor", "Test", "Exam", "Examination"
+								};
 	
 	public static String getEvent(String msg){
 		
