@@ -27,28 +27,43 @@ public class ManualBlockedNumber extends Activity {
 				db.open();
 				ArrayList<Object> row;
 				row = db.getRowAsArray("settingsTable", "BlockedNumbers");
-				db.close();
 				if(row.isEmpty())	{
-					Log.i("Enter where I should't", ":(");
-					db.open();
+					Log.i("onEditorAction", "null case");
+					if(number.length() < 11)
+						number = "91" + number;
 					db.addRow("settingsTable", "BlockedNumbers", number);
 					db.close();
 					Toast.makeText(getApplicationContext(), number + " added to excluded list!", Toast.LENGTH_SHORT).show();
 					editText.setText("");
+					return false;
 				}
+				
+				else if(row.get(1) == null)	{
+					Log.i("onEditorAction", "null case");
+					db.updateRow("settingsTable", "BlockedNumbers", number);
+					db.close();
+					Toast.makeText(getApplicationContext(), number + " added to excluded list!", Toast.LENGTH_SHORT).show();
+					editText.setText("");
+					return false;
+				}
+
 				else	{
-					String existingNumber = row.get(1).toString();
-					if(!existingNumber.contains(number))	{
-						db.open();
+					int flag = 0;
+					String retrieveNumber = row.get(1).toString();
+					String[] existingNumber = retrieveNumber.split(",");
+					for(String temp: existingNumber)
+						if(number.equals(temp))	
+							flag = 1;
+					if(flag == 0)	{
 						db.updateRow("settingsTable", "BlockedNumbers", existingNumber + "," + number);
 						db.close();
 						Toast.makeText(getApplicationContext(), number + " added to excluded list!", Toast.LENGTH_SHORT).show();
 						editText.setText("");
 					}
 					else
-						Toast.makeText(getApplicationContext(), number + " already exists in excluded list!", Toast.LENGTH_SHORT).show();
-					}			
-				return false;
+						Toast.makeText(getApplicationContext(), number + " already exists in excluded list!", Toast.LENGTH_SHORT).show();		
+					return false;
+				}
 			}
 		});
 	}
