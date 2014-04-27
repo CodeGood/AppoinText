@@ -18,7 +18,10 @@ public class TimeSelector extends Activity {
 		TimePicker MorningTime;
 		TimePicker EveningTime;
 		TimePicker NightTime;
+		TimePicker AfternoonTime;
+		
 		MorningTime = (TimePicker)findViewById(R.id.timePickerMorning);
+		AfternoonTime = (TimePicker)findViewById(R.id.timePickerAfternoon);
 		EveningTime = (TimePicker)findViewById(R.id.timePickerEvening);
 		NightTime = (TimePicker)findViewById(R.id.timePickerNight);
 
@@ -38,6 +41,22 @@ public class TimeSelector extends Activity {
 			MorningTime.setCurrentMinute(00);
 		}
 		db.close();
+		
+		//Setting the time for the afternoon clock
+
+				ArrayList<Object> returnedAfternoonTime;
+				db.open();
+				returnedAfternoonTime = db.getRowAsArray("settingsTable", "DayTimeMorning");
+				if(!returnedAfternoonTime.isEmpty())	{
+					String[] time = (returnedAfternoonTime.get(1)).toString().split(":");
+					AfternoonTime.setCurrentHour(Integer.parseInt(time[0]));
+					AfternoonTime.setCurrentMinute(Integer.parseInt(time[1]));
+				}
+				else	{
+					AfternoonTime.setCurrentHour(13);
+					AfternoonTime.setCurrentMinute(00);
+				}
+				db.close();
 
 		//Setting the clock for the evening clock
 
@@ -90,6 +109,25 @@ public class TimeSelector extends Activity {
 					db.updateRow("settingsTable", "DayTimeMorning", time);
 				db.close();
 			}});
+		
+		//Listener for the afternoon time
+
+				AfternoonTime.setOnTimeChangedListener(new OnTimeChangedListener(){
+
+					@Override
+					public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
+						String time = hourOfDay + ":" + minute;
+
+						//Updating the Afternoon Time
+						db.open();
+						ArrayList<Object> afternoontime;
+						afternoontime = db.getRowAsArray("settingsTable", "DayTimeAfternoon");
+						if(afternoontime.isEmpty())
+							db.addRow("settingsTable", "DayTimeAfternoon", time);
+						else
+							db.updateRow("settingsTable", "DayTimeAfternoon", time);
+						db.close();
+					}});
 
 
 		//Listening for the evening time
