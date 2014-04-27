@@ -123,11 +123,18 @@ public class SettingsDisplay extends PreferenceActivity {
 				db.open();
 				ArrayList<Object> row;
 				row = db.getRowAsArray("settingsTable", "BlockedNumbers");
-				if(row.isEmpty() || row.get(1) == null)	{
+				if(row.isEmpty())	{
 					if(number.length() < 11)
 						number = "91" + number;
 					finalData = number + " - " + name;
 					db.addRow("settingsTable", "BlockedNumbers", finalData);
+					Toast.makeText(getApplicationContext(), number + " added to excluded list!", Toast.LENGTH_SHORT).show();
+				}
+				if(row.get(1) == null)	{
+					if(number.length() < 11)
+						number = "91" + number;
+					finalData = number + " - " + name;
+					db.updateRow("settingsTable", "BlockedNumbers", finalData);
 					Toast.makeText(getApplicationContext(), number + " added to excluded list!", Toast.LENGTH_SHORT).show();
 				}
 				else	{
@@ -149,4 +156,3 @@ public class SettingsDisplay extends PreferenceActivity {
 
 	}
 }
-

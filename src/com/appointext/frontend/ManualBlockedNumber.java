@@ -40,6 +40,8 @@ public class ManualBlockedNumber extends Activity {
 				
 				else if(row.get(1) == null)	{
 					Log.i("onEditorAction", "null case");
+					if(number.length() < 11)
+						number = "91" + number;
 					db.updateRow("settingsTable", "BlockedNumbers", number);
 					db.close();
 					Toast.makeText(getApplicationContext(), number + " added to excluded list!", Toast.LENGTH_SHORT).show();
@@ -55,6 +57,8 @@ public class ManualBlockedNumber extends Activity {
 						if(number.equals(temp))	
 							flag = 1;
 					if(flag == 0)	{
+						if(number.length() < 11)
+							number = "91" + number;
 						db.updateRow("settingsTable", "BlockedNumbers", existingNumber + "," + number);
 						db.close();
 						Toast.makeText(getApplicationContext(), number + " added to excluded list!", Toast.LENGTH_SHORT).show();
