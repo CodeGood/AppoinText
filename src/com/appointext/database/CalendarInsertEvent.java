@@ -337,9 +337,10 @@ Log.d("Appointext Calendar", "Reminder" + title + "Added Successfully");
 		   		int iNumRowsUpdated = 0;
 
 		        ContentValues values = new ContentValues();
-
-		        for (String cur : updateValues)
+		        
+		        for (String cur : updateValues) 
 		        	values.put(cur.split(",")[0], cur.split(",")[1]);
+		        
 
 		        Uri eventUri = ContentUris.withAppendedId(Events.CONTENT_URI, entryID);        
 		        iNumRowsUpdated = con.getContentResolver().update(eventUri, values, null,
