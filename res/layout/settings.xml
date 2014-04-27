@@ -45,6 +45,8 @@
         android:id="@+id/NoNag"
         android:key="no_nag"
         android:onClick="NoNagHandler"
-        android:title="No Nag Mode" />
+        android:title="Quiet Hours" />
+    
+    
 
 </PreferenceScreen>

@@ -31,7 +31,7 @@ public class BlockedNumberDisplay extends Activity {
 		ArrayList<Object> row;
 		row = db.getRowAsArray("settingsTable", "BlockedNumbers");
 		db.close();
-		if(row.isEmpty() || row.get(1) == null)	{
+		if(row.isEmpty() || row.get(1).toString().equals("NoNumbers"))	{
 			AlertDialog alertDialog = new AlertDialog.Builder(
 					BlockedNumberDisplay.this).create();
 			 alertDialog.setTitle("Excluded Numbers");
@@ -74,7 +74,7 @@ public class BlockedNumberDisplay extends Activity {
 									}
 								}
 								else
-									update  = null;
+									update  = "NoNumbers";
 							//	}
 							/*	else	{
 									for(String temp: numbers)	{
