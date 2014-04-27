@@ -75,7 +75,15 @@ public class GetCalendarEvents {
 			if (cursor.moveToFirst()) {
 			   do {
 				  for (int i = 0; i < fields.length; i++)
-					  result += cursor.getString(i) + ",";
+					  if (fields[i].equals(Events.DTSTART) || fields[i].equals(Events.DTEND)) {
+	   					     // Create a calendar object that will convert the date and time value in milliseconds to date. 
+							 Calendar calendar1 = Calendar.getInstance();
+							 calendar1.setTimeInMillis(cursor.getLong(i));
+	Log.d("AppoinTextReminder", "Got date as " + formatter.format(calendar1.getTime()));						 
+							 result += formatter.format(calendar1.getTime()) + ",";
+						  }
+						  else
+							  result += cursor.getString(i) + ",";
 				  result += "#";
 			   } while (cursor.moveToNext());
 			}	
@@ -126,12 +134,13 @@ public class GetCalendarEvents {
 			if (cursor.moveToFirst()) {
 			   do {
 				  for (int i = 0; i < fields.length; i++) {
-					  if (fields.equals(Events.DTSTART) || fields.equals(Events.DTEND)) {
-						 DateFormat formatter = new SimpleDateFormat("dd/MM/YYYY hh:mm");
+					  if (fields[i].equals(Events.DTSTART) || fields[i].equals(Events.DTEND)) {
+						 DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
    					     // Create a calendar object that will convert the date and time value in milliseconds to date. 
 						 Calendar calendar = Calendar.getInstance();
 						 calendar.setTimeInMillis(cursor.getLong(i));
-						 result += formatter.format(calendar.getTime());
+Log.d("AppoinTextReminder", "Got date as " + formatter.format(calendar.getTime()));						 
+						 result += cursor.getString(i) + "#" + formatter.format(calendar.getTime()) + ",";
 					  }
 					  else
 						  result += cursor.getString(i) + ",";

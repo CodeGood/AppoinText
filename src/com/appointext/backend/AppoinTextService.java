@@ -28,34 +28,34 @@ import java.util.ArrayList;
  */
 
 public class AppoinTextService extends IntentService {
-	
+
 	DatabaseManager db;
 	private static final int INBOX = 1;
 	private static final int SENT = 2;
 	private static int origin;
-	
+
 	public AppoinTextService() {
 		super("AppoinText"); //Apparently the name is necessary only for tracking purposes
 		//It is easier to give a default name than bothering to figure out how to raise an Intent to call a parameterized constructor
 	}
-	
+
 	@Override
 	protected void onHandleIntent(Intent intent) {
 		//For an IntentService, all work must be in onHandleIntent. onCreate and onCommand should never be overridden.
-		
+
 		String originS = intent.getStringExtra("origin");
 		Long timeStamp = intent.getLongExtra("timestamp", 0);
 		Log.i("AppoinText", "The vlaue of the time stamp when the messge was detected this time is : " + timeStamp);
-		
+
 		String curText = null;
-		
+
 		if (originS.equals("inbox"))
 			origin = INBOX;
 		else
 			origin = SENT;
-		
+
 		SmsMessage[] msgs = null;
-		
+
 		if (origin == INBOX) {
 			//Should have received the incoming sms as part of the Intent
 			Bundle smsBundle = intent.getExtras();
@@ -78,36 +78,36 @@ public class AppoinTextService extends IntentService {
 		db = new DatabaseManager(this);
 
 		db.open();
-		
+
 		ArrayList<Object> row = new ArrayList<Object>();
 		row = db.getRowAsArray("timeStampTable", "lastTimeStamp");
-		
+
 		Log.d("AppoinText","I am trying to get the value of the last time stamp : " + row.toString() );
-		
+
 		if(row.isEmpty()){
-			
+
 		Log.d("appointext", "I am in the empty clause of timeStamp");
-			
+
 			db.addRow("timeStampTable", "lastTimeStamp", timeStamp.toString());
 		}
-		
-		
+
+
 		else{
-			
+
 		Log.d("appointext", "I am in the same clause of timeStamp");
-		
+
 			if(Long.parseLong(row.get(1).toString()) == timeStamp){
 		Log.d("appointext", "I am duplicate");	
 				db.close();
 				return;
 			}
-			
+
 			else{
-				
+
 		Log.d("AppoinText", "I am updating the last acessed to " + timeStamp +"and the last message was : " + curText);
-		
+
 				if(timeStamp !=  0){
-					
+
 					db.updateRow("timeStampTable", "lastTimeStamp", timeStamp.toString());
 					row = db.getRowAsArray("timeStampTable", "lastTimeStamp");
 					Log.d("appointext", "updated timestamp " + row.toString());
@@ -115,7 +115,7 @@ public class AppoinTextService extends IntentService {
 				db.close();
 			}
 		}
-		
+
 
 		Map<String, Double> res;
 		String category = null;
@@ -131,40 +131,21 @@ public class AppoinTextService extends IntentService {
 
 				minimumConfidence = value;
 				category = key;
-				
+
 				Log.d("Confidence Value", "The values are minimumConfidence :" + minimumConfidence + " category :" + category);
 			}
 
 		}// get the category and the confidence in case it is required
-		
+
 		Log.d("AppoinText", "The final values are minimumConfidence :" + minimumConfidence + " category :" + category);
 
 		if(category.equalsIgnoreCase("irrelevant")){
 			// this is not important to us, so stop the service by returning.
 			return;
 		}
-		
-<<<<<<< HEAD
-			Log.d("appointext", "the numbers determined are" + senderNumber + " " + recieverNumber);
 
-			String event = RecognizeEvent.getEvent(curText);
-			String when = "";
-			String timeExtracted = "", dateExtracted = "";
-
-			timeExtracted = RecognizeTime.findTime(this, curText);
-			dateExtracted = RecognizeDate.findDates(curText);
-			
-			Log.d("appointext", "the date and day : " + timeExtracted + " " + dateExtracted );
-
-			//After extracting date and time, get it in the format HH:MM,dd/mm/yyyy and store it in the pending reminders list
-			
-			
-			if(!timeExtracted.equalsIgnoreCase("") && !dateExtracted.equalsIgnoreCase("")){
-			
-				when = timeExtracted.split("[/,]")[0] + "," + dateExtracted.split("[/,]")[0]+"/"+dateExtracted.split("[/,]")[1]+"/"+dateExtracted.split("[/,]")[2];
-=======
 		String senderNumber =null, recieverNumber = null;
-		
+
 		if(origin == INBOX){                		
 			senderNumber = (msgs[0].getOriginatingAddress().replaceAll("[^0-9]", ""));
 			recieverNumber = "123";
@@ -172,20 +153,19 @@ public class AppoinTextService extends IntentService {
 				Log.d("NumberConversion", "Original sender number " + senderNumber);
 				senderNumber = "91" + senderNumber;
 				Log.d("NumberConversion", "New number as " + senderNumber);
->>>>>>> e0ad6e0a3e1e95b9aceabc38e905aadc84a6bc4e
 			}
-			
+
 			db.open();
-			
+
 			ArrayList<Object> blockedNumbers;			
 			blockedNumbers = db.getRowAsArray("settingsTable", "BlockedNumbers");
-			
+
 			String[] numbers  = blockedNumbers.toString().split(",");
-			
+
 			for(int i=0; i<numbers.length; i++){
-				
+
 			}
-			
+
 		}
 
 		else{               		
@@ -196,22 +176,22 @@ public class AppoinTextService extends IntentService {
 				recieverNumber = "91" + recieverNumber;
 				Log.d("NumberConversion", "New number as " + recieverNumber);
 			}
-			
+
 		}
 
 		if(category.equalsIgnoreCase("query")){
-			
+
 			SetReminder.addToPendingTable(this, curText, senderNumber, recieverNumber);
-			
+
 		}
 
 		if(category.equalsIgnoreCase("reply")){
-			
+
 			SetReminder.setReminderBasedOnReply(this, curText, senderNumber, recieverNumber);
 		}
-		
+
 		if(category.equalsIgnoreCase("meeting")){
-			
+
 			SetReminder.addToPendingTable(this, curText, senderNumber, recieverNumber);
 		}
 
@@ -234,19 +214,19 @@ public class AppoinTextService extends IntentService {
 	 * @param message : The incoming text message that has to be categories
 	 * @return Map of <Category, Confidence> values for the recently received sms. Null is returned in case of an error.
 	 */
-	
+
 	Map<String, Double> classify (String message) { //May choose to make this guy private. 
-		
+
 		try {			
 			Classifier cs = new Classifier(getApplicationContext(), "classifier.ser" );
 			return cs.getConfidence(message);
-		
+
 		}
 		catch (Exception e) {
 			//TODO: Handle exceptions appropriately. Consider throwing some exceptions onwards. Or to the exception class.
 			Log.e("AppoinText Service", "classify failed for " + message + " with error " + e);
 		}
-		
+
 		return null;
 	}
 
