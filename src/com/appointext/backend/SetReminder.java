@@ -12,7 +12,6 @@ import android.util.Log;
 import com.appointext.database.CalendarInsertEvent;
 import com.appointext.database.DatabaseManager;
 import com.appointext.database.GetCalendarEvents;
-import com.appointext.nertagger.NERecognizer;
 import com.appointext.regex.RecognizeDate;
 import com.appointext.regex.RecognizeEvent;
 import com.appointext.regex.RecognizeTime;
@@ -34,13 +33,6 @@ public class SetReminder {
 		ArrayList<ArrayList<Object>> rows = new ArrayList<ArrayList<Object>>();
 		ArrayList<ArrayList<Object>> tempRows = new ArrayList<ArrayList<Object>>();
 
-		try{
-			taggedCurText = NERecognizer.NERTagger(con, curText);
-		}
-		catch(Exception e){	
-			Log.e("NER Tagger", "Died while tagging :" + e);
-		}
-		
 		Log.d("Appointext", "The tagged text is :" + taggedCurText);
 
 		//From the tagged text find out the list of persons and the place if any mentioned. Organizations are also classified as location here
