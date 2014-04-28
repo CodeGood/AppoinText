@@ -35,10 +35,13 @@ public class MyUpdateService extends Service {
 	public int onStartCommand(Intent intent, int flags, int startID) {
 		
 		Log.d("AppoinText Service", "Registering content observer");
-		if (smsObserver == null) smsObserver = new SMSListenerSent(new Handler(), this);
-		this.getContentResolver().registerContentObserver(Uri.parse("content://sms/"), true, smsObserver);
+		
+		if (smsObserver == null) {
+			smsObserver = new SMSListenerSent(new Handler(), this);
+			this.getContentResolver().registerContentObserver(Uri.parse("content://sms/"), true, smsObserver);
+		}
+		
 		//scheduleNextUpdate();
-
 		
 		return START_STICKY;
 		
@@ -46,6 +49,7 @@ public class MyUpdateService extends Service {
 	
 	public void onDestroy() {
 		this.getContentResolver().unregisterContentObserver(smsObserver);
+		smsObserver = null;
 		scheduleNextUpdate();
 		Log.d("AppoinText", "Buh bye :( I was killed by this merciless phone :-/");
 		super.onDestroy();
