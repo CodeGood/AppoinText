@@ -56,4 +56,13 @@
           android:onClick="viewAbout"
 />
       
+      <Button
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:summary="Help!"
+          android:text="Help"
+          android:onClick="viewHelp"
+/>
+      
+      
  </LinearLayout>

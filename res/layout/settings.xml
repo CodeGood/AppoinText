@@ -9,19 +9,19 @@
         <Preference
             android:id="@+id/BlockedNumbersManual"
             android:key="numberManual"
-            android:title="Enter a number manually">
+            android:title="Enter a Number Manually">
         </Preference>
 
         <Preference
             android:id="@+id/BlockedNumbersContacts"
             android:key="contactChosen"
-            android:title="Choose from contacts" >
+            android:title="Choose From Contacts" >
         </Preference>
         
         <Preference
             android:id="@+id/ShowBlockedNumbers"
             android:key="ShowBlockedNumbers"
-            android:title="Excluded Numbers" >
+            android:title="Show Excluded Numbers" >
         </Preference>
         
     </PreferenceScreen>

@@ -43,6 +43,14 @@
             android:label="Reminders for Today" >            
         </activity>
         <activity
+            android:name="com.appointext.frontend.HelpAbout"
+            android:label="About AppoinText" >                
+        </activity>
+        <activity
+            android:name="com.appointext.frontend.HelpSettings"
+            android:label="Help With Settings" >
+        </activity>
+        <activity
             android:name="com.appointext.frontend.RemindersHour"
             android:label="Reminders over 1 Hour" >            
         </activity>

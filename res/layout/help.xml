@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <Button
+        android:id="@+id/helpAbout"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:key="helpAbout"
+        android:text="About AppoinText"
+        android:onClick="helpAbout">
+    </Button>
+    
+    <Button
+        android:id="@+id/helpSettings"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:key="helpSettings"
+        android:text="Help With Settings"
+        android:onClick="helpSettings">
+    </Button>
+    
+    <Button
+        android:id="@+id/helpContact"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:key="helpContact"
+        android:text="Contact Us!"
+        android:onClick="helpContact">
+    </Button>
+  
+</LinearLayout>
