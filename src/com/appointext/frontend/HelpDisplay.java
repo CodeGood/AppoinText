@@ -30,7 +30,7 @@ public class HelpDisplay extends Activity {
 	public void helpContact(View V) {
 		AlertDialog alertDialog = new AlertDialog.Builder(this).create();
         alertDialog.setTitle("Contact Us!");
-        alertDialog.setMessage("Have complaints, suggestions or just want to talk to us?\nMail us on appointextteam@gmail.com right away!");
+        alertDialog.setMessage("Have complaints, suggestions or just want to talk to us?\nMail us on appointextteam@googlegroups.com right away!");
         alertDialog.setButton (DialogInterface.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                 }
