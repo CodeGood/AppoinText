@@ -6,7 +6,6 @@
 
     <Button
         android:id="@+id/helpAbout"
-        style="?android:attr/borderlessButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
@@ -17,7 +16,6 @@
     
     <Button
         android:id="@+id/helpSettings"
-        style="?android:attr/borderlessButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
@@ -28,7 +26,6 @@
     
     <Button
         android:id="@+id/helpContact"
-        style="?android:attr/borderlessButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"

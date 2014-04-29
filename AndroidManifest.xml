@@ -90,7 +90,10 @@
             android:name="com.appointext.frontend.TimeSelector"
             android:label="Day Scheduler" >            
         </activity>
-
+		<activity
+            android:name="com.appointext.frontend.HelpDisplay"
+            android:label="Help With AppoinText">            
+        </activity>
         <service
   			android:name="com.appointext.backend.AppoinTextService"
   			android:process=":appoinTextService" 
