@@ -126,7 +126,7 @@ public class SetReminder {
 				timeExtract = timeExtracted.split(",")[0].split(":");
 
 				hour = Integer.parseInt(timeExtract[0]);
-				minute = Integer.parseInt(timeExtract[1]);
+				minute = Integer.parseInt(timeExtract[1].split("/")[0]);
 				
 				finalTime = hour + ":" + minute;
 			}

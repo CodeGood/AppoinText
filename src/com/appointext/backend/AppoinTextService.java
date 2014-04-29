@@ -170,6 +170,8 @@ public class AppoinTextService extends IntentService {
 			
 			for(int i=0; i<numbers.length; i++){
 				
+				numbers[i] = numbers[i].replaceAll("[^0-9]", "");
+				
 				if(numbers[i].equalsIgnoreCase(senderNumber)){
 					
 					Log.d("Appointext block numbers", "Entered if");
