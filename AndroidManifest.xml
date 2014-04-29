@@ -43,6 +43,14 @@
             android:label="Reminders for Today" >            
         </activity>
         <activity
+            android:name="com.appointext.frontend.HelpAbout"
+            android:label="About AppoinText" >                
+        </activity>
+        <activity
+            android:name="com.appointext.frontend.HelpSettings"
+            android:label="Help With Settings" >
+        </activity>
+        <activity
             android:name="com.appointext.frontend.RemindersHour"
             android:label="Reminders over 1 Hour" >            
         </activity>
@@ -82,6 +90,7 @@
             android:name="com.appointext.frontend.TimeSelector"
             android:label="Day Scheduler" >            
         </activity>
+<<<<<<< HEAD
         
         <activity
             android:name="com.appointext.frontend.ConflictDetected"
@@ -89,6 +98,12 @@
             android:label="Conflict" >            
         </activity>
 
+=======
+		<activity
+            android:name="com.appointext.frontend.HelpDisplay"
+            android:label="Help With AppoinText">            
+        </activity>
+>>>>>>> be2ada624d0d985ec57cf5c82cf0c826fdbc4f32
         <service
   			android:name="com.appointext.backend.AppoinTextService"
   			android:process=":appoinTextService" 
