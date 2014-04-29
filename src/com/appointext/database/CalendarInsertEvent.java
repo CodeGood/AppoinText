@@ -10,7 +10,7 @@ package com.appointext.database;
  /*
  * TODO :
  * 		1. Add multiple attendees rather than a CSV
- * 		2. Check whether delete actually deletes the reminder or not.
+ * 		2. Check whether delete actually deletes the reminder or not. _ DONE
  * 		3. Check whether updating the start time actually updates the reminder time. - DONE.
  * 	I am 99.99% sure of the last two, but then who knows! Always better to check or at least document unchecked  
  */
@@ -20,6 +20,9 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
+import com.appointext.regex.RecognizeEvent;
+
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -35,6 +38,7 @@ import android.provider.CalendarContract.Reminders;
 import android.text.format.DateUtils;
 import android.util.Log;
 
+@SuppressLint("DefaultLocale")
 public class CalendarInsertEvent {
 	
 	/**
@@ -162,7 +166,8 @@ Log.d("AppoinText", "Got Timezone as " + TimeZone.getDefault().toString());
 		 * 						However a value of -1 means reminder was not set, while -2 means it was sent as an Intent
 		 */
 	
-	   public static long addReminder(Context cont, int date, int month, int year, int hour, int minute, int min_before_event, String title, String location, String desc, String attendees) { 
+	   @SuppressLint("DefaultLocale")
+	public static long addReminder(Context cont, int date, int month, int year, int hour, int minute, int min_before_event, String title, String location, String desc, String attendees) { 
 
 		con = cont; //Set it for use by the whole class
 		month = month-1;
@@ -178,6 +183,11 @@ Log.d("AppoinText", "Got Timezone as " + TimeZone.getDefault().toString());
 			prompt = "ambiguity";
 		else
 			prompt = (String)row.get(1);
+		
+		//convert the provided reminder time into proper time
+		Integer remTime = RecognizeEvent.times.get(title.toLowerCase().trim());
+		if (remTime != null)
+			min_before_event = remTime;
 		
 		if (prompt.equalsIgnoreCase("always")) //Not my head ache at ALL. Let's just ignore this :D
 			return addReminderViaCalendarApp(cont, date, month, year, hour, minute, min_before_event, title, location, desc, attendees);
@@ -348,8 +358,18 @@ Log.d("Appointext Calendar", "Reminder" + title + "Added Successfully");
 
 		        ContentValues values = new ContentValues();
 		        
-		        for (String cur : updateValues) 
-		        	values.put(cur.split(",")[0], cur.split(",")[1]);
+		        for (String cur : updateValues) {
+		        	String[] parts = cur.split(",");
+		        			        	
+		        	if (parts[0].equals(Events.TITLE)) {
+		        		//convert the provided reminder time into proper time
+		        		Integer remTime = RecognizeEvent.times.get(parts[0].toLowerCase().trim());
+		        		if (remTime != null)
+		        			min_before_event = remTime;
+		        	}
+		        		
+		        	values.put(parts[0], parts[1]);
+		        }
 		        
 
 		        Uri eventUri = ContentUris.withAppendedId(Events.CONTENT_URI, entryID);        
