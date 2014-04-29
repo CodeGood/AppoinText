@@ -112,7 +112,7 @@ public class SetReminder {
 				
 				finalTime = timeExtracted.split("[/,]")[0] + whenStamp;
 				
-				if(Boolean.parseBoolean(rows.get(0).get(3).toString())){
+				if(rows.get(0).get(3).toString().equals("1")){
 					
 					String[] extractedData = finalTime.split(",");	         	    		
 					int date=0, month=0, year=0, hour=0, minute=0;
