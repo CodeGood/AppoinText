@@ -82,6 +82,12 @@
             android:name="com.appointext.frontend.TimeSelector"
             android:label="Day Scheduler" >            
         </activity>
+        
+        <activity
+            android:name="com.appointext.frontend.ConflictDetected"
+            android:exported="true"
+            android:label="Conflict" >            
+        </activity>
 
         <service
   			android:name="com.appointext.backend.AppoinTextService"

@@ -17,7 +17,8 @@ public class RecognizeTime {
 		
 	public static String findTime(Context con, String msg) {
 		
-		sms = msg.toLowerCase(Locale.US).trim().replaceAll("(\\w+)\\p{Punct}(\\s|$)", "$1$2");
+		//sms = msg.toLowerCase(Locale.US).trim().replaceAll("(\\w+)\\p{Punct}(\\s|$)", "$1$2");
+		sms = msg.toLowerCase(Locale.US).trim().replaceAll("[^a-zA-Z0-9\\' ]", ""); 
 		String foundTime = "";
 		foundTime += findOClock();
 		foundTime += getTimeByRegex();
@@ -112,20 +113,32 @@ Log.w("AppoinTextReminder", "In GetMEN");
 	/* Checks for o'clock and half past */
 	
 	private static String findOClock () {
-	
+		
 		String[] words = sms.split(" ");
 		String foundTime = "";
-		
-		for (int i = 0; i < words.length; i++) {
 
-		if (i != 0 && (words[i].equals("o'clock") || words[i].equals("oclock"))) {
+		for (int i = 0; i < words.length; i++) {
+Log.e("AppoinTextChange", "The word of the moment is " + words[i]);
+			if (i != 0 && (words[i].equalsIgnoreCase("o'clock") || words[i].equalsIgnoreCase("oclock"))) {
+
 				if ((words[i-1].replaceAll("[^0-9]", "")).equals("") == false) { //It's in numerals
 
-					foundTime += words[i-1].replaceAll("[^0-9]", "") + ":00/" + i;
+					int time;
+					try {
+						time = Integer.parseInt(words[i-1].replaceAll("[^0-9]", ""));
+					}
+					catch (NumberFormatException ne) {
+						time = 00;
+					}
+Log.e("AppoinTextChange", "The time is " + time);					
+					if (time < 10)
+						time = time + 12;
+					
+					foundTime += time + ":00/" + i;
 					foundTime += ",";
 				}
 				else { //convert
-
+Log.d("AppoinTextChange", "Somehow ended up here at word times :(");
 					if (words[i-1].equals("one")) foundTime += "13:00/" + i + ",";
 					else if (words[i-1].equals("two")) foundTime += "14:00/"+i+ ",";
 					else if (words[i-1].equals("three")) foundTime += "15:00/"+i+ ",";

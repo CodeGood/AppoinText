@@ -1,6 +1,7 @@
 package com.appointext.backend;
 
 
+import java.util.Arrays;
 import java.util.Map;
 
 
@@ -163,7 +164,9 @@ public class AppoinTextService extends IntentService {
 			String[] numbers  = blockedNumbers.toString().split(",");
 
 			
-			Log.i("Appointext block numbers", "The strings are " + numbers.toString());
+			Log.i("Appointext block numbers", "The strings are " + Arrays.toString(numbers));
+			if (numbers.length == 0)
+				Log.i("AppoinText Block Numbers", "There are no blocked numbers.");
 			
 			for(int i=0; i<numbers.length; i++){
 				

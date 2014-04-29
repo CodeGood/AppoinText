@@ -96,6 +96,54 @@ public class GetCalendarEvents {
 		
 		return result;
 	}
+
+	public static String getEvent (Context con, long sTime, long eTime, String[] fields) { //When dtstart and dtend is in miliseconds
+		
+		String result = "";
+		
+		if (fields == null) {
+			fields = new String[1];
+			fields[0] = "title";
+		}
+		
+		try {
+			
+	        Uri l_eventUri; 
+			
+			if (Build.VERSION.SDK_INT >= 8) {
+				l_eventUri = Uri.parse("content://com.android.calendar/events");
+			} else {
+				l_eventUri = Uri.parse("content://calendar/events");
+			}
+			ContentResolver contentResolver = con.getContentResolver();
+
+			String dtstart = "dtstart";
+			String dtend = "dtend";
+			
+			long after = sTime;
+
+			Cursor cursor= contentResolver.query(l_eventUri, fields,
+					"(" + dtstart + ">" + after + " and "
+	            + dtend + "<" + eTime + ")", null,
+	            "dtstart ASC");
+				
+			if (cursor.moveToFirst()) {
+			   do {
+				  for (int i = 0; i < fields.length; i++)
+					  result += cursor.getString(i) + ",";
+				  result += "#";
+			   } while (cursor.moveToNext());
+			}	
+			
+	    } catch (AssertionError ex) {
+	            Log.e("AppoinText", "Assertion Error " + ex);
+	    } catch (Exception e) {
+	            Log.e("AppoinText", "Non assertion error " + e);
+	    }
+		
+		return result;
+	}
+	
 	
 	/**
 	 * 

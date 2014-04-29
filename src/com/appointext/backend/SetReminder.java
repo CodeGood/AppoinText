@@ -79,7 +79,7 @@ public class SetReminder {
 		timeExtracted = RecognizeTime.findTime(con, curText);
 		dateExtracted = RecognizeDate.findDates(curText);
 		
-		Log.d("appointext", "the date and day : " + timeExtracted + " " + dateExtracted );
+		Log.d("appointext", "the time and date : " + timeExtracted + " " + dateExtracted );
 
 		//After extracting date and time, get it in the format HH:MM,dd/mm/yyyy and store it in the pending reminders list
 		
@@ -218,7 +218,7 @@ public class SetReminder {
 
 			if(rows.get(0).get(6).toString()!= null && rows.get(0).get(6).toString().equalsIgnoreCase("") && (rows.get(0).get(6).toString().equalsIgnoreCase("") || rows.get(0).get(6).toString().startsWith(",") || rows.get(0).get(6).toString().endsWith(","))){         	    		
 
-				Log.d("AppoinText", "Inside the if condition :P");
+				Log.d("AppoinText", "Inside the if condition. Not enough information to add pending reminder. :P");
 				db.updateRow("pendingReminders", (Integer)rows.get(0).get(0), rows.get(0).get(1).toString(), rows.get(0).get(2).toString(), 1, rows.get(0).get(4).toString(), rows.get(0).get(5).toString(), rows.get(0).get(6).toString(), rows.get(0).get(7).toString());	
 				return 2; //return value of 2 means that there was not enough information to set the reminder 
 			}

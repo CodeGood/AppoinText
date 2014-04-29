@@ -236,6 +236,16 @@ Log.d("AppointextReminder", "Obtained Calendar ID as " + calId);
 			
 			/* Now, we move on if a reminder is required. */
 			
+			/* First check whether it is a duplicate */
+			
+			if (HandleConflict.duplicateExists(con, title, start, start, desc, location)) //If an exact duplicate exists
+				return -1; //Reminder not set
+			
+			/* Then check if there is a conflict */
+			
+			if (HandleConflict.findConflicts(con, start, title, attendees)) //Conflict found
+				return -2; //reminder not set. Find conflict will raise the notification which shall handle the conflict.
+			
 			 //Now we start creating the entry to be sent to the calendar database 
 			
 			if (title == null || title.equals("") || min_before_event < 0) {
