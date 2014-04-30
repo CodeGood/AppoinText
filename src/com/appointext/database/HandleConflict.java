@@ -170,7 +170,7 @@ public class HandleConflict {
 		catch(Exception e){
 			id = 0;
 		}
-		Log.d("AppoinTextConflict", "Got ID as " + id);
+		Log.d("AppoinText People", "Got ID as " + id);
 		Cursor cursor = CalendarContract.Attendees.query(cr, id, new String[] {CalendarContract.Attendees.ATTENDEE_NAME} );
 		Log.d("AppoinTextConflict", "Queried");
 		String aOld = "";

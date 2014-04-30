@@ -71,7 +71,7 @@ public class AppoinTextService extends IntentService {
         Log.i("AppoinText", "Got origin as " + origin);
 Log.d("AppoinTextCurText", "curText is " + curText);        
         
-        if(curText == null || curText.equals(""))
+        if(curText == null || curText.length() == 0 || curText.equals(""))
 		{
 			Log.e("appointext", "curText is null or empty sorry :(");
 			return;

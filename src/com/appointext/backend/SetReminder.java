@@ -14,10 +14,10 @@ import com.appointext.database.DatabaseManager;
 import com.appointext.database.GetCalendarEvents;
 import com.appointext.regex.RecognizeDate;
 import com.appointext.regex.RecognizeEvent;
+import com.appointext.regex.RecognizePeople;
 import com.appointext.regex.RecognizeTime;
 
 public class SetReminder {
-
 
 	static DatabaseManager db;
 	public static int addToPendingTable(Context con, String curText, String senderNumber, String recieverNumber){
@@ -26,41 +26,18 @@ public class SetReminder {
 
 		//since this is a query, extract all the details and then store it in the pending table.
 
-		String[] taggedWords; 
 		String people = "";
 		String location = "";
-		String taggedCurText = "";
 		ArrayList<ArrayList<Object>> rows = new ArrayList<ArrayList<Object>>(); //This is being used multiple times 
 		ArrayList<ArrayList<Object>> tempRows = new ArrayList<ArrayList<Object>>();
 
 		db = new DatabaseManager(con);
 
 		db.open();
-		
-		Log.d("Appointext", "The tagged text is :" + taggedCurText);
 
 		//From the tagged text find out the list of persons and the place if any mentioned. Organizations are also classified as location here
 
-		if(taggedCurText != null) {
-			
-			taggedWords = taggedCurText.split(" ");
-
-			for(String word : taggedWords){
-				if(word.contains("PERSON")){  
-					people += word.split("/")[0] + ",";
-				}
-
-				if(word.contains("LOCATION")){   			
-					location += word.split("/")[0] + ",";
-				}
-
-				if(word.contains("ORGANISATION")){   			
-					location += word.split("/")[0] + ",";
-				}
-			}
-		}
-
-		
+		people = RecognizePeople.findPeople(curText);
 
 		//Find out if the message is either a sent message or a received one. And add the person who sent the message or is receiving the message also as an attendee. The host himself/ herself is not added yet.
 
@@ -247,7 +224,7 @@ public class SetReminder {
 			
 			if(!timeExtracted.equalsIgnoreCase("")){
 			
-				timeExtract = timeExtracted.split(",")[0].split(":/");
+				timeExtract = timeExtracted.split(",")[0].split(":");
 
 				hour = Integer.parseInt(timeExtract[0]);
 				minute = Integer.parseInt(timeExtract[1].split("/")[0]);
@@ -270,7 +247,7 @@ public class SetReminder {
 				long tim = inMiliseconds(result, finalDate, finalTime);
 				
 				Log.i("Postpone: Appointext", "No exception" + tim);
-				CalendarInsertEvent.updateCalendarEntry(con, eventId, new String[] {Events.DTSTART + "," + tim,  Events.DTEND + "," + tim},30, "");
+				CalendarInsertEvent.updateCalendarEntry(con, eventId, new String[] {Events.DTSTART + "," + tim,  Events.DTEND + "," + tim}, -1, "");
 				
 			}
 			catch(Exception e){
