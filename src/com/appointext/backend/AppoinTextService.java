@@ -69,7 +69,7 @@ public class AppoinTextService extends IntentService {
 			curText = intent.getStringExtra("body");
 
         Log.i("AppoinText", "Got origin as " + origin);
-Log.d("AppoinTextCurText", "curText is " + curText);        
+        Log.d("AppoinTextCurText", "curText is " + curText);        
         
         if(curText == null || curText.length() == 0 || curText.equals(""))
 		{
