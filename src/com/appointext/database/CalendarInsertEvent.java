@@ -10,7 +10,7 @@ package com.appointext.database;
  /*
  * TODO :
  * 		1. Add multiple attendees rather than a CSV
- * 		2. Check whether delete actually deletes the reminder or not.
+ * 		2. Check whether delete actually deletes the reminder or not. _ DONE
  * 		3. Check whether updating the start time actually updates the reminder time. - DONE.
  * 	I am 99.99% sure of the last two, but then who knows! Always better to check or at least document unchecked  
  */
@@ -20,6 +20,12 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
+import com.appointext.regex.RecognizeEvent;
+import com.bmsce.appointext.R;
+
+import android.annotation.SuppressLint;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -35,6 +41,7 @@ import android.provider.CalendarContract.Reminders;
 import android.text.format.DateUtils;
 import android.util.Log;
 
+@SuppressLint("DefaultLocale")
 public class CalendarInsertEvent {
 	
 	/**
@@ -138,7 +145,8 @@ Log.d("AppoinText", "Got Timezone as " + TimeZone.getDefault().toString());
 		   if (desc != null && !desc.equals(""))
 			   intent.putExtra(Events.DESCRIPTION, desc);
 		   
-		   intent.putExtra(Events.ALL_DAY, false); 
+		   intent.putExtra(Events.ALL_DAY, false);
+		   intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		   cont.startActivity(intent);
 		   
 		   return -2; //because we have no control on what the user chose to do with this! 
@@ -162,7 +170,8 @@ Log.d("AppoinText", "Got Timezone as " + TimeZone.getDefault().toString());
 		 * 						However a value of -1 means reminder was not set, while -2 means it was sent as an Intent
 		 */
 	
-	   public static long addReminder(Context cont, int date, int month, int year, int hour, int minute, int min_before_event, String title, String location, String desc, String attendees) { 
+	   @SuppressLint("DefaultLocale")
+	public static long addReminder(Context cont, int date, int month, int year, int hour, int minute, int min_before_event, String title, String location, String desc, String attendees) { 
 
 		con = cont; //Set it for use by the whole class
 		month = month-1;
@@ -178,6 +187,11 @@ Log.d("AppoinText", "Got Timezone as " + TimeZone.getDefault().toString());
 			prompt = "ambiguity";
 		else
 			prompt = (String)row.get(1);
+		
+		//convert the provided reminder time into proper time
+		Integer remTime = RecognizeEvent.times.get(title.toLowerCase().trim());
+		if (remTime != null)
+			min_before_event = remTime;
 		
 		if (prompt.equalsIgnoreCase("always")) //Not my head ache at ALL. Let's just ignore this :D
 			return addReminderViaCalendarApp(cont, date, month, year, hour, minute, min_before_event, title, location, desc, attendees);
@@ -308,13 +322,17 @@ Log.d("AppoinTextReminder", "Event" + title + " added successfully");
 			if (!attendees.equalsIgnoreCase("") && attendees !=  null) {
 
 				ContentResolver cr = con.getContentResolver();
-				
-				//for (String name : attendees.split(",")) {
+Log.i("AppoinText People", "Attendes are " + attendees);				
+				String attendeesCSV = "";
+				for (String name : attendees.split(",")) {
+					attendeesCSV += HandleConflict.convertNumberToName(cont, name) + ",";
+				}
 					values.clear();
 					values.put(Attendees.EVENT_ID, eventId);
-					values.put(Attendees.ATTENDEE_NAME, attendees); //TODO: Get attendees to work
+					values.put(Attendees.ATTENDEE_NAME, attendeesCSV); //TODO: Get attendees to work
 					cr.insert(Attendees.CONTENT_URI, values);
 				//}
+Log.i("AppoinText People", "Attendees inserted are " + attendeesCSV);
 				
 			}
 			
@@ -348,14 +366,47 @@ Log.d("Appointext Calendar", "Reminder" + title + "Added Successfully");
 
 		        ContentValues values = new ContentValues();
 		        
-		        for (String cur : updateValues) 
-		        	values.put(cur.split(",")[0], cur.split(",")[1]);
+		        //Get previous attendees
+		        if (attendees == null)
+		        	attendees = ""; //Just get hold of an empty string
+		        else if (!attendees.endsWith(","))
+		        	attendees += ","; //Add a comma at the end
 		        
+Log.d("AppoinText People", "Got ID as " + entryID);
 
-		        Uri eventUri = ContentUris.withAppendedId(Events.CONTENT_URI, entryID);        
-		        iNumRowsUpdated = con.getContentResolver().update(eventUri, values, null,
-		                			null);
-
+		        ContentResolver cr = con.getContentResolver();
+		        Cursor cursor = CalendarContract.Attendees.query(cr, entryID, new String[] {CalendarContract.Attendees.ATTENDEE_NAME} );
+		        if (cursor.moveToFirst()) {
+					   do {
+							  String at = cursor.getString(0);
+							  if (at != null && !at.equals(""))
+								attendees += cursor.getString(0) + ",";		  
+						   } while (cursor.moveToNext());		        	
+					  
+		        }
+		        
+Log.d("AppoinText People", "Updating attendees to " + attendees);
+		        
+		        if (updateValues != null) {
+			        
+			        for (String cur : updateValues) {
+			        	String[] parts = cur.split(",");
+			        			        	
+			        	if (parts[0].equals(Events.TITLE)) {
+			        		//convert the provided reminder time into proper time
+			        		Integer remTime = RecognizeEvent.times.get(parts[0].toLowerCase().trim());
+			        		if (remTime != null)
+			        			min_before_event = remTime;
+			        	}
+			        		
+			        	values.put(parts[0], parts[1]);
+			        }
+			        
+	
+			        Uri eventUri = ContentUris.withAppendedId(Events.CONTENT_URI, entryID);        
+			        iNumRowsUpdated = con.getContentResolver().update(eventUri, values, null,
+			                			null);
+		        }
 		        Log.i("AppoinText", "Updated " + iNumRowsUpdated + " calendar entry.");
 		        
 		        // adding the reminder, if change is require 
@@ -366,7 +417,7 @@ Log.d("Appointext Calendar", "Reminder" + title + "Added Successfully");
 		        	values.put(Reminders.MINUTES, min_before_event);
 		        	con.getContentResolver().insert(Reminders.CONTENT_URI, values);
 		        }
-				
+		        				
 				// adding attendees if any. In a CSV 
 				if (attendees != null) {
 					values.clear();
@@ -374,7 +425,26 @@ Log.d("Appointext Calendar", "Reminder" + title + "Added Successfully");
 					values.put(Attendees.ATTENDEE_NAME, attendees); //TODO: Get attendees to work
 					con.getContentResolver().insert(Attendees.CONTENT_URI, values);
 				}
-
+				
+				if (updateValues != null && attendees.split(",").length > 1) { //Multiple attendees and there was a change of plan
+					
+					NotificationManager notificationManager 
+					  = (NotificationManager)con.getSystemService(Context.NOTIFICATION_SERVICE);
+					Notification.Builder builder = new Notification.Builder(con);
+					builder
+					  .setSmallIcon(R.drawable.reminder_hand)
+					  .setContentTitle("Group plan changed")
+					  .setContentText("Remember to inform " + attendees)
+					  .setTicker("Group plan Changed.")
+					  .setLights(0xFFFF0000, 500, 500) //setLights (int argb, int onMs, int offMs)
+					  .setAutoCancel(true);
+					  
+					@SuppressWarnings("deprecation")
+					Notification notification = builder.getNotification(); //Yes, am NOT updating to API 14. We promised LOW END ANDROID!
+					  
+					notificationManager.notify(R.drawable.reminder_hand, notification);
+				}
+				
 		        return iNumRowsUpdated;
 	   }
 

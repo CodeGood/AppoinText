@@ -34,9 +34,8 @@ public class MyUpdateService extends Service {
 	
 	public int onStartCommand(Intent intent, int flags, int startID) {
 		
-		Log.d("AppoinText Service", "Registering content observer");
-		
 		if (smsObserver == null) {
+			Log.d("AppoinText Service", "Registering content observer");
 			smsObserver = new SMSListenerSent(new Handler(), this);
 			this.getContentResolver().registerContentObserver(Uri.parse("content://sms/"), true, smsObserver);
 		}

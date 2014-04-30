@@ -69,8 +69,9 @@ public class AppoinTextService extends IntentService {
 			curText = intent.getStringExtra("body");
 
         Log.i("AppoinText", "Got origin as " + origin);
+Log.d("AppoinTextCurText", "curText is " + curText);        
         
-        if(curText == null || curText.equals(""))
+        if(curText == null || curText.length() == 0 || curText.equals(""))
 		{
 			Log.e("appointext", "curText is null or empty sorry :(");
 			return;
@@ -169,6 +170,8 @@ public class AppoinTextService extends IntentService {
 				Log.i("AppoinText Block Numbers", "There are no blocked numbers.");
 			
 			for(int i=0; i<numbers.length; i++){
+				
+				numbers[i] = numbers[i].replaceAll("[^0-9]", "");
 				
 				if(numbers[i].equalsIgnoreCase(senderNumber)){
 					

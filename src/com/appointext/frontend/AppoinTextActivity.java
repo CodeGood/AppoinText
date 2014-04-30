@@ -29,7 +29,7 @@ public class AppoinTextActivity extends Activity  {
 
 		Log.i("AppoinTextReminder", "Started Service");
 		Log.i("AT MainActivity", "Registering Content Resolver.");
-
+	
 		/*
 		final Uri SMS_STATUS_URI = Uri.parse("content://sms");
 		SMSListenerSent smsSentObserver = new SMSListenerSent(new Handler(), this);
