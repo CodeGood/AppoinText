@@ -142,7 +142,8 @@ Log.d("AppoinText", "Got Timezone as " + TimeZone.getDefault().toString());
 		   if (desc != null && !desc.equals(""))
 			   intent.putExtra(Events.DESCRIPTION, desc);
 		   
-		   intent.putExtra(Events.ALL_DAY, false); 
+		   intent.putExtra(Events.ALL_DAY, false);
+		   intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		   cont.startActivity(intent);
 		   
 		   return -2; //because we have no control on what the user chose to do with this! 
@@ -319,10 +320,13 @@ Log.d("AppoinTextReminder", "Event" + title + " added successfully");
 
 				ContentResolver cr = con.getContentResolver();
 				
-				//for (String name : attendees.split(",")) {
+				String attendeesCSV = "";
+				for (String name : attendees.split(",")) {
+					attendeesCSV += HandleConflict.convertNumberToName(cont, name);
+				}
 					values.clear();
 					values.put(Attendees.EVENT_ID, eventId);
-					values.put(Attendees.ATTENDEE_NAME, attendees); //TODO: Get attendees to work
+					values.put(Attendees.ATTENDEE_NAME, attendeesCSV); //TODO: Get attendees to work
 					cr.insert(Attendees.CONTENT_URI, values);
 				//}
 				

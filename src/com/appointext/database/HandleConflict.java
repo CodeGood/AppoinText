@@ -22,6 +22,9 @@ public class HandleConflict {
 		
 		Log.v("AppoinTextConflict", "Started retrieving");
 
+		if (number.replaceAll("[^0-9]", "").equals("")) //In case it's not a number at all :P
+			return number;
+		
 		String name = null;
 
 		// define the columns I want the query to return
@@ -175,7 +178,7 @@ public class HandleConflict {
 			   do {
 				  String at = cursor.getString(0);
 				  if (at != null && !at.equals(""))
-					  aOld += convertNumberToName(context, at);
+					  aOld += at;
 			   } while (cursor.moveToNext());
 			}	
 		Log.d("AppoinTextConflict", "Got attendees as " + aOld);
@@ -190,7 +193,7 @@ public class HandleConflict {
 			  = PendingIntent.getActivity(context, 1004, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 			  
 		builder
-			  .setSmallIcon(R.drawable.ic_launcher)
+			  .setSmallIcon(R.drawable.reminder_hand)
 			  .setContentTitle("Conflict Detected via AppoinText")
 			  .setContentText("You seem to have scheduled two meetings at the same time")
 			  .setTicker("AppoinText: Conflict Detected.")
@@ -201,7 +204,7 @@ public class HandleConflict {
 		@SuppressWarnings("deprecation")
 		Notification notification = builder.getNotification(); //Yes, am NOT updating to API 14. We promised LOW END ANDROID!
 			  
-		notificationManager.notify(R.drawable.ic_launcher, notification);
+		notificationManager.notify(R.drawable.reminder_hand, notification);
 		
 	}
 	
