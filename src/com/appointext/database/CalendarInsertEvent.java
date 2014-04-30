@@ -176,6 +176,13 @@ Log.d("AppoinText", "Got Timezone as " + TimeZone.getDefault().toString());
 		con = cont; //Set it for use by the whole class
 		month = month-1;
 		
+		title = title.replaceAll(",", "");
+		location = location.replaceAll(",", "");
+		desc = desc.replaceAll(",", "");
+		
+		if (location.equals(desc)) //Since you are bad enough to pass the location also as the current text :( This is my work around :D
+			location = "";
+		
 		//Get ahold of prompt settings and act accordingly
 		final DatabaseManager dbPrompt = new DatabaseManager(cont);
 		String prompt;

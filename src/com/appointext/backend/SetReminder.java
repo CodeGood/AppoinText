@@ -421,7 +421,7 @@ public class SetReminder {
 		if(rows.isEmpty()){
 			
 			Log.e("AppoinText", "the rows are empty");
-			//call cancel
+			UpdateReminder.cancelReminder(con, curText, senderNumber, recieverNumber);
 			return -1;  //-1 value used will indicate that there were no reminders to confirm
 		}
 
@@ -548,7 +548,7 @@ public class SetReminder {
 				
 				else{
 					
-					// call cancel
+					UpdateReminder.cancelReminder(con, curText, senderNumber, recieverNumber);
 				}
 			}
 

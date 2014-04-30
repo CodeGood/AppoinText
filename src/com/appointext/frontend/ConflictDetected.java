@@ -34,8 +34,8 @@ public class ConflictDetected extends Activity {
 		String timeOld = formatter.format(tOld);
 		String timeNew = formatter.format(tNew);
 		
-		op.append("\n\nYou attempted to schedule a " + callingIntent.getStringExtra("titleNew") + " with " + callingIntent.getStringExtra("attendeesNew") + "at " + timeOld + "\n\n");
-		op.append("But you already have " + callingIntent.getStringExtra("titleOld") + " scheduled with " + callingIntent.getStringExtra("attendeesOld") + " at " + timeNew + "\n");
+		op.append("\n\nYou attempted to schedule a " + callingIntent.getStringExtra("titleNew") + " with " + callingIntent.getStringExtra("attendeesNew") + "at " + timeNew + "\n\n");
+		op.append("But you already have " + callingIntent.getStringExtra("titleOld") + " scheduled with " + callingIntent.getStringExtra("attendeesOld") + " at " + timeOld + "\n");
 		op.append("\n\nPlease reschedule your appointments manually via the calendar app.");
 		
 	}

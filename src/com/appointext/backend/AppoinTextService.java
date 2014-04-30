@@ -139,7 +139,7 @@ public class AppoinTextService extends IntentService {
 
 		}// get the category and the confidence in case it is required
 
-		Log.d("AppoinText", "The final values are minimumConfidence :" + minimumConfidence + " category :" + category);
+		Log.d("AppoinText Value", "Text " + curText + "\nCategory :" + category);
 
 		if(category.equalsIgnoreCase("irrelevant")){
 			// this is not important to us, so stop the service by returning.
