@@ -433,8 +433,8 @@ Log.d("AppoinText People", "Updating attendees to " + attendees);
 					Notification.Builder builder = new Notification.Builder(con);
 					builder
 					  .setSmallIcon(R.drawable.reminder_hand)
-					  .setContentTitle("Group plan changed")
-					  .setContentText("Remember to inform " + attendees)
+					  .setContentTitle("Group plan changed. Inform?")
+					  .setContentText(attendees)
 					  .setTicker("Group plan Changed.")
 					  .setLights(0xFFFF0000, 500, 500) //setLights (int argb, int onMs, int offMs)
 					  .setAutoCancel(true);

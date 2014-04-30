@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.provider.CalendarContract.Events;
 import android.util.Log;
@@ -17,6 +18,7 @@ import com.appointext.regex.RecognizeEvent;
 import com.appointext.regex.RecognizePeople;
 import com.appointext.regex.RecognizeTime;
 
+@SuppressLint("SimpleDateFormat")
 public class SetReminder {
 
 	static DatabaseManager db;
@@ -436,7 +438,7 @@ public class SetReminder {
 		return 0;
 	}
 	
-	private static long inMiliseconds(String oldDT, String newDate, String newTime)throws Exception {
+	public static long inMiliseconds(String oldDT, String newDate, String newTime)throws Exception {
 
 		String[] dt = oldDT.split(" ");
 	

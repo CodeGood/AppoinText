@@ -217,6 +217,10 @@ Log.d("AppoinTextCurText", "curText is " + curText);
 			
 
 		}
+		
+
+		if (category.equalsIgnoreCase("cancel"))
+			UpdateReminder.cancelReminder(this, curText, senderNumber, recieverNumber);
 
 		if(category.equalsIgnoreCase("query")){
 
@@ -232,7 +236,11 @@ Log.d("AppoinTextCurText", "curText is " + curText);
 		if(category.equalsIgnoreCase("meeting")){
 			
 			Log.i("Appointext meeting", "I am in meeting ");
-			SetReminder.addToPendingTable(this, curText, senderNumber, recieverNumber);
+			
+			if (FindSentiment.findSentiment(curText).equalsIgnoreCase("no")) //If a meeting has a negative sentiment, it's essentially a cancellation
+				UpdateReminder.cancelReminder(this, curText, senderNumber, recieverNumber);
+			else
+				SetReminder.addToPendingTable(this, curText, senderNumber, recieverNumber);
 		}
 
 		/*
