@@ -61,142 +61,8 @@ public class SetReminder {
 		dateExtracted = RecognizeDate.findDates(curText);
 		
 		Log.d("appointext", "the time and date : " + timeExtracted + " " + dateExtracted );	
-
-		//After extracting date and time, get it in the format HH:MM,dd/mm/yyyy and store it in the pending reminders list
 		
-		
-		if(!timeExtracted.equalsIgnoreCase("") && !dateExtracted.equalsIgnoreCase("")){
-		
-			when = timeExtracted.split("[/,]")[0] + "," + dateExtracted.split("[/,]")[0]+"/"+dateExtracted.split("[/,]")[1]+"/"+dateExtracted.split("[/,]")[2];
-		}
-		
-		else if(!timeExtracted.equalsIgnoreCase("")){
-			
-			rows = db.getMultiplePendingReminders("SELECT * FROM pendingReminders WHERE senderNumber=" + "'" + senderNumber + "'" + " and receiverNumber=" + "'" + recieverNumber+"'");
-			
-			Log.d("AppoinText", "the value of rows is : " + rows.toString());
-
-			tempRows = db.getMultiplePendingReminders("SELECT * FROM pendingReminders WHERE senderNumber=" + "'" + recieverNumber + "'" + " and receiverNumber=" + "'" + senderNumber +"'");
-			
-			Log.d("AppoinText", "the value of tempRows : " + tempRows.toString());
-			
-			rows.addAll(tempRows);
-			
-			String whenStamp = rows.get(0).get(6).toString();
-			String finalTime = "";
-			
-			if(whenStamp.startsWith(",")){
-				
-				finalTime = timeExtracted.split("[/,]")[0] + whenStamp;
-				
-				if(rows.get(0).get(3).toString().equals("1")){
-					
-					String[] extractedData = finalTime.split(",");	         	    		
-					int date=0, month=0, year=0, hour=0, minute=0;
-					String[] dateExtract, timeExtract;
-
-					timeExtract = extractedData[0].split(":");
-					dateExtract = extractedData[1].split("/");
-
-					hour = Integer.parseInt(timeExtract[0]);
-					minute = Integer.parseInt(timeExtract[1]);
-
-					date = Integer.parseInt(dateExtract[0]);
-					month = Integer.parseInt(dateExtract[1]);
-					year = Integer.parseInt(dateExtract[2]);
-
-					//	   public static long addReminder(              Context, int date, int month, int year, int hour, int minute, int min_before_event, String title,                  String location,               String desc,  String attendees) 
-					int eventId = (int) CalendarInsertEvent.addReminder(con,      date,      month,     year,     hour,     minute,        30,             rows.get(0).get(5).toString(), rows.get(0).get(7).toString(),    curText,       rows.get(0).get(4).toString());
-
-					Log.d("AppoinText", "the database insert statement :" + date + "'" + month +"'"+year+"'" + "'" + hour + "'" + minute + "'" );
-					// after the reminder set, then put the entry to the set reminders table and add all the details to extractedData field in the form of Location:xxxx-Attendees:xxxx-Event:xxxx- all of them being a CSV 
-
-					int isComplete = 1, isGroup = 0;
-
-					String people1;
-					String extractedInfo = "";
-
-					people1 = rows.get(0).get(4).toString();
-
-					int number = people1.split(",").length;
-
-					if(number > 1){
-						isGroup = 1;
-					}
-
-					if(!people1.equalsIgnoreCase("")){
-
-						Log.i("blah", people1);
-
-						extractedInfo += ("Attendees:" + people1+"-");
-					}
-
-					else{
-
-						isComplete = 0;
-					}
-
-					if(!rows.get(0).get(7).toString().equalsIgnoreCase("")){
-
-						Log.i("blah",  rows.get(0).get(7).toString());
-
-						extractedInfo += ("Location:" + rows.get(0).get(7).toString() + "-");
-					}
-
-					else{
-
-						isComplete = 0;
-					}
-
-					if(!rows.get(0).get(5).toString().equalsIgnoreCase("")){
-
-						Log.i("blah",  rows.get(0).get(5).toString());
-
-						extractedInfo += ("Occasion:" + rows.get(0).get(5).toString() + "-");
-					}
-
-					else{
-
-						isComplete = 0;
-					}
-
-					// the event-sender-receiver string to retrieve the data from the set reminders table later 
-					// create trs and store the entry in the set reminder table
-
-					String trs = rows.get(0).get(5).toString() + "-" + senderNumber + "-" + recieverNumber;
-					
-					db.deleteRow("pendingReminders", (Integer)rows.get(0).get(0));
-
-					db.addRow("setReminders", eventId, isComplete, isGroup, trs, extractedInfo);
-					
-					rows = db.getMultipleSetReminders("SELECT * FROM setReminders");
-					
-					Log.d("Appointext", " The set reminder database is like this : " + rows.toString());
-					
-					rows = db.getMultiplePendingReminders("SELECT * FROM pendingReminders");
-					
-					Log.d("Appointext", " The pending reminder database is like this : " + rows.toString());
-
-					return 1;
-				}
-				
-				else{
-					
-					db.updateRow("pendingReminders", (Integer)rows.get(0).get(0), rows.get(0).get(1).toString(), rows.get(0).get(2).toString(), (Integer)rows.get(0).get(3), rows.get(0).get(4).toString(), rows.get(0).get(5).toString(), finalTime, rows.get(0).get(7).toString());	
-					return 0;
-				}		
-			}			
-		}
-		
-		else if(!dateExtracted.equalsIgnoreCase("")){
-			
-			when =  "," + dateExtracted.split("[/,]")[0]+"/"+dateExtracted.split("[/,]")[1]+"/"+dateExtracted.split("[/,]")[2];
-		}
-
-
 		boolean val = FindPostponement.findPostponement(curText);
-		
-		//ArrayList<ArrayList<Object>> rows = new ArrayList<ArrayList<Object>>();
 		
 		if(val){
 			
@@ -209,6 +75,11 @@ public class SetReminder {
 			tempRows = db.getMultipleSetReminders("SELECT * FROM setReminders WHERE trs="+ "'" + trs + "'"); 
 			
 			rows.addAll(tempRows);
+			
+			if(rows.isEmpty()){
+				
+				return -1;
+			}
 			
 			int eventId = Integer.parseInt(rows.get(0).get(0).toString());
 			String[] fields = {Events.DTSTART};
@@ -248,6 +119,7 @@ public class SetReminder {
 				
 				Log.i("Postpone: Appointext", "No exception" + tim);
 				CalendarInsertEvent.updateCalendarEntry(con, eventId, new String[] {Events.DTSTART + "," + tim,  Events.DTEND + "," + tim}, -1, "");
+				return 0;
 				
 			}
 			catch(Exception e){
@@ -258,13 +130,248 @@ public class SetReminder {
 			return -1;
 		}
 		
+		//After extracting date and time, get it in the format HH:MM,dd/mm/yyyy and store it in the pending reminders list
+			
+		if(!timeExtracted.equalsIgnoreCase("") && !dateExtracted.equalsIgnoreCase("")){
+		
+			when = timeExtracted.split("[/,]")[0] + "," + dateExtracted.split("[/,]")[0]+"/"+dateExtracted.split("[/,]")[1]+"/"+dateExtracted.split("[/,]")[2];
+		}
+		
+		else if(!timeExtracted.equalsIgnoreCase("")){
+			
+			rows = db.getMultiplePendingReminders("SELECT * FROM pendingReminders WHERE senderNumber=" + "'" + senderNumber + "'" + " and receiverNumber=" + "'" + recieverNumber+"'");
+			
+			Log.d("AppoinText", "the value of rows is : " + rows.toString());
+
+			tempRows = db.getMultiplePendingReminders("SELECT * FROM pendingReminders WHERE senderNumber=" + "'" + recieverNumber + "'" + " and receiverNumber=" + "'" + senderNumber +"'");
+			
+			Log.d("AppoinText", "the value of tempRows : " + tempRows.toString());
+			
+			rows.addAll(tempRows);
+			
+			if(!rows.isEmpty()){
+			
+				String whenStamp = rows.get(0).get(6).toString();
+				String finalTime = "";
+			
+				if(whenStamp.startsWith(",")){
+					
+					finalTime = timeExtracted.split("[/,]")[0] + whenStamp;
+					
+					if(rows.get(0).get(3).toString().equals("1")){
+						
+						String[] extractedData = finalTime.split(",");	         	    		
+						int date=0, month=0, year=0, hour=0, minute=0;
+						String[] dateExtract, timeExtract;
+	
+						timeExtract = extractedData[0].split(":");
+						dateExtract = extractedData[1].split("/");
+	
+						hour = Integer.parseInt(timeExtract[0]);
+						minute = Integer.parseInt(timeExtract[1]);
+	
+						date = Integer.parseInt(dateExtract[0]);
+						month = Integer.parseInt(dateExtract[1]);
+						year = Integer.parseInt(dateExtract[2]);
+	
+						//	   public static long addReminder(              Context, int date, int month, int year, int hour, int minute, int min_before_event, String title,                  String location,               String desc,  String attendees) 
+						int eventId = (int) CalendarInsertEvent.addReminder(con,      date,      month,     year,     hour,     minute,        30,             rows.get(0).get(5).toString(), rows.get(0).get(7).toString(),    curText,       rows.get(0).get(4).toString());
+	
+						Log.d("AppoinText", "the database insert statement :" + date + "'" + month +"'"+year+"'" + "'" + hour + "'" + minute + "'" );
+						// after the reminder set, then put the entry to the set reminders table and add all the details to extractedData field in the form of Location:xxxx-Attendees:xxxx-Event:xxxx- all of them being a CSV 
+	
+						int isComplete = 1, isGroup = 0;
+	
+						String people1;
+						String extractedInfo = "";
+	
+						people1 = rows.get(0).get(4).toString();
+	
+						int number = people1.split(",").length;
+	
+						if(number > 1){
+							isGroup = 1;
+						}
+	
+						if(!people1.equalsIgnoreCase("")){
+	
+							Log.i("blah", people1);
+							extractedInfo += ("Attendees:" + people1+"-");
+						}
+	
+						else{	
+							isComplete = 0;
+						}
+	
+						if(!rows.get(0).get(7).toString().equalsIgnoreCase("")){
+							Log.i("blah",  rows.get(0).get(7).toString());
+							extractedInfo += ("Location:" + rows.get(0).get(7).toString() + "-");
+						}
+	
+						else{
+							isComplete = 0;
+						}
+	
+						if(!rows.get(0).get(5).toString().equalsIgnoreCase("")){	
+							Log.i("blah",  rows.get(0).get(5).toString());	
+							extractedInfo += ("Occasion:" + rows.get(0).get(5).toString() + "-");
+						}
+	
+						else{	
+							isComplete = 0;
+						}
+	
+						// the event-sender-receiver string to retrieve the data from the set reminders table later 
+						// create trs and store the entry in the set reminder table
+	
+						String trs = rows.get(0).get(5).toString() + "-" + senderNumber + "-" + recieverNumber;
+						
+						db.deleteRow("pendingReminders", (Integer)rows.get(0).get(0));
+	
+						db.addRow("setReminders", eventId, isComplete, isGroup, trs, extractedInfo);
+						
+						rows = db.getMultipleSetReminders("SELECT * FROM setReminders");
+						
+						Log.d("Appointext", " The set reminder database is like this : " + rows.toString());
+						
+						rows = db.getMultiplePendingReminders("SELECT * FROM pendingReminders");
+						
+						Log.d("Appointext", " The pending reminder database is like this : " + rows.toString());
+	
+						return 1;
+					}
+					
+					else{
+						
+						db.updateRow("pendingReminders", (Integer)rows.get(0).get(0), rows.get(0).get(1).toString(), rows.get(0).get(2).toString(), (Integer)rows.get(0).get(3), rows.get(0).get(4).toString(), rows.get(0).get(5).toString(), finalTime, rows.get(0).get(7).toString());	
+						return 2;
+					}		
+				}	
+			}//
+		}
+		
+		else if(!dateExtracted.equalsIgnoreCase("")){
+			
+			//when =  "," + dateExtracted.split("[/,]")[0]+"/"+dateExtracted.split("[/,]")[1]+"/"+dateExtracted.split("[/,]")[2];
+			
+			rows = db.getMultiplePendingReminders("SELECT * FROM pendingReminders WHERE senderNumber=" + "'" + senderNumber + "'" + " and receiverNumber=" + "'" + recieverNumber+"'");
+			
+			Log.d("AppoinText", "the value of rows is : " + rows.toString());
+
+			tempRows = db.getMultiplePendingReminders("SELECT * FROM pendingReminders WHERE senderNumber=" + "'" + recieverNumber + "'" + " and receiverNumber=" + "'" + senderNumber +"'");
+			
+			Log.d("AppoinText", "the value of tempRows : " + tempRows.toString());
+			
+			rows.addAll(tempRows);
+			
+			if(!rows.isEmpty()){
+			
+				String whenStamp = rows.get(0).get(6).toString();
+				String finalTime = "";
+			
+				if(whenStamp.endsWith(",")){
+					
+					finalTime = whenStamp + dateExtracted.split("[/,]")[0]+"/"+dateExtracted.split("[/,]")[1]+"/"+dateExtracted.split("[/,]")[2];
+					
+					if(rows.get(0).get(3).toString().equals("1")){
+						
+						String[] extractedData = finalTime.split(",");	         	    		
+						int date=0, month=0, year=0, hour=0, minute=0;
+						String[] dateExtract, timeExtract;
+	
+						timeExtract = extractedData[0].split(":");
+						dateExtract = extractedData[1].split("/");
+	
+						hour = Integer.parseInt(timeExtract[0]);
+						minute = Integer.parseInt(timeExtract[1]);
+	
+						date = Integer.parseInt(dateExtract[0]);
+						month = Integer.parseInt(dateExtract[1]);
+						year = Integer.parseInt(dateExtract[2]);
+	
+						//	   public static long addReminder(              Context, int date, int month, int year, int hour, int minute, int min_before_event, String title,                  String location,               String desc,  String attendees) 
+						int eventId = (int) CalendarInsertEvent.addReminder(con,      date,      month,     year,     hour,     minute,        30,             rows.get(0).get(5).toString(), rows.get(0).get(7).toString(),    curText,       rows.get(0).get(4).toString());
+	
+						Log.d("AppoinText", "the database insert statement :" + date + "'" + month +"'"+year+"'" + "'" + hour + "'" + minute + "'" );
+						// after the reminder set, then put the entry to the set reminders table and add all the details to extractedData field in the form of Location:xxxx-Attendees:xxxx-Event:xxxx- all of them being a CSV 
+	
+						int isComplete = 1, isGroup = 0;
+	
+						String people1;
+						String extractedInfo = "";
+	
+						people1 = rows.get(0).get(4).toString();
+	
+						int number = people1.split(",").length;
+	
+						if(number > 1){
+							isGroup = 1;
+						}
+	
+						if(!people1.equalsIgnoreCase("")){
+	
+							Log.i("blah", people1);
+							extractedInfo += ("Attendees:" + people1+"-");
+						}
+	
+						else{	
+							isComplete = 0;
+						}
+	
+						if(!rows.get(0).get(7).toString().equalsIgnoreCase("")){
+							Log.i("blah",  rows.get(0).get(7).toString());
+							extractedInfo += ("Location:" + rows.get(0).get(7).toString() + "-");
+						}
+	
+						else{
+							isComplete = 0;
+						}
+	
+						if(!rows.get(0).get(5).toString().equalsIgnoreCase("")){	
+							Log.i("blah",  rows.get(0).get(5).toString());	
+							extractedInfo += ("Occasion:" + rows.get(0).get(5).toString() + "-");
+						}
+	
+						else{	
+							isComplete = 0;
+						}
+	
+						// the event-sender-receiver string to retrieve the data from the set reminders table later 
+						// create trs and store the entry in the set reminder table
+	
+						String trs = rows.get(0).get(5).toString() + "-" + senderNumber + "-" + recieverNumber;
+						
+						db.deleteRow("pendingReminders", (Integer)rows.get(0).get(0));
+	
+						db.addRow("setReminders", eventId, isComplete, isGroup, trs, extractedInfo);
+						
+						rows = db.getMultipleSetReminders("SELECT * FROM setReminders");
+						
+						Log.d("Appointext", " The set reminder database is like this : " + rows.toString());
+						
+						rows = db.getMultiplePendingReminders("SELECT * FROM pendingReminders");
+						
+						Log.d("Appointext", " The pending reminder database is like this : " + rows.toString());
+	
+						return 1;
+					}
+					
+					else{
+						
+						db.updateRow("pendingReminders", (Integer)rows.get(0).get(0), rows.get(0).get(1).toString(), rows.get(0).get(2).toString(), (Integer)rows.get(0).get(3), rows.get(0).get(4).toString(), rows.get(0).get(5).toString(), finalTime, rows.get(0).get(7).toString());	
+						return 2;
+					}		
+				}	
+			}//
+		}
+
 		rows = db.getMultiplePendingReminders("SELECT * FROM pendingReminders WHERE senderNumber=" + "'" + senderNumber + "'" + " and receiverNumber=" + "'" + recieverNumber+"'" + " and whenIsIt=" + "'" + when + "'");
 		
 		Log.d("Appointext", "I am trying to figure out duplicate rows : " + rows.toString());
 		
 		if(rows.isEmpty()){
 			
-			db.addRow("pendingReminders", senderNumber, recieverNumber, 0, people, event, when, location); 
+			db.addRow("pendingReminders", senderNumber, recieverNumber, 0, people, event, when, curText); 
 			Log.e("Appointext", "db.addRow  : " + " " + senderNumber+ " " +recieverNumber+ " " +0+ " " + people+ " " + event+ " " + when+ " " +location+ " "  );
 
 		}
@@ -312,6 +419,7 @@ public class SetReminder {
 		if(rows.isEmpty()){
 			
 			Log.e("AppoinText", "the rows are empty");
+			//call cancel
 			return -1;  //-1 value used will indicate that there were no reminders to confirm
 		}
 
@@ -332,7 +440,8 @@ public class SetReminder {
 
 				//else extract the details required for the add reminder function and add the reminder
 
-				String whenStamp = rows.get(0).get(6).toString();	         	    		
+				String whenStamp = rows.get(0).get(6).toString();	
+				String desc = rows.get(0).get(7).toString();
 				String[] extractedData = whenStamp.split(",");	         	    		
 				int date=0, month=0, year=0, hour=0, minute=0;
 				String[] dateExtract, timeExtract;
@@ -348,7 +457,7 @@ public class SetReminder {
 				year = Integer.parseInt(dateExtract[2]);
 
 				//	   public static long addReminder(              Context, int date, int month, int year, int hour, int minute, int min_before_event, String title,                  String location,               String desc,  String attendees) 
-				int eventId = (int) CalendarInsertEvent.addReminder(con,      date,      month,     year,     hour,     minute,        30,             rows.get(0).get(5).toString(), rows.get(0).get(7).toString(),    curText,       rows.get(0).get(4).toString());
+				int eventId = (int) CalendarInsertEvent.addReminder(con,      date,      month,     year,     hour,     minute,        30,             rows.get(0).get(5).toString(), rows.get(0).get(7).toString(),    desc,       rows.get(0).get(4).toString());
 
 				Log.d("AppoinText", "the database insert statement :" + date + "'" + month +"'"+year+"'" + "'" + hour + "'" + minute + "'" );
 				// after the reminder set, then put the entry to the set reminders table and add all the details to extractedData field in the form of Location:xxxx-Attendees:xxxx-Event:xxxx- all of them being a CSV 
@@ -425,6 +534,21 @@ public class SetReminder {
 		if(reply.equalsIgnoreCase("no")){
 
 			//if the reply is a no, then delete the entry form the pending reminders table
+			
+			String event = RecognizeEvent.getEvent(curText);
+			
+			if(event.equalsIgnoreCase("")){
+				
+				if(event.equalsIgnoreCase(rows.get(0).get(5).toString())){
+					
+					db.deleteRow("pendingReminders", (Integer)rows.get(0).get(0));
+				}
+				
+				else{
+					
+					// call cancel
+				}
+			}
 
 			db.deleteRow("pendingReminders", (Integer)rows.get(0).get(0));
 			db.close();
