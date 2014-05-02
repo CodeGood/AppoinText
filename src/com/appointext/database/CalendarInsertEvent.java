@@ -327,12 +327,13 @@ Log.d("AppoinTextReminder", "Event" + title + " added successfully");
 			
 			// Now add attendees for the reminder. I assume we have nothing to do with anything other than name 
 			if (!attendees.equalsIgnoreCase("") && attendees !=  null) {
-
+			
 				ContentResolver cr = con.getContentResolver();
 Log.i("AppoinText People", "Attendes are " + attendees);				
 				String attendeesCSV = "";
 				for (String name : attendees.split(",")) {
-					attendeesCSV += HandleConflict.convertNumberToName(cont, name) + ",";
+					if (name != null && name.length() != 0) //ensure no null names pass through by any chance
+						attendeesCSV += HandleConflict.convertNumberToName(cont, name) + ",";
 				}
 					values.clear();
 					values.put(Attendees.EVENT_ID, eventId);

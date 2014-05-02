@@ -1,6 +1,7 @@
 package com.appointext.backend;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import com.appointext.database.CalendarInsertEvent;
 import com.appointext.database.DatabaseManager;
@@ -120,11 +121,25 @@ public class UpdateReminder {
 		Log.d("AppoinText Cancellation", "Got attendees as " + aOld);
 		
 		Log.d("AppoinText Cancellation", "Got current people as " + people);
+
+		String[] arr = people.split(",");
+		people = "";
+		for (String c : arr)
+			if (c != null & c.length() > 0)
+				people += c + ","; //to prevent issues with empty names that may creep up
 		
-		if (people.split(",").length == aOld.split(",").length)//all attendees left. TODO: Take care of empty attendees caused by multiple ,, consequitively
+		if (people.split(",").length == aOld.split(",").length)//all attendees left. DONE: Take care of empty attendees caused by multiple ,, consequitively - Taken care that null attendees can not be inserted.
 			CalendarInsertEvent.deleteCalendarEntry(con, toDeleteID); //Delete the calendar entry. TODO: Delete from setReminder as well
-		else
+		else {
+			String[] oArr = aOld.split(",");
+			aOld = "";
+			ArrayList<String> peopleWhoLeft = (ArrayList<String>) Arrays.asList(people.split(","));
+			for (String name : oArr) {
+				if (name != null && name.length() > 0 && !peopleWhoLeft.contains(name))
+					aOld += name + ",";
+			}
 			CalendarInsertEvent.updateCalendarEntry(con, toDeleteID, null, -1, aOld); //TODO: Remove the names we found here.
+		}
 		
 	}
 	
