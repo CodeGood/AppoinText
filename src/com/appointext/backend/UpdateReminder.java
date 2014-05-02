@@ -3,21 +3,19 @@ package com.appointext.backend;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import com.appointext.database.CalendarInsertEvent;
-import com.appointext.database.DatabaseManager;
-import com.appointext.database.GetCalendarEvents;
-import com.appointext.database.HandleConflict;
-import com.appointext.regex.RecognizeDate;
-import com.appointext.regex.RecognizeEvent;
-import com.appointext.regex.RecognizePeople;
-import com.appointext.regex.RecognizeTime;
-
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.provider.CalendarContract;
 import android.provider.CalendarContract.Events;
 import android.util.Log;
+
+import com.appointext.database.CalendarInsertEvent;
+import com.appointext.database.DatabaseManager;
+import com.appointext.database.GetCalendarEvents;
+import com.appointext.database.HandleConflict;
+import com.appointext.regex.RecognizeEvent;
+import com.appointext.regex.RecognizePeople;
 
 public class UpdateReminder {
 	

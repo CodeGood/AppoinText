@@ -442,7 +442,7 @@ public class SetReminder {
 		if(rows.isEmpty()){
 
 			Log.e("AppoinText", "the rows are empty");
-			//call cancel
+			UpdateReminder.cancelReminder(con, curText, senderNumber, recieverNumber);
 			return -1;  //-1 value used will indicate that there were no reminders to confirm
 		}
 
@@ -568,8 +568,7 @@ public class SetReminder {
 				}
 
 				else{
-
-					//call cancel
+					UpdateReminder.cancelReminder(con, curText, senderNumber, recieverNumber);
 				}
 			}
 
@@ -583,7 +582,7 @@ public class SetReminder {
 		return 0;
 	}
 
-	private static long inMiliseconds(String oldDT, String newDate, String newTime)throws Exception {
+	public static long inMiliseconds(String oldDT, String newDate, String newTime)throws Exception {
 
 		String[] dt = oldDT.split(" ");
 
