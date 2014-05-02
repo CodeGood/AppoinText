@@ -22,7 +22,9 @@ public class RecognizeTime {
 		String foundTime = "";
 		foundTime += findOClock();
 		foundTime += getTimeByRegex();
-		foundTime += getMEN(con); //get Morning, Evening, Night - kindly ignore the unintended puny function name
+		
+		if (foundTime.length() == 0)
+			foundTime += getMEN(con); //get Morning, Evening, Night - kindly ignore the unintended puny function name
 		
 		return foundTime;
 		
