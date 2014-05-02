@@ -133,7 +133,7 @@ Log.e("AppoinTextChange", "The word of the moment is " + words[i]);
 						time = 00;
 					}
 Log.e("AppoinTextChange", "The time is " + time);					
-					if (time < 10)
+					if (time < 10 && !sms.contains("morning")) //If you mention morning 9 o'clock, am not messing with you babe
 						time = time + 12;
 					
 					foundTime += time + ":00/" + i;
