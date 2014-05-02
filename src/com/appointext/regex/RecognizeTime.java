@@ -22,7 +22,9 @@ public class RecognizeTime {
 		String foundTime = "";
 		foundTime += findOClock();
 		foundTime += getTimeByRegex();
-		foundTime += getMEN(con); //get Morning, Evening, Night - kindly ignore the unintended puny function name
+		
+		if (foundTime.length() == 0)
+			foundTime += getMEN(con); //get Morning, Evening, Night - kindly ignore the unintended puny function name
 		
 		return foundTime;
 		
@@ -131,7 +133,7 @@ Log.e("AppoinTextChange", "The word of the moment is " + words[i]);
 						time = 00;
 					}
 Log.e("AppoinTextChange", "The time is " + time);					
-					if (time < 10)
+					if (time < 10 && !sms.contains("morning")) //If you mention morning 9 o'clock, am not messing with you babe
 						time = time + 12;
 					
 					foundTime += time + ":00/" + i;
@@ -180,9 +182,7 @@ Log.d("AppoinTextChange", "Somehow ended up here at word times :(");
 				
 		return foundTime;
 	}
-	
-	/* TODO:: Checks for morning, evening, afternoon */
-	
+		
 	/* Checks for xx:xx  - in all permutations and combination */
 	
 	private static String getTimeByRegex () {
@@ -214,6 +214,18 @@ System.out.println("Match in HH:mm = " + match);
 					int time = Integer.parseInt(match.replaceAll("[^0-9]", ""));
 					if (time == 12) { match = "00:00"; }
 					else	match = match.replaceAll("[^0-9:]", "");
+					
+					if (match.length() !=  5) { //It's not in hh:mm form
+						
+						if (match.length() == 1) //It was something like 9 am
+							match = "0" + match + ":00";
+						else if (match.length() == 2) //It's something like 10am
+							match = match + ":00";
+						else if (match.length() == 4) //It's of form 9:30 am
+							match = "0" + match;
+						
+					}
+					
 				}
 				catch (NumberFormatException e) {
 					continue;
