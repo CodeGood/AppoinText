@@ -149,7 +149,7 @@ public class DatabaseManager {
 	   {
 	   			// this is a key value pair holder used by android's SQLite functions
 		  
-		   		String timeStamp = cal.getTime() + "";
+		   		String timeStamp = cal.getTimeInMillis() + "";
 	
 	   			ContentValues values = new ContentValues();
 	   			//values.put("eventId", evntId);
@@ -530,7 +530,7 @@ public class DatabaseManager {
 		{
 					// this is a key value pair holder used by android's SQLite functions
 	
-					String timeStamp = cal.getTime() + "";
+					String timeStamp = cal.getTimeInMillis() + "";
 					
 					ContentValues values = new ContentValues();
 					values.put("senderNumber", sender);
