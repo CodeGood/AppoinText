@@ -60,7 +60,7 @@ public class SetReminder {
 		timeExtracted = RecognizeTime.findTime(con, curText);
 		dateExtracted = RecognizeDate.findDates(curText);
 		
-		Log.d("appointext", "the time and date : " + timeExtracted + " " + dateExtracted );	
+		Log.d("appointext", "the time :" + timeExtracted + " date : " + dateExtracted );	
 		
 		boolean val = FindPostponement.findPostponement(curText);
 		
@@ -76,8 +76,11 @@ public class SetReminder {
 			
 			rows.addAll(tempRows);
 			
+			Log.i("Appointext:Postpone", "Entered the postpone case : " + rows.toString());
+			
 			if(rows.isEmpty()){
 				
+				Log.i("Appointext:Postpone", "Entered the postpone case. but the rows are empty");
 				return -1;
 			}
 			
@@ -86,7 +89,7 @@ public class SetReminder {
 						
 			String result = GetCalendarEvents.getEventByID(con, eventId+"", fields);
 			
-			Log.d("Postpone: Appointext", "the rows fetched form the setReminders db are: " + rows.toString() + " The value of trs is : " + trs);
+			//Log.d("Postpone: Appointext", "the rows fetched form the setReminders db are: " + rows.toString() + " The value of trs is : " + trs);
 					
 			
 			String[] dateExtract = {},timeExtract={};
@@ -123,9 +126,9 @@ public class SetReminder {
 				
 			}
 			catch(Exception e){
-				Log.i("Postpone: Appointext", "I got an exception");
+				//Log.i("Postpone: Appointext", "I got an exception");
 			}
-			Log.d("Postpone: Appointext", "the values extracted : hour: " + hour + "minute: " + minute + "dd: " + dd + "mm: " + mm + "yy: " + yy );
+			//Log.d("Postpone: Appointext", "the values extracted : hour: " + hour + "minute: " + minute + "dd: " + dd + "mm: " + mm + "yy: " + yy );
 			
 			return -1;
 		}
@@ -139,6 +142,8 @@ public class SetReminder {
 		
 		else if(!timeExtracted.equalsIgnoreCase("")){
 			
+			when = timeExtracted.split("[/,]")[0] + ",";
+			
 			rows = db.getMultiplePendingReminders("SELECT * FROM pendingReminders WHERE senderNumber=" + "'" + senderNumber + "'" + " and receiverNumber=" + "'" + recieverNumber+"'");
 			
 			Log.d("AppoinText", "the value of rows is : " + rows.toString());
@@ -150,15 +155,21 @@ public class SetReminder {
 			rows.addAll(tempRows);
 			
 			if(!rows.isEmpty()){
+				
+				Log.i("Appointext : in complete time ", "The rows fetched are : " + rows.toString());
 			
 				String whenStamp = rows.get(0).get(6).toString();
 				String finalTime = "";
 			
 				if(whenStamp.startsWith(",")){
 					
+					Log.i("Appointext : in complete time ", "In the right clause");
+					
 					finalTime = timeExtracted.split("[/,]")[0] + whenStamp;
 					
 					if(rows.get(0).get(3).toString().equals("1")){
+						
+						Log.i("appointext : in complete time ", "In the confirmed case");
 						
 						String[] extractedData = finalTime.split(",");	         	    		
 						int date=0, month=0, year=0, hour=0, minute=0;
@@ -242,6 +253,8 @@ public class SetReminder {
 					}
 					
 					else{
+						
+						Log.i("appointext : in complete time", "In the update case");
 						
 						db.updateRow("pendingReminders", (Integer)rows.get(0).get(0), rows.get(0).get(1).toString(), rows.get(0).get(2).toString(), (Integer)rows.get(0).get(3), rows.get(0).get(4).toString(), rows.get(0).get(5).toString(), finalTime, rows.get(0).get(7).toString());	
 						return 2;
@@ -251,8 +264,10 @@ public class SetReminder {
 		}
 		
 		else if(!dateExtracted.equalsIgnoreCase("")){
+						
+			when =  "," + dateExtracted.split("[/,]")[0]+"/"+dateExtracted.split("[/,]")[1]+"/"+dateExtracted.split("[/,]")[2];
 			
-			//when =  "," + dateExtracted.split("[/,]")[0]+"/"+dateExtracted.split("[/,]")[1]+"/"+dateExtracted.split("[/,]")[2];
+			//Log.i("Appointext : update date", "Im trying to just update date " + when);
 			
 			rows = db.getMultiplePendingReminders("SELECT * FROM pendingReminders WHERE senderNumber=" + "'" + senderNumber + "'" + " and receiverNumber=" + "'" + recieverNumber+"'");
 			
@@ -265,15 +280,21 @@ public class SetReminder {
 			rows.addAll(tempRows);
 			
 			if(!rows.isEmpty()){
+				
+				Log.i("Appointext : in complete date", "The rows are not empty in date");
 			
 				String whenStamp = rows.get(0).get(6).toString();
 				String finalTime = "";
 			
 				if(whenStamp.endsWith(",")){
 					
+					Log.i("Appointext : in complete date", "In the right path");
+					
 					finalTime = whenStamp + dateExtracted.split("[/,]")[0]+"/"+dateExtracted.split("[/,]")[1]+"/"+dateExtracted.split("[/,]")[2];
 					
 					if(rows.get(0).get(3).toString().equals("1")){
+						
+						Log.i("Appointext : in complete date", "Updating and setting reminder + final time is : " + finalTime);
 						
 						String[] extractedData = finalTime.split(",");	         	    		
 						int date=0, month=0, year=0, hour=0, minute=0;
@@ -357,6 +378,8 @@ public class SetReminder {
 					}
 					
 					else{
+						
+						Log.i("Appointext : in complete date", "Updating reminder");
 						
 						db.updateRow("pendingReminders", (Integer)rows.get(0).get(0), rows.get(0).get(1).toString(), rows.get(0).get(2).toString(), (Integer)rows.get(0).get(3), rows.get(0).get(4).toString(), rows.get(0).get(5).toString(), finalTime, rows.get(0).get(7).toString());	
 						return 2;
@@ -546,7 +569,7 @@ public class SetReminder {
 				
 				else{
 					
-					// call cancel
+					//call cancel
 				}
 			}
 
