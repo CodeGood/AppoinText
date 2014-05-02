@@ -83,8 +83,19 @@ public class SetReminder {
 				Log.i("Appointext:Postpone", "Entered the postpone case. but the rows are empty");
 				return -1;
 			}
+			
+			int index = 0;
+			long latestTime = 0;
+			
+			for(int count = 0; count < rows.size(); count++){
+				
+				if(Long.parseLong(rows.get(count).get(8).toString()) > latestTime){
+					latestTime = Long.parseLong(rows.get(count).get(8).toString());
+					index = count;
+				}
+			}
 
-			int eventId = Integer.parseInt(rows.get(0).get(0).toString());
+			int eventId = Integer.parseInt(rows.get(index).get(0).toString());
 			String[] fields = {Events.DTSTART};
 
 			String result = GetCalendarEvents.getEventByID(con, eventId+"", fields);
@@ -155,10 +166,21 @@ public class SetReminder {
 			rows.addAll(tempRows);
 
 			if(!rows.isEmpty()){
+				
+				int index = 0;
+				long latestTime = 0;
+				
+				for(int count = 0; count < rows.size(); count++){
+					
+					if(Long.parseLong(rows.get(count).get(8).toString()) > latestTime){
+						latestTime = Long.parseLong(rows.get(count).get(8).toString());
+						index = count;
+					}
+				}
 
 				Log.i("Appointext : in complete time ", "The rows fetched are : " + rows.toString());
 
-				String whenStamp = rows.get(0).get(6).toString();
+				String whenStamp = rows.get(index).get(6).toString();
 				String finalTime = "";
 
 				if(whenStamp.startsWith(",")){
@@ -167,7 +189,7 @@ public class SetReminder {
 
 					finalTime = timeExtracted.split("[/,]")[0] + whenStamp;
 
-					if(rows.get(0).get(3).toString().equals("1")){
+					if(rows.get(index).get(3).toString().equals("1")){
 
 						Log.i("appointext : in complete time ", "In the confirmed case");
 
@@ -186,7 +208,7 @@ public class SetReminder {
 						year = Integer.parseInt(dateExtract[2]);
 
 						//	   public static long addReminder(              Context, int date, int month, int year, int hour, int minute, int min_before_event, String title,                  String location,               String desc,  String attendees) 
-						int eventId = (int) CalendarInsertEvent.addReminder(con,      date,      month,     year,     hour,     minute,        30,             rows.get(0).get(5).toString(), rows.get(0).get(7).toString(),    curText,       rows.get(0).get(4).toString());
+						int eventId = (int) CalendarInsertEvent.addReminder(con,      date,      month,     year,     hour,     minute,        30,             rows.get(index).get(5).toString(), rows.get(index).get(7).toString(),    curText,       rows.get(index).get(4).toString());
 
 						Log.d("AppoinText", "the database insert statement :" + date + "'" + month +"'"+year+"'" + "'" + hour + "'" + minute + "'" );
 						// after the reminder set, then put the entry to the set reminders table and add all the details to extractedData field in the form of Location:xxxx-Attendees:xxxx-Event:xxxx- all of them being a CSV 
@@ -196,7 +218,7 @@ public class SetReminder {
 						String people1;
 						String extractedInfo = "";
 
-						people1 = rows.get(0).get(4).toString();
+						people1 = rows.get(index).get(4).toString();
 
 						int number = people1.split(",").length;
 
@@ -214,18 +236,18 @@ public class SetReminder {
 							isComplete = 0;
 						}
 
-						if(!rows.get(0).get(7).toString().equalsIgnoreCase("")){
-							Log.i("blah",  rows.get(0).get(7).toString());
-							extractedInfo += ("Location:" + rows.get(0).get(7).toString() + "-");
+						if(!rows.get(index).get(7).toString().equalsIgnoreCase("")){
+							Log.i("blah",  rows.get(index).get(7).toString());
+							extractedInfo += ("Location:" + rows.get(index).get(7).toString() + "-");
 						}
 
 						else{
 							isComplete = 0;
 						}
 
-						if(!rows.get(0).get(5).toString().equalsIgnoreCase("")){	
-							Log.i("blah",  rows.get(0).get(5).toString());	
-							extractedInfo += ("Occasion:" + rows.get(0).get(5).toString() + "-");
+						if(!rows.get(index).get(5).toString().equalsIgnoreCase("")){	
+							Log.i("blah",  rows.get(index).get(5).toString());	
+							extractedInfo += ("Occasion:" + rows.get(index).get(5).toString() + "-");
 						}
 
 						else{	
@@ -235,9 +257,9 @@ public class SetReminder {
 						// the event-sender-receiver string to retrieve the data from the set reminders table later 
 						// create trs and store the entry in the set reminder table
 
-						String trs = rows.get(0).get(5).toString() + "-" + senderNumber + "-" + recieverNumber;
+						String trs = rows.get(index).get(5).toString() + "-" + senderNumber + "-" + recieverNumber;
 
-						db.deleteRow("pendingReminders", (Integer)rows.get(0).get(0));
+						db.deleteRow("pendingReminders", (Integer)rows.get(index).get(0));
 
 						db.addRow("setReminders", eventId, isComplete, isGroup, trs, extractedInfo);
 
@@ -256,7 +278,7 @@ public class SetReminder {
 
 						Log.i("appointext : in complete time", "In the update case");
 
-						db.updateRow("pendingReminders", (Integer)rows.get(0).get(0), rows.get(0).get(1).toString(), rows.get(0).get(2).toString(), (Integer)rows.get(0).get(3), rows.get(0).get(4).toString(), rows.get(0).get(5).toString(), finalTime, rows.get(0).get(7).toString());	
+						db.updateRow("pendingReminders", (Integer)rows.get(index).get(0), rows.get(index).get(1).toString(), rows.get(index).get(2).toString(), (Integer)rows.get(index).get(3), rows.get(index).get(4).toString(), rows.get(index).get(5).toString(), finalTime, rows.get(index).get(7).toString());	
 						return 2;
 					}		
 				}	
@@ -280,10 +302,21 @@ public class SetReminder {
 			rows.addAll(tempRows);
 
 			if(!rows.isEmpty()){
+				
+				int index = 0;
+				long latestTime = 0;
+				
+				for(int count = 0; count < rows.size(); count++){
+					
+					if(Long.parseLong(rows.get(count).get(8).toString()) > latestTime){
+						latestTime = Long.parseLong(rows.get(count).get(8).toString());
+						index = count;
+					}
+				}
 
 				Log.i("Appointext : in complete date", "The rows are not empty in date");
 
-				String whenStamp = rows.get(0).get(6).toString();
+				String whenStamp = rows.get(index).get(6).toString();
 				String finalTime = "";
 
 				if(whenStamp.endsWith(",")){
@@ -292,7 +325,7 @@ public class SetReminder {
 
 					finalTime = whenStamp + dateExtracted.split("[/,]")[0]+"/"+dateExtracted.split("[/,]")[1]+"/"+dateExtracted.split("[/,]")[2];
 
-					if(rows.get(0).get(3).toString().equals("1")){
+					if(rows.get(index).get(3).toString().equals("1")){
 
 						Log.i("Appointext : in complete date", "Updating and setting reminder + final time is : " + finalTime);
 
@@ -311,7 +344,7 @@ public class SetReminder {
 						year = Integer.parseInt(dateExtract[2]);
 
 						//	   public static long addReminder(              Context, int date, int month, int year, int hour, int minute, int min_before_event, String title,                  String location,               String desc,  String attendees) 
-						int eventId = (int) CalendarInsertEvent.addReminder(con,      date,      month,     year,     hour,     minute,        30,             rows.get(0).get(5).toString(), rows.get(0).get(7).toString(),    curText,       rows.get(0).get(4).toString());
+						int eventId = (int) CalendarInsertEvent.addReminder(con,      date,      month,     year,     hour,     minute,        30,             rows.get(index).get(5).toString(), rows.get(index).get(7).toString(),    curText,       rows.get(index).get(4).toString());
 
 						Log.d("AppoinText", "the database insert statement :" + date + "'" + month +"'"+year+"'" + "'" + hour + "'" + minute + "'" );
 						// after the reminder set, then put the entry to the set reminders table and add all the details to extractedData field in the form of Location:xxxx-Attendees:xxxx-Event:xxxx- all of them being a CSV 
@@ -321,7 +354,7 @@ public class SetReminder {
 						String people1;
 						String extractedInfo = "";
 
-						people1 = rows.get(0).get(4).toString();
+						people1 = rows.get(index).get(4).toString();
 
 						int number = people1.split(",").length;
 
@@ -339,18 +372,18 @@ public class SetReminder {
 							isComplete = 0;
 						}
 
-						if(!rows.get(0).get(7).toString().equalsIgnoreCase("")){
-							Log.i("blah",  rows.get(0).get(7).toString());
-							extractedInfo += ("Location:" + rows.get(0).get(7).toString() + "-");
+						if(!rows.get(index).get(7).toString().equalsIgnoreCase("")){
+							Log.i("blah",  rows.get(index).get(7).toString());
+							extractedInfo += ("Location:" + rows.get(index).get(7).toString() + "-");
 						}
 
 						else{
 							isComplete = 0;
 						}
 
-						if(!rows.get(0).get(5).toString().equalsIgnoreCase("")){	
-							Log.i("blah",  rows.get(0).get(5).toString());	
-							extractedInfo += ("Occasion:" + rows.get(0).get(5).toString() + "-");
+						if(!rows.get(index).get(5).toString().equalsIgnoreCase("")){	
+							Log.i("blah",  rows.get(index).get(5).toString());	
+							extractedInfo += ("Occasion:" + rows.get(index).get(5).toString() + "-");
 						}
 
 						else{	
@@ -360,9 +393,9 @@ public class SetReminder {
 						// the event-sender-receiver string to retrieve the data from the set reminders table later 
 						// create trs and store the entry in the set reminder table
 
-						String trs = rows.get(0).get(5).toString() + "-" + senderNumber + "-" + recieverNumber;
+						String trs = rows.get(index).get(5).toString() + "-" + senderNumber + "-" + recieverNumber;
 
-						db.deleteRow("pendingReminders", (Integer)rows.get(0).get(0));
+						db.deleteRow("pendingReminders", (Integer)rows.get(index).get(0));
 
 						db.addRow("setReminders", eventId, isComplete, isGroup, trs, extractedInfo);
 
@@ -381,7 +414,7 @@ public class SetReminder {
 
 						Log.i("Appointext : in complete date", "Updating reminder");
 
-						db.updateRow("pendingReminders", (Integer)rows.get(0).get(0), rows.get(0).get(1).toString(), rows.get(0).get(2).toString(), (Integer)rows.get(0).get(3), rows.get(0).get(4).toString(), rows.get(0).get(5).toString(), finalTime, rows.get(0).get(7).toString());	
+						db.updateRow("pendingReminders", (Integer)rows.get(index).get(0), rows.get(index).get(1).toString(), rows.get(index).get(2).toString(), (Integer)rows.get(index).get(3), rows.get(index).get(4).toString(), rows.get(index).get(5).toString(), finalTime, rows.get(index).get(7).toString());	
 						return 2;
 					}		
 				}	
@@ -445,17 +478,28 @@ public class SetReminder {
 			UpdateReminder.cancelReminder(con, curText, senderNumber, recieverNumber);
 			return -1;  //-1 value used will indicate that there were no reminders to confirm
 		}
+		
+		int index = 0;
+		long latestTime = 0;
+		
+		for(int count = 0; count < rows.size(); count++){
+			
+			if(Long.parseLong(rows.get(count).get(8).toString()) > latestTime){
+				latestTime = Long.parseLong(rows.get(count).get(8).toString());
+				index = count;
+			}
+		}
 
 		if(reply.equalsIgnoreCase("yes")){
 
-			Log.i("AppoinText","no the rows are not empty and the 7th element : " + rows.get(0).get(6).toString() + " And the rows are " + rows.toString());
+			Log.i("AppoinText","no the rows are not empty and the 7th element : " + rows.get(index).get(6).toString() + " And the rows are " + rows.toString());
 
 			// if the reply is affirmative, then check if the time was found. If not, then just change the entry in the db to indicate that the meeting is confirmed
 
-			if(rows.get(0).get(6).toString()!= null && (rows.get(0).get(6).toString().equalsIgnoreCase("") || rows.get(0).get(6).toString().startsWith(",") || rows.get(0).get(6).toString().endsWith(","))){         	    		
+			if(rows.get(index).get(6).toString()!= null && (rows.get(index).get(6).toString().equalsIgnoreCase("") || rows.get(index).get(6).toString().startsWith(",") || rows.get(index).get(6).toString().endsWith(","))){         	    		
 
 				Log.d("AppoinText", "Inside the if condition. Not enough information to add pending reminder. :P");
-				db.updateRow("pendingReminders", (Integer)rows.get(0).get(0), rows.get(0).get(1).toString(), rows.get(0).get(2).toString(), 1, rows.get(0).get(4).toString(), rows.get(0).get(5).toString(), rows.get(0).get(6).toString(), rows.get(0).get(7).toString());	
+				db.updateRow("pendingReminders", (Integer)rows.get(index).get(0), rows.get(index).get(1).toString(), rows.get(index).get(2).toString(), 1, rows.get(index).get(4).toString(), rows.get(index).get(5).toString(), rows.get(index).get(6).toString(), rows.get(index).get(index).toString());	
 				return 2; //return value of 2 means that there was not enough information to set the reminder 
 			}
 
@@ -463,8 +507,8 @@ public class SetReminder {
 
 				//else extract the details required for the add reminder function and add the reminder
 
-				String whenStamp = rows.get(0).get(6).toString();	
-				String desc = rows.get(0).get(7).toString();
+				String whenStamp = rows.get(index).get(6).toString();	
+				String desc = rows.get(index).get(7).toString();
 				String[] extractedData = whenStamp.split(",");	         	    		
 				int date=0, month=0, year=0, hour=0, minute=0;
 				String[] dateExtract, timeExtract;
@@ -480,7 +524,7 @@ public class SetReminder {
 				year = Integer.parseInt(dateExtract[2]);
 
 				//	   public static long addReminder(              Context, int date, int month, int year, int hour, int minute, int min_before_event, String title,                  String location,               String desc,  String attendees) 
-				int eventId = (int) CalendarInsertEvent.addReminder(con,      date,      month,     year,     hour,     minute,        30,             rows.get(0).get(5).toString(), rows.get(0).get(7).toString(),    desc,       rows.get(0).get(4).toString());
+				int eventId = (int) CalendarInsertEvent.addReminder(con,      date,      month,     year,     hour,     minute,        30,             rows.get(index).get(5).toString(), rows.get(index).get(7).toString(),    desc,       rows.get(index).get(4).toString());
 
 				Log.d("AppoinText", "the database insert statement :" + date + "'" + month +"'"+year+"'" + "'" + hour + "'" + minute + "'" );
 				// after the reminder set, then put the entry to the set reminders table and add all the details to extractedData field in the form of Location:xxxx-Attendees:xxxx-Event:xxxx- all of them being a CSV 
@@ -490,7 +534,7 @@ public class SetReminder {
 				String people;
 				String extractedInfo = "";
 
-				people = rows.get(0).get(4).toString();
+				people = rows.get(index).get(4).toString();
 
 				int number = people.split(",").length;
 
@@ -510,11 +554,11 @@ public class SetReminder {
 					isComplete = 0;
 				}
 
-				if(!rows.get(0).get(7).toString().equalsIgnoreCase("")){
+				if(!rows.get(index).get(7).toString().equalsIgnoreCase("")){
 
-					Log.i("blah",  rows.get(0).get(7).toString());
+					Log.i("blah",  rows.get(index).get(7).toString());
 
-					extractedInfo += ("Location:" + rows.get(0).get(7).toString() + "-");
+					extractedInfo += ("Location:" + rows.get(index).get(7).toString() + "-");
 				}
 
 				else{
@@ -522,11 +566,11 @@ public class SetReminder {
 					isComplete = 0;
 				}
 
-				if(!rows.get(0).get(5).toString().equalsIgnoreCase("")){
+				if(!rows.get(index).get(5).toString().equalsIgnoreCase("")){
 
-					Log.i("blah",  rows.get(0).get(5).toString());
+					Log.i("blah",  rows.get(index).get(5).toString());
 
-					extractedInfo += ("Occasion:" + rows.get(0).get(5).toString() + "-");
+					extractedInfo += ("Occasion:" + rows.get(index).get(5).toString() + "-");
 				}
 
 				else{
@@ -536,9 +580,9 @@ public class SetReminder {
 
 				// the event-sender-receiver string to retrieve the data from the set reminders table later
 
-				String trs = rows.get(0).get(5).toString() + "-" + senderNumber + "-" + recieverNumber;
+				String trs = rows.get(index).get(5).toString() + "-" + senderNumber + "-" + recieverNumber;
 
-				db.deleteRow("pendingReminders", (Integer)rows.get(0).get(0));
+				db.deleteRow("pendingReminders", (Integer)rows.get(index).get(0));
 
 				db.addRow("setReminders", eventId, isComplete, isGroup, trs, extractedInfo);
 
@@ -562,9 +606,9 @@ public class SetReminder {
 
 			if(event.equalsIgnoreCase("")){
 
-				if(event.equalsIgnoreCase(rows.get(0).get(5).toString())){
+				if(event.equalsIgnoreCase(rows.get(index).get(5).toString())){
 
-					db.deleteRow("pendingReminders", (Integer)rows.get(0).get(0));
+					db.deleteRow("pendingReminders", (Integer)rows.get(index).get(0));
 				}
 
 				else{
@@ -572,7 +616,7 @@ public class SetReminder {
 				}
 			}
 
-			db.deleteRow("pendingReminders", (Integer)rows.get(0).get(0));
+			db.deleteRow("pendingReminders", (Integer)rows.get(index).get(0));
 			db.close();
 			return 1;
 		}

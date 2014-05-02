@@ -122,6 +122,9 @@ public class DatabaseManager {
        {
    		// this is a key value pair holder used by android's SQLite functions
 
+    	   if (evntId < 0){
+    		   return;
+    	   }
 	   		ContentValues values = new ContentValues();
 	   		values.put("eventId", evntId);
 	   		values.put("isComplete", isComp);
