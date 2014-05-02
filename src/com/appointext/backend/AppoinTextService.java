@@ -1,19 +1,17 @@
 package com.appointext.backend;
 
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Map;
-
-
-import com.appointext.database.DatabaseManager;
-import com.appointext.naivebayes.Classifier;
 
 import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
-import java.util.ArrayList;
+
+import com.appointext.database.DatabaseManager;
+import com.appointext.naivebayes.Classifier;
 
 /*
  * JUSTIFICATION -->
@@ -139,7 +137,7 @@ public class AppoinTextService extends IntentService {
 
 		}// get the category and the confidence in case it is required
 
-		Log.d("AppoinText", "The final values are minimumConfidence :" + minimumConfidence + " category :" + category);
+		Log.d("AppoinText Value", "Text " + curText + "\nCategory :" + category);
 
 		if(category.equalsIgnoreCase("irrelevant")){
 			// this is not important to us, so stop the service by returning.
@@ -217,6 +215,10 @@ public class AppoinTextService extends IntentService {
 			
 
 		}
+		
+
+		if (category.equalsIgnoreCase("cancel"))
+			UpdateReminder.cancelReminder(this, curText, senderNumber, recieverNumber);
 
 		if(category.equalsIgnoreCase("query")){
 
@@ -232,7 +234,11 @@ public class AppoinTextService extends IntentService {
 		if(category.equalsIgnoreCase("meeting")){
 			
 			Log.i("Appointext meeting", "I am in meeting ");
-			SetReminder.addToPendingTable(this, curText, senderNumber, recieverNumber);
+			
+			if (FindSentiment.findSentiment(curText).equalsIgnoreCase("no")) //If a meeting has a negative sentiment, it's essentially a cancellation
+				UpdateReminder.cancelReminder(this, curText, senderNumber, recieverNumber);
+			else
+				SetReminder.addToPendingTable(this, curText, senderNumber, recieverNumber);
 		}
 
 		/*

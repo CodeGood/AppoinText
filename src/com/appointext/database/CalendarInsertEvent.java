@@ -176,6 +176,13 @@ Log.d("AppoinText", "Got Timezone as " + TimeZone.getDefault().toString());
 		con = cont; //Set it for use by the whole class
 		month = month-1;
 		
+		title = title.replaceAll(",", "");
+		location = location.replaceAll(",", "");
+		desc = desc.replaceAll(",", "");
+		
+		if (location.equals(desc)) //Since you are bad enough to pass the location also as the current text :( This is my work around :D
+			location = "";
+		
 		//Get ahold of prompt settings and act accordingly
 		final DatabaseManager dbPrompt = new DatabaseManager(cont);
 		String prompt;
@@ -320,12 +327,13 @@ Log.d("AppoinTextReminder", "Event" + title + " added successfully");
 			
 			// Now add attendees for the reminder. I assume we have nothing to do with anything other than name 
 			if (!attendees.equalsIgnoreCase("") && attendees !=  null) {
-
+			
 				ContentResolver cr = con.getContentResolver();
 Log.i("AppoinText People", "Attendes are " + attendees);				
 				String attendeesCSV = "";
 				for (String name : attendees.split(",")) {
-					attendeesCSV += HandleConflict.convertNumberToName(cont, name) + ",";
+					if (name != null && name.length() != 0) //ensure no null names pass through by any chance
+						attendeesCSV += HandleConflict.convertNumberToName(cont, name) + ",";
 				}
 					values.clear();
 					values.put(Attendees.EVENT_ID, eventId);
@@ -433,8 +441,8 @@ Log.d("AppoinText People", "Updating attendees to " + attendees);
 					Notification.Builder builder = new Notification.Builder(con);
 					builder
 					  .setSmallIcon(R.drawable.reminder_hand)
-					  .setContentTitle("Group plan changed")
-					  .setContentText("Remember to inform " + attendees)
+					  .setContentTitle("Group plan changed. Inform?")
+					  .setContentText(attendees)
 					  .setTicker("Group plan Changed.")
 					  .setLights(0xFFFF0000, 500, 500) //setLights (int argb, int onMs, int offMs)
 					  .setAutoCancel(true);

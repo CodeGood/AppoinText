@@ -219,6 +219,17 @@ System.out.println("Match in HH:mm = " + match);
 					continue;
 				}
 			}
+			
+			if(match.length() != 5) {
+				
+				if (match.length() == 1)
+					match = "0" + match + ":00";
+				else if (match.length() == 2)
+					match = match + "00";
+				else if (match.length() == 4)
+					match = "0" + match;
+				
+			}
 				
 			foundTime +=(match + "/c" + sms.indexOf(m.group()) + ","); //I can't return word count here, and returning indexOf everywhere else would be too time consuming. So c107 means I am returning character 107. 
 		
