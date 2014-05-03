@@ -10,7 +10,8 @@ public class RecognizeEvent {
 								"Project Submission", "Submission", "Meeting", "Flight", "Drinks", 
 								/* Aparajita added */
 								"Training", "Interview", "Wedding", "Party", "Cinema", "catch up", "Theatre", "Mall",
-								"Funeral", "Festival", "Carnival", "Sports", "Function", "Doctor", "Test", "Exam", "Examination"
+								"Funeral", "Festival", "Carnival", "Sports", "Function", "Doctor", "Test", "Exam", "Examination",
+								"Shopping"
 								};
 	
 	public static Map<String, Integer>times;
@@ -51,6 +52,7 @@ public class RecognizeEvent {
         times.put("test", 120);
         times.put("exam", 120);
         times.put("examination", 120);
+        times.put("shopping", 120);
     }
 	
 	

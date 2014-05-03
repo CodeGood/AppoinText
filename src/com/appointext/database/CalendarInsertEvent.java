@@ -389,7 +389,7 @@ Log.d("AppoinText FalseConflict", "Got old attendees as " + attendees);
 		        if (cursor.moveToFirst()) {
 					   do {
 							  String at = cursor.getString(0);
-							  if (at.endsWith(",")) //there is a terminal comma
+							  if (at != null && at.endsWith(",")) //there is a terminal comma
 								  at = at.substring(0 , at.length()-1); //get rid of it
 Log.d("AppoinText FalseConflict", "Got current attendee as " + at);							  
 							  if (at != null && at.length() != 0)
@@ -477,4 +477,22 @@ Log.d("AppoinText FalseConflict", "Updating attendees to " + attendees);
 		        return iNumRowsDeleted;
 		}
 	   
+	   public static int updateAttendees(Context con, long entryID, String attendees) {
+	        
+	   		int iNumRowsUpdated = 0;
+	        ContentValues values = new ContentValues();	        
+		
+			// adding attendees if any. In a CSV 
+			if (attendees != null) {
+				values.clear();
+				values.put(Attendees.EVENT_ID, entryID);
+				values.put(Attendees.ATTENDEE_NAME, attendees); //TODO: Get attendees to work
+				con.getContentResolver().insert(Attendees.CONTENT_URI, values);
+			}
+			
+	        return iNumRowsUpdated;
+	   }
+
 }
+
+

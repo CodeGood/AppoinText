@@ -127,18 +127,20 @@ public class UpdateReminder {
 				people += c + ","; //to prevent issues with empty names that may creep up
 		
 		if (people.split(",").length == aOld.split(",").length || curText.toLowerCase().contains("none") || curText.toLowerCase().contains("we")) { //all attendees left. DONE: Take care of empty attendees caused by multiple ,, consequitively - Taken care that null attendees can not be inserted.
+			Log.d("AppoinText Cancellation", "Calling delete event");
 			CalendarInsertEvent.deleteCalendarEntry(con, toDeleteID); //Delete the calendar entry. TODO: Delete from setReminder as well
 			db.deleteRow("setReminders", (int)toDeleteID);
 		}
 		else {
 			String[] oArr = aOld.split(",");
 			aOld = "";
-			ArrayList<String> peopleWhoLeft = (ArrayList<String>) Arrays.asList(people.split(","));
+			ArrayList<String> peopleWhoLeft = new ArrayList<String>(Arrays.asList(people.split(",")));
 			for (String name : oArr) {
 				if (name != null && name.length() > 0 && !peopleWhoLeft.contains(name))
 					aOld += name + ",";
 			}
-			CalendarInsertEvent.updateCalendarEntry(con, toDeleteID, null, -1, aOld); //TODO: Remove the names we found here.
+			Log.d("AppoinText Cancellation", "Calling update of attendees to " + aOld);
+			CalendarInsertEvent.updateAttendees(con, toDeleteID, aOld); //TODO: Remove the names we found here.
 		}
 		
 	}
