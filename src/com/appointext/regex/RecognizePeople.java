@@ -91,6 +91,8 @@ Log.i("AppoinText People", "Found names " + foundNames);
 		return purgeTroubleWords(foundNames);
 	}
 
+	//TODO: Take "will also be there" and "will be there" into consideration
+	
 	public static String findPeopleNegative (String msg) { //FIXME - Recepie for disaster
 		
 		if (msg == null || msg.length() == 0) {
