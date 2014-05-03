@@ -62,7 +62,7 @@ public class SettingsDisplay extends PreferenceActivity {
 			}
 		});
 	
-		//Preferences for No Nag Mode
+		/*//Preferences for No Nag Mode
 		Preference noNag = (Preference) findPreference("no_nag");
 		noNag.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			@Override
@@ -72,17 +72,7 @@ public class SettingsDisplay extends PreferenceActivity {
 				return false;
 			}
 
-		});
-		
-		noNag.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-			@Override
-			public boolean onPreferenceClick(Preference preference) {
-				Intent intent = new Intent(SettingsDisplay.this, NoNagMode.class);
-				startActivity(intent);
-				return false;
-			}
-
-		});
+		});*/
 
 		//Preferences for Choosing a Contact To Be Excluded from the contacts
 		Preference contactBlocker = (Preference) findPreference("contactChosen");

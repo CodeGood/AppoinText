@@ -1,4 +1,4 @@
-package com.appointext.frontend;
+/*package com.appointext.frontend;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -88,3 +88,4 @@ public class NoNagScheduler extends Activity{
 			}});
 	}
 }
+*/
