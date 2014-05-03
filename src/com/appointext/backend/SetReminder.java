@@ -103,16 +103,31 @@ public class SetReminder {
 			}
 			
 			int index = 0;
-			long latestTime = 0;
+			long latestTime = Long.MAX_VALUE;
 			
-			for(int count = 0; count < rows.size(); count++){
-				
-				if(Long.parseLong(rows.get(count).get(8).toString()) > latestTime){
-					latestTime = Long.parseLong(rows.get(count).get(8).toString());
-					index = count;
+			try{
+			
+				for(int count = 0; count < rows.size(); count++){
+					
+					int eventId = Integer.parseInt(rows.get(count).get(0).toString());
+					String[] fields = {Events.DTSTART};
+	
+					String result = GetCalendarEvents.getEventByID(con, eventId+"", fields);
+					
+					long tim = inMiliseconds(result, "", "");
+					
+					if(tim < latestTime){
+						latestTime = tim;
+						index = count;
+					}
+					
 				}
 			}
-
+			
+			catch(Exception e){
+				
+				Log.i("Appointext:Postpone", "Gave error when I tried to get time in milli seconds :P");
+			}
 			int eventId = Integer.parseInt(rows.get(index).get(0).toString());
 			String[] fields = {Events.DTSTART};
 
