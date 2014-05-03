@@ -30,7 +30,7 @@ public class ManualBlockedNumber extends Activity {
 				if(!number.equals(""))	{
 					if(row.isEmpty())	{
 						Log.i("onEditorAction", "null case");
-						if(number.length() < 11)
+						if(number.length() < 11 || number.charAt(0) == '0')
 							number = "91" + number;
 						db.addRow("settingsTable", "BlockedNumbers", number);
 						db.close();
@@ -41,7 +41,7 @@ public class ManualBlockedNumber extends Activity {
 
 					else if(row.get(1).toString().equals("NoNumbers"))	{
 						Log.i("onEditorAction", "null case");
-						if(number.length() < 11)
+						if(number.length() < 11 || number.charAt(0) == '0')
 							number = "91" + number;
 						db.updateRow("settingsTable", "BlockedNumbers", number);
 						db.close();
@@ -58,7 +58,7 @@ public class ManualBlockedNumber extends Activity {
 							if(number.equals(temp))	
 								flag = 1;
 						if(flag == 0)	{
-							if(number.length() < 11)
+							if(number.length() < 11 || number.charAt(0) == '0')
 								number = "91" + number;
 							db.updateRow("settingsTable", "BlockedNumbers", retrieveNumber + "," + number);
 							Log.i("Number that is being added", retrieveNumber + "," + number);
