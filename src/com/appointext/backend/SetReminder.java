@@ -63,8 +63,26 @@ public class SetReminder {
 		Log.d("appointext", "the time :" + timeExtracted + " date : " + dateExtracted );	
 
 		boolean val = FindPostponement.findPostponement(curText);
-
+		
+		String returnVal = FindSentiment.findSentiment(curText);
+		
+		if(returnVal.equalsIgnoreCase("no")){
+			
+			UpdateReminder.cancelReminder(con, curText, senderNumber, recieverNumber);
+		}
+		
 		if(val){
+			
+			if(event.equalsIgnoreCase("")){
+				
+				event = "%";
+				
+				String trs = event + "-" + senderNumber + "-" + recieverNumber;	
+				
+				rows = db.getMultipleSetReminders("SELECT * FROM setReminders WHERE trs LIKE "+ "'" + trs + "'");
+				
+				Log.i("Appointext:PostponeWithoutEvent", "The rows I fetched are : " + rows.toString() + "the query was : " + "SELECT * FROM setReminders WHERE trs LIKE "+ "'" + trs + "'");
+			}
 
 
 			String trs = event + "-" + senderNumber + "-" + recieverNumber;			
@@ -200,12 +218,16 @@ public class SetReminder {
 						timeExtract = extractedData[0].split(":");
 						dateExtract = extractedData[1].split("/");
 
-						hour = Integer.parseInt(timeExtract[0]);
-						minute = Integer.parseInt(timeExtract[1]);
-
-						date = Integer.parseInt(dateExtract[0]);
-						month = Integer.parseInt(dateExtract[1]);
-						year = Integer.parseInt(dateExtract[2]);
+						if(timeExtract.length >= 2){
+							hour = Integer.parseInt(timeExtract[0]);
+							minute = Integer.parseInt(timeExtract[1]);
+						}
+						
+						if(dateExtract.length >= 3){			
+							date = Integer.parseInt(dateExtract[0]);
+							month = Integer.parseInt(dateExtract[1]);
+							year = Integer.parseInt(dateExtract[2]);
+						}
 
 						//	   public static long addReminder(              Context, int date, int month, int year, int hour, int minute, int min_before_event, String title,                  String location,               String desc,  String attendees) 
 						int eventId = (int) CalendarInsertEvent.addReminder(con,      date,      month,     year,     hour,     minute,        30,             rows.get(index).get(5).toString(), rows.get(index).get(7).toString(),    curText,       rows.get(index).get(4).toString());
@@ -336,12 +358,16 @@ public class SetReminder {
 						timeExtract = extractedData[0].split(":");
 						dateExtract = extractedData[1].split("/");
 
-						hour = Integer.parseInt(timeExtract[0]);
-						minute = Integer.parseInt(timeExtract[1]);
-
-						date = Integer.parseInt(dateExtract[0]);
-						month = Integer.parseInt(dateExtract[1]);
-						year = Integer.parseInt(dateExtract[2]);
+						if(timeExtract.length >= 2){
+							hour = Integer.parseInt(timeExtract[0]);
+							minute = Integer.parseInt(timeExtract[1]);
+						}
+						
+						if(dateExtract.length >= 3){			
+							date = Integer.parseInt(dateExtract[0]);
+							month = Integer.parseInt(dateExtract[1]);
+							year = Integer.parseInt(dateExtract[2]);
+						}
 
 						//	   public static long addReminder(              Context, int date, int month, int year, int hour, int minute, int min_before_event, String title,                  String location,               String desc,  String attendees) 
 						int eventId = (int) CalendarInsertEvent.addReminder(con,      date,      month,     year,     hour,     minute,        30,             rows.get(index).get(5).toString(), rows.get(index).get(7).toString(),    curText,       rows.get(index).get(4).toString());
@@ -516,12 +542,16 @@ public class SetReminder {
 				timeExtract = extractedData[0].split(":");
 				dateExtract = extractedData[1].split("/");
 
-				hour = Integer.parseInt(timeExtract[0]);
-				minute = Integer.parseInt(timeExtract[1]);
-
-				date = Integer.parseInt(dateExtract[0]);
-				month = Integer.parseInt(dateExtract[1]);
-				year = Integer.parseInt(dateExtract[2]);
+				if(timeExtract.length >= 2){
+					hour = Integer.parseInt(timeExtract[0]);
+					minute = Integer.parseInt(timeExtract[1]);
+				}
+				
+				if(dateExtract.length >= 3){			
+					date = Integer.parseInt(dateExtract[0]);
+					month = Integer.parseInt(dateExtract[1]);
+					year = Integer.parseInt(dateExtract[2]);
+				}
 
 				//	   public static long addReminder(              Context, int date, int month, int year, int hour, int minute, int min_before_event, String title,                  String location,               String desc,  String attendees) 
 				int eventId = (int) CalendarInsertEvent.addReminder(con,      date,      month,     year,     hour,     minute,        30,             rows.get(index).get(5).toString(), rows.get(index).get(7).toString(),    desc,       rows.get(index).get(4).toString());
