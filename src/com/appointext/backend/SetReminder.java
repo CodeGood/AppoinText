@@ -63,7 +63,14 @@ public class SetReminder {
 		Log.d("appointext", "the time :" + timeExtracted + " date : " + dateExtracted );	
 
 		boolean val = FindPostponement.findPostponement(curText);
-
+		
+		String returnVal = FindSentiment.findSentiment(curText);
+		
+		if(returnVal.equalsIgnoreCase("no")){
+			
+			UpdateReminder.cancelReminder(con, curText, senderNumber, recieverNumber);
+		}
+		
 		if(val){
 			
 			if(event.equalsIgnoreCase("")){
