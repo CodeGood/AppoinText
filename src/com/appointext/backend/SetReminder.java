@@ -73,61 +73,88 @@ public class SetReminder {
 		
 		if(val){
 			
+			int index = 0;
+			long latestTime = Long.MAX_VALUE;
+			
+			Log.i("Appointext:Postpone", "Entered postpone, event is : " + event);
+
 			if(event.equalsIgnoreCase("")){
+				
+				Log.i("Appointext:PostponeWithoutEvent", "Entered the postpone case.No event specified");
 				
 				event = "%";
 				
 				String trs = event + "-" + senderNumber + "-" + recieverNumber;	
 				
 				rows = db.getMultipleSetReminders("SELECT * FROM setReminders WHERE trs LIKE "+ "'" + trs + "'");
+						
+				trs = event + "-" + recieverNumber + "-" + senderNumber;	
 				
-				Log.i("Appointext:PostponeWithoutEvent", "The rows I fetched are : " + rows.toString() + "the query was : " + "SELECT * FROM setReminders WHERE trs LIKE "+ "'" + trs + "'");
-			}
+				tempRows = db.getMultipleSetReminders("SELECT * FROM setReminders WHERE trs LIKE "+ "'" + trs + "'");
+				
+				rows.addAll(tempRows);
+				
+				Log.i("Appointext:PostponeWithoutEvent", "The rows I fetched are : " + rows.toString() );
+			
+				if(rows.isEmpty()){
 
-
-			String trs = event + "-" + senderNumber + "-" + recieverNumber;			
-			rows = db.getMultipleSetReminders("SELECT * FROM setReminders WHERE trs="+ "'" + trs + "'");
-
-
-			trs = event + "-" + recieverNumber + "-" + senderNumber;
-			tempRows = db.getMultipleSetReminders("SELECT * FROM setReminders WHERE trs="+ "'" + trs + "'"); 
-
-			rows.addAll(tempRows);
-
-			Log.i("Appointext:Postpone", "Entered the postpone case : " + rows.toString());
-
-			if(rows.isEmpty()){
-
-				Log.i("Appointext:Postpone", "Entered the postpone case. but the rows are empty");
-				return -1;
+					Log.i("Appointext:PostponeWithoutEvent", "Entered the postpone case. but the rows are empty, no reminders for this sender reciever numbers");
+					return -1;
+				}
+				
+				index = 0;
 			}
 			
-			int index = 0;
-			long latestTime = Long.MAX_VALUE;
+			else{
+				
+				Log.i("Appointext:Postpone", "Event is specified" + event);
 			
-			try{
-			
-				for(int count = 0; count < rows.size(); count++){
-					
-					int eventId = Integer.parseInt(rows.get(count).get(0).toString());
-					String[] fields = {Events.DTSTART};
+				String trs = event + "-" + senderNumber + "-" + recieverNumber;			
+				
+				rows = db.getMultipleSetReminders("SELECT * FROM setReminders WHERE trs="+ "'" + trs + "'");
 	
-					String result = GetCalendarEvents.getEventByID(con, eventId+"", fields);
+	
+				trs = event + "-" + recieverNumber + "-" + senderNumber;
+				tempRows = db.getMultipleSetReminders("SELECT * FROM setReminders WHERE trs="+ "'" + trs + "'"); 
+	
+				rows.addAll(tempRows);
+	
+				Log.i("Appointext:Postpone", "Entered the postpone case : " + rows.toString());
+				
+				if(rows.isEmpty()){
 					
-					long tim = inMiliseconds(result, "", "");
+					return -1;
+				}
 					
-					if(tim < latestTime){
-						latestTime = tim;
-						index = count;
+				if(!rows.isEmpty()){
+					try{
+				
+						for(int count = 0; count < rows.size(); count++){
+							
+							int eventId = Integer.parseInt(rows.get(count).get(0).toString());
+							String[] fields = {Events.DTSTART};
+			
+							String result = GetCalendarEvents.getEventByID(con, eventId+"", fields);
+							
+							long tim = inMiliseconds(result.split(",")[0], "", "");
+							
+							if(tim < latestTime){
+								latestTime = tim;
+								index = count;
+							}
+							
+						}
 					}
 					
+					catch(Exception e){
+						
+						Log.i("Appointext:Postpone", "Gave error when I tried to get time in milli seconds :P");
+					}
 				}
 			}
 			
-			catch(Exception e){
-				
-				Log.i("Appointext:Postpone", "Gave error when I tried to get time in milli seconds :P");
-			}
+			Log.i("Appointext:Postpone", "The index is : " + index);
+			
 			int eventId = Integer.parseInt(rows.get(index).get(0).toString());
 			String[] fields = {Events.DTSTART};
 
@@ -170,7 +197,7 @@ public class SetReminder {
 
 			}
 			catch(Exception e){
-				//Log.i("Postpone: Appointext", "I got an exception");
+				Log.i("Postpone: Appointext", "I got an exception" + e);
 			}
 			//Log.d("Postpone: Appointext", "the values extracted : hour: " + hour + "minute: " + minute + "dd: " + dd + "mm: " + mm + "yy: " + yy );
 
