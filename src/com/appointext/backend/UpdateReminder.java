@@ -126,7 +126,7 @@ public class UpdateReminder {
 			if (c != null & c.length() > 0)
 				people += c + ","; //to prevent issues with empty names that may creep up
 		
-		if (people.split(",").length == aOld.split(",").length)//all attendees left. DONE: Take care of empty attendees caused by multiple ,, consequitively - Taken care that null attendees can not be inserted.
+		if (people.split(",").length == aOld.split(",").length || curText.toLowerCase().contains("none") || curText.toLowerCase().contains("we"))//all attendees left. DONE: Take care of empty attendees caused by multiple ,, consequitively - Taken care that null attendees can not be inserted.
 			CalendarInsertEvent.deleteCalendarEntry(con, toDeleteID); //Delete the calendar entry. TODO: Delete from setReminder as well
 		else {
 			String[] oArr = aOld.split(",");

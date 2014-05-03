@@ -335,6 +335,7 @@ Log.i("AppoinText People", "Attendes are " + attendees);
 					if (name != null && name.length() != 0) //ensure no null names pass through by any chance
 						attendeesCSV += HandleConflict.convertNumberToName(cont, name) + ",";
 				}
+				
 					values.clear();
 					values.put(Attendees.EVENT_ID, eventId);
 					values.put(Attendees.ATTENDEE_NAME, attendeesCSV); //TODO: Get attendees to work
@@ -375,25 +376,29 @@ Log.d("Appointext Calendar", "Reminder" + title + "Added Successfully");
 		        ContentValues values = new ContentValues();
 		        
 		        //Get previous attendees
-		        if (attendees == null)
+		        if (attendees == null || attendees.length() == 0)
 		        	attendees = ""; //Just get hold of an empty string
 		        else if (!attendees.endsWith(","))
 		        	attendees += ","; //Add a comma at the end
 		        
 Log.d("AppoinText People", "Got ID as " + entryID);
+Log.d("AppoinText FalseConflict", "Got old attendees as " + attendees);
 
 		        ContentResolver cr = con.getContentResolver();
 		        Cursor cursor = CalendarContract.Attendees.query(cr, entryID, new String[] {CalendarContract.Attendees.ATTENDEE_NAME} );
 		        if (cursor.moveToFirst()) {
 					   do {
 							  String at = cursor.getString(0);
-							  if (at != null && !at.equals(""))
+							  if (at.endsWith(",")) //there is a terminal comma
+								  at = at.substring(0 , at.length()-1); //get rid of it
+Log.d("AppoinText FalseConflict", "Got current attendee as " + at);							  
+							  if (at != null && at.length() != 0)
 								attendees += cursor.getString(0) + ",";		  
 						   } while (cursor.moveToNext());		        	
 					  
 		        }
 		        
-Log.d("AppoinText People", "Updating attendees to " + attendees);
+Log.d("AppoinText FalseConflict", "Updating attendees to " + attendees);
 		        
 		        if (updateValues != null) {
 			        
