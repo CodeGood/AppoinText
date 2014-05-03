@@ -701,6 +701,7 @@ public class SetReminder {
 	public static long inMiliseconds(String oldDT, String newDate, String newTime)throws Exception {
 
 		String[] dt = oldDT.split(" ");
+		oldDT = oldDT.replaceAll("[^0-9/: ]", "");
 
 		if (newDate != null && !newDate.equals(""))
 			dt[0] = newDate;

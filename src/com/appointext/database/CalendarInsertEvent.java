@@ -389,11 +389,7 @@ Log.d("AppoinText FalseConflict", "Got old attendees as " + attendees);
 		        if (cursor.moveToFirst()) {
 					   do {
 							  String at = cursor.getString(0);
-<<<<<<< HEAD
 							  if (at != null && at.endsWith(",")) //there is a terminal comma
-=======
-							  if (at!= null && at.endsWith(",")) //there is a terminal comma
->>>>>>> 8233f5214a30754b01cbeee6d65abe62af97d65c
 								  at = at.substring(0 , at.length()-1); //get rid of it
 Log.d("AppoinText FalseConflict", "Got current attendee as " + at);							  
 							  if (at != null && at.length() != 0)
