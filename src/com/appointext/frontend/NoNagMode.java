@@ -1,4 +1,4 @@
-package com.appointext.frontend;
+/*package com.appointext.frontend;
 
 import java.util.ArrayList;
 
@@ -126,3 +126,4 @@ public class NoNagMode extends Activity {
 		}
 	}	
 }
+*/

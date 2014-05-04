@@ -62,7 +62,7 @@ public class SettingsDisplay extends PreferenceActivity {
 			}
 		});
 	
-		//Preferences for No Nag Mode
+		/*//Preferences for No Nag Mode
 		Preference noNag = (Preference) findPreference("no_nag");
 		noNag.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			@Override
@@ -72,17 +72,7 @@ public class SettingsDisplay extends PreferenceActivity {
 				return false;
 			}
 
-		});
-		
-		noNag.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-			@Override
-			public boolean onPreferenceClick(Preference preference) {
-				Intent intent = new Intent(SettingsDisplay.this, NoNagMode.class);
-				startActivity(intent);
-				return false;
-			}
-
-		});
+		});*/
 
 		//Preferences for Choosing a Contact To Be Excluded from the contacts
 		Preference contactBlocker = (Preference) findPreference("contactChosen");
@@ -138,14 +128,14 @@ public class SettingsDisplay extends PreferenceActivity {
 				row = db.getRowAsArray("settingsTable", "BlockedNumbers");
 
 				if(row.isEmpty())	{
-					if(number.length() < 11)
+					if(number.length() < 11 || number.charAt(0) == '0')
 						number = "91" + number;
 					finalData = number + " - " + name;
 					db.addRow("settingsTable", "BlockedNumbers", finalData);
 					Toast.makeText(getApplicationContext(), number + " added to excluded list!", Toast.LENGTH_SHORT).show();
 				}
 				else if(row.get(1).toString().equals("NoNumbers"))	{
-					if(number.length() < 11)
+					if(number.length() < 11 || number.charAt(0) == '0')
 						number = "91" + number;
 					finalData = number + " - " + name;
 					db.updateRow("settingsTable", "BlockedNumbers", finalData);

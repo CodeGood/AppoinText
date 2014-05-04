@@ -41,12 +41,12 @@
         android:onClick="pickTime"
         android:title="Day Timings" />
 
-    <Preference
+<!-- 	<Preference
         android:id="@+id/NoNag"
         android:key="no_nag"
         android:onClick="NoNagHandler"
         android:title="Quiet Hours" />
-    
+     -->
     
 
 </PreferenceScreen>

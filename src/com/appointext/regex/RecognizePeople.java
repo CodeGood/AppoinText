@@ -178,7 +178,7 @@ Log.i("AppoinText People", "Found names " + foundNames);
 		String[] names = foundNames.split(",");
 		String returnVal = "";
 		for (String name : names)
-			if (!(name.equals("Can") || name.equals("However") || name.equals("You") || name.equals("I") || name.equals("Will") || name.equals("Have") || name.equals("Hey") || name.equals("Hi")))
+			if (!(name.equals("Can") || name.equals("However") || name.equals("You") || name.equals("I") || name.equals("Will") || name.equals("Have") || name.equals("Hey") || name.equals("Hi") || name.equals("Are")))
 				returnVal += name + ",";
 		
 		//if (returnVal.length() > 0)

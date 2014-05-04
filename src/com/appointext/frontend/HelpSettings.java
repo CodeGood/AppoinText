@@ -22,10 +22,7 @@ public class HelpSettings extends Activity {
 					"	Always: AppoinText will always raise a prompt no matter how obvious things are.\n" +
 					"	Never: AppoinText will never raise a prompt no matter how vague things are. \n" +
 					"	In Case of Ambiguity: AppoinText will only raise prompt in case it's confused. This won't happen often, we promise!\n\n" +
-					"Day Timings:  Here, you get to choose your definition of Morning, Afternoon, Evening and Night. This helps us tailor make the reminders according to what time you feel the morning should begin it. Caters to diurnal and nocturnal beings alike. ;)\n\n" +
-					"Quiet Hours: There maybe times you wouldn't want AppoinText to bother you with the reminders it has set. In such times, Quiet Hours comes to your rescue.\n" +
-					"	Quiet Hours Toggle: Turn On and Turn Off Quiet Hours whenever you like using this simple switch.\n" +
-					"	Quiet Hours Scheduler: If you wish to turn on Quiet Hours everyday for a particular period, you can use the scheduler. Just choose the start time and end time of the scheduler and you're good to go!\n\n");
+					"Day Timings:  Here, you get to choose your definition of Morning, Afternoon, Evening and Night. This helps us tailor make the reminders according to what time you feel the morning should begin it. Caters to diurnal and nocturnal beings alike. ;)\n\n");
 		text.setShadowLayer(5, 0, 0, Color.BLACK);
 	}
 }

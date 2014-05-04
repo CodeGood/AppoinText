@@ -38,7 +38,8 @@ public class UpdateReminder {
 
 		String people = "";
 		ArrayList<ArrayList<Object>> rows = new ArrayList<ArrayList<Object>>(); //This is being used multiple times 
-
+		ArrayList<ArrayList<Object>> tempRows = new ArrayList<ArrayList<Object>>();
+		
 		db = new DatabaseManager(con);
 		db.open();
 
@@ -68,6 +69,10 @@ public class UpdateReminder {
 		
 		String trs = event + "-" + sender + "-" + receiver; //This takes care that if there is exactly one TRS we shall have only one eventID. If there are more, we shall cross the bridge when we come there			
 		rows = db.getMultipleSetReminders("SELECT * FROM setReminders WHERE trs LIKE "+ "'" + trs + "'");
+		trs = event + "-" + receiver + "-" + sender;
+		tempRows = db.getMultipleSetReminders("SELECT * FROM setReminders WHERE trs LIKE "+ "'" + trs + "'");
+		rows.addAll(tempRows);
+		
 		long toDeleteID = -1;			
 		long curTime, nearestTime = Long.MAX_VALUE; //curTime is the time of the current event under consideration, nearestTime is the dtstart time nearest to system date 
 		
@@ -98,8 +103,6 @@ public class UpdateReminder {
 			Log.d("AppoinText Cancellation", "The converted time was " + curTime); //DONE: Use this data to ensure if no event is specified we choose the closest reminder
 			
 		}
-		
-		db.close();
 		
 		if (toDeleteID == -1) //there is nothing to delete!! Get the hell out of here!
 			return;
@@ -140,7 +143,9 @@ public class UpdateReminder {
 					aOld += name + ",";
 			}
 			Log.d("AppoinText Cancellation", "Calling update of attendees to " + aOld);
-			CalendarInsertEvent.updateAttendees(con, toDeleteID, aOld); //TODO: Remove the names we found here.
+			CalendarInsertEvent.updateAttendees(con, toDeleteID, aOld); //DONE: Remove the names we found here.
+			
+			db.close();
 		}
 		
 	}
