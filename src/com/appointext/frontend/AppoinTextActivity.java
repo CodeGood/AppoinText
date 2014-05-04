@@ -28,6 +28,7 @@ public class AppoinTextActivity extends Activity  {
 		startService(i);
 
 		Log.i("AppoinTextReminder", "Started Service");
+//Log.d("AppoinText RecognizeTime", "Time was " + RecognizeTime.findTime(this, "Let's meet tomorrow at 9 o'clock"));		
 		Log.i("AT MainActivity", "Registering Content Resolver.");
 	
 		/*
@@ -71,7 +72,7 @@ public class AppoinTextActivity extends Activity  {
 
 	public void viewAbout(View v) {
 		AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-		alertDialog.setTitle("AppoinText v2 ®™");
+		alertDialog.setTitle("AppoinText v2");
 		alertDialog.setMessage("Developed by Abhishek Kasargod, Aparajita Raychaudhury, Ashwin S and Manasa G.\n 2013-2014 Project at BMSCE\nUnder guidance of Ms. Saritha AN");
 		alertDialog.setButton (DialogInterface.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {

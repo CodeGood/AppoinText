@@ -1,6 +1,8 @@
 package com.appointext.database;
  
 import java.util.ArrayList;
+import java.util.Calendar;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -8,9 +10,6 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import java.util.Calendar;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
  
 public class DatabaseManager {
 
@@ -59,7 +58,7 @@ public class DatabaseManager {
 						"lastTimeStamp" + " text primary key not null," +
 						"timeStamp" + " text" +
 						");";
-       public DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+       //public DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
        public Calendar cal = Calendar.getInstance();
   		
        private Context context;
@@ -122,6 +121,9 @@ public class DatabaseManager {
        {
    		// this is a key value pair holder used by android's SQLite functions
 
+    	   if (evntId < 0){
+    		   return;
+    	   }
 	   		ContentValues values = new ContentValues();
 	   		values.put("eventId", evntId);
 	   		values.put("isComplete", isComp);
@@ -146,7 +148,7 @@ public class DatabaseManager {
 	   {
 	   			// this is a key value pair holder used by android's SQLite functions
 		  
-		   		String timeStamp = dateFormat.format(cal.getTime());
+		   		String timeStamp = cal.getTimeInMillis() + "";
 	
 	   			ContentValues values = new ContentValues();
 	   			//values.put("eventId", evntId);
@@ -527,7 +529,7 @@ public class DatabaseManager {
 		{
 					// this is a key value pair holder used by android's SQLite functions
 	
-					String timeStamp = dateFormat.format(cal.getTime());
+					String timeStamp = cal.getTimeInMillis() + "";
 					
 					ContentValues values = new ContentValues();
 					values.put("senderNumber", sender);

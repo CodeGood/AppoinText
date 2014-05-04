@@ -176,6 +176,13 @@ Log.d("AppoinText", "Got Timezone as " + TimeZone.getDefault().toString());
 		con = cont; //Set it for use by the whole class
 		month = month-1;
 		
+		title = title.replaceAll(",", "");
+		location = location.replaceAll(",", "");
+		desc = desc.replaceAll(",", "");
+		
+		if (location.equals(desc)) //Since you are bad enough to pass the location also as the current text :( This is my work around :D
+			location = "";
+		
 		//Get ahold of prompt settings and act accordingly
 		final DatabaseManager dbPrompt = new DatabaseManager(cont);
 		String prompt;
@@ -320,13 +327,15 @@ Log.d("AppoinTextReminder", "Event" + title + " added successfully");
 			
 			// Now add attendees for the reminder. I assume we have nothing to do with anything other than name 
 			if (!attendees.equalsIgnoreCase("") && attendees !=  null) {
-
+			
 				ContentResolver cr = con.getContentResolver();
 Log.i("AppoinText People", "Attendes are " + attendees);				
 				String attendeesCSV = "";
 				for (String name : attendees.split(",")) {
-					attendeesCSV += HandleConflict.convertNumberToName(cont, name) + ",";
+					if (name != null && name.length() != 0) //ensure no null names pass through by any chance
+						attendeesCSV += HandleConflict.convertNumberToName(cont, name) + ",";
 				}
+				
 					values.clear();
 					values.put(Attendees.EVENT_ID, eventId);
 					values.put(Attendees.ATTENDEE_NAME, attendeesCSV); //TODO: Get attendees to work
@@ -367,25 +376,29 @@ Log.d("Appointext Calendar", "Reminder" + title + "Added Successfully");
 		        ContentValues values = new ContentValues();
 		        
 		        //Get previous attendees
-		        if (attendees == null)
+		        if (attendees == null || attendees.length() == 0)
 		        	attendees = ""; //Just get hold of an empty string
 		        else if (!attendees.endsWith(","))
 		        	attendees += ","; //Add a comma at the end
 		        
 Log.d("AppoinText People", "Got ID as " + entryID);
+Log.d("AppoinText FalseConflict", "Got old attendees as " + attendees);
 
 		        ContentResolver cr = con.getContentResolver();
 		        Cursor cursor = CalendarContract.Attendees.query(cr, entryID, new String[] {CalendarContract.Attendees.ATTENDEE_NAME} );
 		        if (cursor.moveToFirst()) {
 					   do {
 							  String at = cursor.getString(0);
-							  if (at != null && !at.equals(""))
+							  if (at != null && at.endsWith(",")) //there is a terminal comma
+								  at = at.substring(0 , at.length()-1); //get rid of it
+Log.d("AppoinText FalseConflict", "Got current attendee as " + at);							  
+							  if (at != null && at.length() != 0)
 								attendees += cursor.getString(0) + ",";		  
 						   } while (cursor.moveToNext());		        	
 					  
 		        }
 		        
-Log.d("AppoinText People", "Updating attendees to " + attendees);
+Log.d("AppoinText FalseConflict", "Updating attendees to " + attendees);
 		        
 		        if (updateValues != null) {
 			        
@@ -433,8 +446,8 @@ Log.d("AppoinText People", "Updating attendees to " + attendees);
 					Notification.Builder builder = new Notification.Builder(con);
 					builder
 					  .setSmallIcon(R.drawable.reminder_hand)
-					  .setContentTitle("Group plan changed")
-					  .setContentText("Remember to inform " + attendees)
+					  .setContentTitle("Group plan changed. Inform?")
+					  .setContentText(attendees)
 					  .setTicker("Group plan Changed.")
 					  .setLights(0xFFFF0000, 500, 500) //setLights (int argb, int onMs, int offMs)
 					  .setAutoCancel(true);
@@ -464,4 +477,22 @@ Log.d("AppoinText People", "Updating attendees to " + attendees);
 		        return iNumRowsDeleted;
 		}
 	   
+	   public static int updateAttendees(Context con, long entryID, String attendees) {
+	        
+	   		int iNumRowsUpdated = 0;
+	        ContentValues values = new ContentValues();	        
+		
+			// adding attendees if any. In a CSV 
+			if (attendees != null) {
+				values.clear();
+				values.put(Attendees.EVENT_ID, entryID);
+				values.put(Attendees.ATTENDEE_NAME, attendees); //TODO: Get attendees to work
+				con.getContentResolver().insert(Attendees.CONTENT_URI, values);
+			}
+			
+	        return iNumRowsUpdated;
+	   }
+
 }
+
+

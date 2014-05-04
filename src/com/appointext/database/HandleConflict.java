@@ -1,5 +1,7 @@
 package com.appointext.database;
 
+import java.util.Arrays;
+
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -39,8 +41,8 @@ public class HandleConflict {
 		if (cursor.moveToFirst()) {
 		    // Get values from contacts database:
 		    name =      cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
-		    Log.v("AppoinTextConflict", "Started uploadcontactphoto: Contact Found @ " + number);            
-		    Log.v("AppoinTextConflict", "Started uploadcontactphoto: Contact name  = " + name);
+		    Log.v("AppoinTextConflict", "Contact Found @ " + number);            
+		    Log.v("AppoinTextConflict", "Contact name  = " + name);
 		    return name;
 		    
 		} 
@@ -49,8 +51,8 @@ public class HandleConflict {
 			contactUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode("+" + number)); 
 			cursor = context.getContentResolver().query(contactUri, projection, null, null, null);
 			if (cursor.moveToFirst()) {
-				Log.v("AppoinTextConflict", "Started uploadcontactphoto: Contact Not Found @ " + number);
-				Log.v("AppoinTextConflict", "Started uploadcontactphoto: Contact name  = " + name);
+				Log.v("AppoinTextConflict", "Contact Not Found @ " + number);
+				Log.v("AppoinTextConflict", "Contact name  = " + name);
 				return name; // contact not found
 			}
 			
@@ -59,8 +61,8 @@ public class HandleConflict {
 				contactUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number.substring(2, number.length()))); 
 				cursor = context.getContentResolver().query(contactUri, projection, null, null, null);
 				if (cursor.moveToFirst()) {
-					Log.v("AppoinTextConflict", "Started uploadcontactphoto: Contact Not Found @ " + number);
-					Log.v("AppoinTextConflict", "Started uploadcontactphoto: Contact name  = " + name);
+					Log.v("AppoinTextConflict", "Contact Not Found @ " + number);
+					Log.v("AppoinTextConflict", "Contact name  = " + name);
 					return name; // contact not found
 				}
 				else
@@ -93,12 +95,12 @@ public class HandleConflict {
 			dtend = startTime + 1*DateUtils.HOUR_IN_MILLIS + 30*DateUtils.MINUTE_IN_MILLIS;
 		
 		dtstart = startTime - 3*DateUtils.HOUR_IN_MILLIS;
-		Log.d("AppoinTextDuplicate", "Querying get Evetns");
+		Log.d("AppoinTextDuplicate", "Querying get Evetns for end time as " + dtend);
 		String[] result = GetCalendarEvents.getEvent(con, dtstart, dtend, new String[] {Events.TITLE, Events.DTSTART, Events._ID}).split("#");
 		String conflict = null; 
 		long conTime = 0;
 		String conTitle = null;
-		Log.d("AppoinTextDuplicate", "Obtained results");
+		Log.d("AppoinTextDuplicate", "Obtained results" + Arrays.toString(result));
 		
 		for (String event : result) {
 			
@@ -135,10 +137,10 @@ public class HandleConflict {
 			Log.d("AppoinTextDuplicate", "Detecting conflicts");
 		}
 		
-		Log.d("AppoinTextDuplicate", "Going on my own sweet way!!");
-		
-		if (conflict == null)
+		if (conflict == null) {
+			Log.d("AppoinTextDuplicate", "Going on my own sweet way!!");
 			return false;
+		}
 		else {
 			raiseNotification(con, conflict, conTitle, conTime, title, attendees, startTime); //inform the user of a conflict
 			return true; //and inform the calendar entry service that a reminder should not be set.
@@ -175,11 +177,13 @@ public class HandleConflict {
 		Log.d("AppoinTextConflict", "Queried");
 		String aOld = "";
 		if (cursor.moveToFirst()) {
+			   String at = null;
 			   do {
-				  String at = cursor.getString(0);
+				  at = cursor.getString(0);
+				  Log.d("AppoinTextConflict", "Got current attendee as " + at);
 				  if (at != null && !at.equals(""))
 					  aOld += at;
-			   } while (cursor.moveToNext());
+			   } while (at == null && cursor.moveToNext());
 			}	
 		Log.d("AppoinTextConflict", "Got attendees as " + aOld);
 		//END

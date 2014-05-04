@@ -1,19 +1,17 @@
 package com.appointext.backend;
 
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Map;
-
-
-import com.appointext.database.DatabaseManager;
-import com.appointext.naivebayes.Classifier;
 
 import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
-import java.util.ArrayList;
+
+import com.appointext.database.DatabaseManager;
+import com.appointext.naivebayes.Classifier;
 
 /*
  * JUSTIFICATION -->
@@ -46,7 +44,7 @@ public class AppoinTextService extends IntentService {
 
 		String originS = intent.getStringExtra("origin");
 		Long timeStamp = intent.getLongExtra("timestamp", 0);
-		Log.i("AppoinText", "The vlaue of the time stamp when the messge was detected this time is : " + timeStamp);
+		//Log.i("AppoinText", "The vlaue of the time stamp when the messge was detected this time is : " + timeStamp);
 
 		String curText = null;
 
@@ -134,12 +132,12 @@ public class AppoinTextService extends IntentService {
 				minimumConfidence = value;
 				category = key;
 
-				Log.d("Confidence Value", "The values are minimumConfidence :" + minimumConfidence + " category :" + category);
+				//Log.d("Confidence Value", "The values are minimumConfidence :" + minimumConfidence + " category :" + category);
 			}
 
 		}// get the category and the confidence in case it is required
 
-		Log.d("AppoinText", "The final values are minimumConfidence :" + minimumConfidence + " category :" + category);
+		Log.d("AppoinText Value", "Text " + curText + "\nCategory :" + category);
 
 		if(category.equalsIgnoreCase("irrelevant")){
 			// this is not important to us, so stop the service by returning.
@@ -152,9 +150,9 @@ public class AppoinTextService extends IntentService {
 			senderNumber = (msgs[0].getOriginatingAddress().replaceAll("[^0-9]", ""));
 			recieverNumber = "123";
 			if (senderNumber.length() == 10) {
-				Log.d("NumberConversion", "Original sender number " + senderNumber);
+				//Log.d("NumberConversion", "Original sender number " + senderNumber);
 				senderNumber = "91" + senderNumber;
-				Log.d("NumberConversion", "New number as " + senderNumber);
+				//Log.d("NumberConversion", "New number as " + senderNumber);
 			}
 
 			db.open();
@@ -165,7 +163,7 @@ public class AppoinTextService extends IntentService {
 			String[] numbers  = blockedNumbers.toString().split(",");
 
 			
-			Log.i("Appointext block numbers", "The strings are " + Arrays.toString(numbers));
+			//Log.i("Appointext block numbers", "The strings are " + Arrays.toString(numbers));
 			if (numbers.length == 0)
 				Log.i("AppoinText Block Numbers", "There are no blocked numbers.");
 			
@@ -175,7 +173,7 @@ public class AppoinTextService extends IntentService {
 				
 				if(numbers[i].equalsIgnoreCase(senderNumber)){
 					
-					Log.d("Appointext block numbers", "Entered if");
+					//Log.d("Appointext block numbers", "Entered if");
 					return;
 				}
 			}
@@ -192,9 +190,9 @@ public class AppoinTextService extends IntentService {
 			senderNumber = "123";
 			recieverNumber = (intent.getStringExtra("receiver").replaceAll("[^0-9]", "")); 
 			if (recieverNumber.length() == 10) {
-				Log.d("NumberConversion", "Original sender number " + recieverNumber);
+				//Log.d("NumberConversion", "Original sender number " + recieverNumber);
 				recieverNumber = "91" + recieverNumber;
-				Log.d("NumberConversion", "New number as " + recieverNumber);
+				//Log.d("NumberConversion", "New number as " + recieverNumber);
 			}
 			
 			db.open();
@@ -203,13 +201,13 @@ public class AppoinTextService extends IntentService {
 			blockedNumbers = db.getRowAsArray("settingsTable", "BlockedNumbers");
 			
 			String[] numbers  = blockedNumbers.toString().split(",");
-			Log.i("Appointext block numbers", "The strings are " + numbers.toString());
+			//Log.i("Appointext block numbers", "The strings are " + numbers.toString());
 			
 			for(int i=0; i<numbers.length; i++){
 				
 				if(numbers[i].equalsIgnoreCase(recieverNumber)){
 					
-					Log.d("Appointext block numbers", "Entered if");
+					//Log.d("Appointext block numbers", "Entered if");
 					return;
 				}
 			}
@@ -217,6 +215,10 @@ public class AppoinTextService extends IntentService {
 			
 
 		}
+		
+
+		if (category.equalsIgnoreCase("cancel"))
+			UpdateReminder.cancelReminder(this, curText, senderNumber, recieverNumber);
 
 		if(category.equalsIgnoreCase("query")){
 
@@ -232,7 +234,11 @@ public class AppoinTextService extends IntentService {
 		if(category.equalsIgnoreCase("meeting")){
 			
 			Log.i("Appointext meeting", "I am in meeting ");
-			SetReminder.addToPendingTable(this, curText, senderNumber, recieverNumber);
+			
+			if (FindSentiment.findSentiment(curText).equalsIgnoreCase("no")) //If a meeting has a negative sentiment, it's essentially a cancellation
+				UpdateReminder.cancelReminder(this, curText, senderNumber, recieverNumber);
+			else
+				SetReminder.addToPendingTable(this, curText, senderNumber, recieverNumber);
 		}
 
 		/*
