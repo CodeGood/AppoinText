@@ -7,7 +7,7 @@ public class RecognizeEvent {
 	
 	private static String[] listOfEvents = {"Anniversary", "Birthday", "Movie", "Trip", "Outing", "Marriage",
 								"Date", "Dinner", "Lunch", "Breakfast", "Sleepover", "Drink", 
-								"Project Submission", "Submission", "Meeting", "Flight", "Drinks", 
+								"Project Submission", "Submission", "Meeting", "Flight", "Drinks", "fest",
 								/* Aparajita added */
 								"Training", "Interview", "Wedding", "Party", "Cinema", "catch up", "Theatre", "Mall",
 								"Funeral", "Festival", "Carnival", "Sports", "Function", "Doctor", "Test", "Exam", "Examination",
@@ -53,6 +53,7 @@ public class RecognizeEvent {
         times.put("exam", 120);
         times.put("examination", 120);
         times.put("shopping", 120);
+        times.put("fest", 60);
     }
 	
 	
