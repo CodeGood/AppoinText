@@ -124,13 +124,16 @@ Log.i("AppoinText People", "Found names " + foundNames);
 				
 				if (i != 0 && sms[i-1].equalsIgnoreCase("with")) {
 					foundNames += sms[i] + ",";
-					if (i < sms.length-1 && sms[i+1].equalsIgnoreCase("and")) { //more people to come
-						i+= 2; //i was the name, so +2 puts it at the word after and
+					if (i < sms.length-1 && (sms[i+1].equalsIgnoreCase("and") || Character.isUpperCase(sms[i+1].charAt(0)))) { //more people to come
+						if (sms[i+1].equalsIgnoreCase("and"))
+							i+= 2; //i was the name, so +2 puts it at the word after and
+						else
+							i++;
 						do {
 							if (i < sms.length && Character.isUpperCase(sms[i].charAt(0)))
 								foundNames += sms[i] + ",";
 							i++;
-						}while(i < sms.length && Character.isUpperCase(sms[i].charAt(0)));
+						}while(i < sms.length && (Character.isUpperCase(sms[i].charAt(0)) || sms[i].equals("and")));
 					}
 					
 					continue;
