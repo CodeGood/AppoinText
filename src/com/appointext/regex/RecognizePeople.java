@@ -86,7 +86,6 @@ public class RecognizePeople {
 			}
 			
 		}
-Log.i("AppoinText People", "Found names " + foundNames);
 
 		return purgeTroubleWords(foundNames);
 	}
@@ -164,7 +163,6 @@ Log.i("AppoinText People", "Found names " + foundNames);
 			}
 			
 		}
-Log.i("AppoinText People", "Found names " + foundNames);
 
 		return purgeTroubleWords(foundNames);
 	}
@@ -178,8 +176,10 @@ Log.i("AppoinText People", "Found names " + foundNames);
 		String[] names = foundNames.split(",");
 		String returnVal = "";
 		for (String name : names)
-			if (!(name.equals("Can") || name.equals("However") || name.equals("You") || name.equals("I") || name.equals("Will") || name.equals("Have") || name.equals("Hey") || name.equals("Hi") || name.equals("Are")))
+			if (!(name.equals("Can") || name.equals("However") || name.equals("You") || name.equals("I") || name.equals("Will") || name.equals("Have") || name.equals("Hey") || name.equals("Hi") || name.equals("Are") || name.equals("Even")))
 				returnVal += name + ",";
+
+		Log.i("AppoinText People", "Found names " + returnVal);
 		
 		//if (returnVal.length() > 0)
 			return returnVal;//.substring(0, returnVal.length()-1);
