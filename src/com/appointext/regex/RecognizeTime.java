@@ -18,7 +18,7 @@ public class RecognizeTime {
 	public static String findTime(Context con, String msg) {
 		
 		//sms = msg.toLowerCase(Locale.US).trim().replaceAll("(\\w+)\\p{Punct}(\\s|$)", "$1$2");
-		sms = msg.toLowerCase(Locale.US).trim().replaceAll("[^a-zA-Z0-9\\' ]", ""); 
+		sms = msg.toLowerCase(Locale.US).trim().replaceAll("[^a-zA-Z0-9:\\' ]", ""); 
 		String foundTime = "";
 		foundTime += findOClock();
 		foundTime += getTimeByRegex();
