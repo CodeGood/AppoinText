@@ -42,10 +42,12 @@ public class UpdateReminder {
 		
 		db = new DatabaseManager(con);
 		db.open();
+		boolean userCancelled = false; //says whether the person who runs appoinText was the sender of the cancellation message. If he is, then there is no question of updating attendees. The reminder must go.
 
 		people = RecognizePeople.findPeopleNegative(curText); //Okay, I have attendees mentioned here. Special function because I need those people who are NOT coming. Not the guys who are!!
 		//Find out if the message is either a sent message or a received one. And add the person who sent the message or is receiving the message also as an attendee. The host himself/ herself is not added yet.
-		if(sender.equalsIgnoreCase("123")){			
+		if(sender.equalsIgnoreCase("123")){
+			userCancelled = true; //The owner of the phone sent this message, rather than received it.
 			people += HandleConflict.convertNumberToName(con, receiver);
 		}		
 		else{	
@@ -106,6 +108,9 @@ public class UpdateReminder {
 		
 		if (toDeleteID == -1) //there is nothing to delete!! Get the hell out of here!
 			return;
+		
+		if (userCancelled) //no need to check attendee information. Just delete
+			CalendarInsertEvent.deleteCalendarEntry(con, toDeleteID);
 		
 		//Now get the attendee information and see if everyone disappeared.
 		ContentResolver cr = con.getContentResolver();
