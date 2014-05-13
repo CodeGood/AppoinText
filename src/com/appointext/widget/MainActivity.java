@@ -1,25 +1,33 @@
 package com.appointext.widget;
 
-import java.text.SimpleDateFormat;
+import com.appointext.frontend.AppoinTextActivity;
+import com.appointext.frontend.ReminderPeriodPicker;
+//import com.appointext.frontend.RemindersDisplay;
+import com.appointext.frontend.RemindersHour;
+import com.appointext.frontend.RemindersPeriodDisplay;
+
+import com.appointext.frontend.RemindersToday;
+import com.bmsce.appointext.R;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
-import android.widget.RemoteViews;
 
-import com.appointext.frontend.AppoinTextActivity;
-import com.appointext.frontend.ReminderPeriodPicker;
-import com.appointext.frontend.RemindersHour;
-import com.appointext.frontend.RemindersToday;
-import com.bmsce.appointext.R;
-//import com.appointext.frontend.RemindersDisplay;
 //import android.text.format.DateFormat;
 //import android.util.Log;
 //import android.view.View;
 //import android.view.View.OnClickListener;
+
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RemoteViews;
+import java.text.SimpleDateFormat;
 
 @SuppressLint("SimpleDateFormat")
 public class MainActivity extends AppWidgetProvider {

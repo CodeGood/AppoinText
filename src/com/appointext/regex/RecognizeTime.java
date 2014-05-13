@@ -18,7 +18,7 @@ public class RecognizeTime {
 	public static String findTime(Context con, String msg) {
 		
 		//sms = msg.toLowerCase(Locale.US).trim().replaceAll("(\\w+)\\p{Punct}(\\s|$)", "$1$2");
-		sms = msg.toLowerCase(Locale.US).trim().replaceAll("[^a-zA-Z0-9:\\' ]", ""); 
+		sms = msg.toLowerCase(Locale.US).trim().replaceAll("[^a-zA-Z0-9\\' ]", ""); 
 		String foundTime = "";
 		foundTime += findOClock();
 		foundTime += getTimeByRegex();
@@ -138,14 +138,8 @@ Log.e("AppoinTextChange", "The word of the moment is " + words[i]);
 Log.e("AppoinTextChange", "The time is " + time);					
 					if (time < 10 && !sms.contains("morning")) //If you mention morning 9 o'clock, am not messing with you babe
 						time = time + 12;
-					else if (time > 9 && sms.contains("night"))
-						time = time + 12;
 					
-					if (time < 10)
-						foundTime += "0" + time + ":00";
-					else
-						foundTime += time + ":00/" + i;
-					
+					foundTime += time + ":00/" + i;
 					foundTime += ",";
 				}
 				else { //convert
