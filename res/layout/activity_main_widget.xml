@@ -46,7 +46,7 @@
         android:id="@+id/button2"
         android:layout_width="110dp"
         android:layout_height="wrap_content"
-        android:text="Customize" />
+        android:text="Custom" />
 
     </LinearLayout>
     

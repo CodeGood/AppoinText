@@ -128,15 +128,26 @@ public class SettingsDisplay extends PreferenceActivity {
 				row = db.getRowAsArray("settingsTable", "BlockedNumbers");
 
 				if(row.isEmpty())	{
-					if(number.length() < 11 || number.charAt(0) == '0')
-						number = "91" + number;
+					if(row.isEmpty())	{
+						Log.i("onEditorAction", "null case");
+						if(number.length() < 11)	{
+							if(number.charAt(0) == '0')
+								number = "91" + number.substring(1,number.length()-1);
+							else
+								number = "91" + number;
+						}
+					}
 					finalData = number + " - " + name;
 					db.addRow("settingsTable", "BlockedNumbers", finalData);
 					Toast.makeText(getApplicationContext(), number + " added to excluded list!", Toast.LENGTH_SHORT).show();
 				}
 				else if(row.get(1).toString().equals("NoNumbers"))	{
-					if(number.length() < 11 || number.charAt(0) == '0')
-						number = "91" + number;
+					if(number.length() < 11)	{
+						if(number.charAt(0) == '0')
+							number = "91" + number.substring(1,number.length()-1);
+						else
+							number = "91" + number;
+					}
 					finalData = number + " - " + name;
 					db.updateRow("settingsTable", "BlockedNumbers", finalData);
 					Toast.makeText(getApplicationContext(), number + " added to excluded list!", Toast.LENGTH_SHORT).show();

@@ -231,7 +231,8 @@ public class SetReminder {
 				long latestTime = 0;
 
 				for(int count = 0; count < rows.size(); count++){
-
+					if(rows.get(count).get(7).toString() == null || rows.get(count).get(7).toString().length() == 0 ||rows.get(count).get(7).toString().equals(""))
+						continue;
 					if(Long.parseLong(rows.get(count).get(8).toString()) > latestTime){
 						latestTime = Long.parseLong(rows.get(count).get(8).toString());
 						index = count;
@@ -371,7 +372,8 @@ public class SetReminder {
 				long latestTime = 0;
 
 				for(int count = 0; count < rows.size(); count++){
-
+					if(rows.get(count).get(7).toString() == null || rows.get(count).get(7).toString().length() == 0 ||rows.get(count).get(7).toString().equals(""))
+						continue;
 					if(Long.parseLong(rows.get(count).get(8).toString()) > latestTime){
 						latestTime = Long.parseLong(rows.get(count).get(8).toString());
 						index = count;
@@ -551,7 +553,9 @@ public class SetReminder {
 		long latestTime = 0;
 
 		for(int count = 0; count < rows.size(); count++){
-
+			if(rows.get(count).get(7).toString() == null || rows.get(count).get(7).toString().length() == 0 ||rows.get(count).get(7).toString().equals(""))
+				continue;
+			
 			if(Long.parseLong(rows.get(count).get(8).toString()) > latestTime){
 				latestTime = Long.parseLong(rows.get(count).get(8).toString());
 				index = count;

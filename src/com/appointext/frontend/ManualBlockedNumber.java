@@ -30,8 +30,13 @@ public class ManualBlockedNumber extends Activity {
 				if(!number.equals(""))	{
 					if(row.isEmpty())	{
 						Log.i("onEditorAction", "null case");
-						if(number.length() < 11 || number.charAt(0) == '0')
-							number = "91" + number;
+						if(number.length() < 11)	{
+							if(number.charAt(0) == '0')
+								number = "91" + number.substring(1,number.length()-1);
+							else
+								number = "91" + number;
+							
+						}
 						db.addRow("settingsTable", "BlockedNumbers", number);
 						db.close();
 						Toast.makeText(getApplicationContext(), number + " added to excluded list!", Toast.LENGTH_SHORT).show();
