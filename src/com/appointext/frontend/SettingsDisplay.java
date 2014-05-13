@@ -155,8 +155,12 @@ public class SettingsDisplay extends PreferenceActivity {
 				else	{
 					String numbersExisting = row.get(1).toString();
 					if(!numbersExisting.contains(number))	{
-						if(number.length() < 11)
-							number = "91" + number;
+						if(number.length() < 11)	{
+							if(number.charAt(0) == '0')
+								number = "91" + number.substring(1,number.length()-1);
+							else
+								number = "91" + number;
+						}
 						finalData = number + " - " + name;
 						String toBeAdded = numbersExisting + "," + finalData;
 						db.updateRow("settingsTable", "BlockedNumbers", toBeAdded);

@@ -131,7 +131,7 @@
         <!-- widget receiver starts here -->
 		<receiver 
 		    android:name="com.appointext.widget.MainActivity" 
-		    android:label="SPARTA">
+		    android:label="AppoinText">
   			<intent-filter>
         		<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
         
