@@ -41,8 +41,8 @@ public class HandleConflict {
 		if (cursor.moveToFirst()) {
 		    // Get values from contacts database:
 		    name =      cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
-		    Log.v("AppoinTextConflict", "Started uploadcontactphoto: Contact Found @ " + number);            
-		    Log.v("AppoinTextConflict", "Started uploadcontactphoto: Contact name  = " + name);
+		    Log.v("AppoinTextConflict", "Contact Found @ " + number);            
+		    Log.v("AppoinTextConflict", "Contact name  = " + name);
 		    return name;
 		    
 		} 
@@ -51,8 +51,8 @@ public class HandleConflict {
 			contactUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode("+" + number)); 
 			cursor = context.getContentResolver().query(contactUri, projection, null, null, null);
 			if (cursor.moveToFirst()) {
-				Log.v("AppoinTextConflict", "Started uploadcontactphoto: Contact Not Found @ " + number);
-				Log.v("AppoinTextConflict", "Started uploadcontactphoto: Contact name  = " + name);
+				Log.v("AppoinTextConflict", "Contact Not Found @ " + number);
+				Log.v("AppoinTextConflict", "Contact name  = " + name);
 				return name; // contact not found
 			}
 			
@@ -61,8 +61,8 @@ public class HandleConflict {
 				contactUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number.substring(2, number.length()))); 
 				cursor = context.getContentResolver().query(contactUri, projection, null, null, null);
 				if (cursor.moveToFirst()) {
-					Log.v("AppoinTextConflict", "Started uploadcontactphoto: Contact Not Found @ " + number);
-					Log.v("AppoinTextConflict", "Started uploadcontactphoto: Contact name  = " + name);
+					Log.v("AppoinTextConflict", "Contact Not Found @ " + number);
+					Log.v("AppoinTextConflict", "Contact name  = " + name);
 					return name; // contact not found
 				}
 				else
@@ -177,11 +177,13 @@ public class HandleConflict {
 		Log.d("AppoinTextConflict", "Queried");
 		String aOld = "";
 		if (cursor.moveToFirst()) {
+			   String at = null;
 			   do {
-				  String at = cursor.getString(0);
+				  at = cursor.getString(0);
+				  Log.d("AppoinTextConflict", "Got current attendee as " + at);
 				  if (at != null && !at.equals(""))
 					  aOld += at;
-			   } while (cursor.moveToNext());
+			   } while (at == null && cursor.moveToNext());
 			}	
 		Log.d("AppoinTextConflict", "Got attendees as " + aOld);
 		//END

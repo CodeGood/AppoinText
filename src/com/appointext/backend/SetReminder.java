@@ -272,7 +272,7 @@ public class SetReminder {
 						}
 
 						//	   public static long addReminder(              Context, int date, int month, int year, int hour, int minute, int min_before_event, String title,                  String location,               String desc,  String attendees) 
-						int eventId = (int) CalendarInsertEvent.addReminder(con,      date,      month,     year,     hour,     minute,        30,             rows.get(index).get(5).toString(), rows.get(index).get(7).toString(),    curText,       rows.get(index).get(4).toString());
+						int eventId = (int) CalendarInsertEvent.addReminder(con,      date,      month,     year,     hour,     minute,        30,             rows.get(index).get(5).toString(), "",    curText,       rows.get(index).get(4).toString());
 
 						Log.d("AppoinText", "the database insert statement :" + date + "'" + month +"'"+year+"'" + "'" + hour + "'" + minute + "'" );
 						// after the reminder set, then put the entry to the set reminders table and add all the details to extractedData field in the form of Location:xxxx-Attendees:xxxx-Event:xxxx- all of them being a CSV 
@@ -412,7 +412,7 @@ public class SetReminder {
 						}
 
 						//	   public static long addReminder(              Context, int date, int month, int year, int hour, int minute, int min_before_event, String title,                  String location,               String desc,  String attendees) 
-						int eventId = (int) CalendarInsertEvent.addReminder(con,      date,      month,     year,     hour,     minute,        30,             rows.get(index).get(5).toString(), rows.get(index).get(7).toString(),    curText,       rows.get(index).get(4).toString());
+						int eventId = (int) CalendarInsertEvent.addReminder(con,      date,      month,     year,     hour,     minute,        30,             rows.get(index).get(5).toString(), "",    curText,       rows.get(index).get(4).toString());
 
 						Log.d("AppoinText", "the database insert statement :" + date + "'" + month +"'"+year+"'" + "'" + hour + "'" + minute + "'" );
 						// after the reminder set, then put the entry to the set reminders table and add all the details to extractedData field in the form of Location:xxxx-Attendees:xxxx-Event:xxxx- all of them being a CSV 
@@ -596,7 +596,7 @@ public class SetReminder {
 				}
 
 				//	   public static long addReminder(              Context, int date, int month, int year, int hour, int minute, int min_before_event, String title,                  String location,               String desc,  String attendees) 
-				int eventId = (int) CalendarInsertEvent.addReminder(con,      date,      month,     year,     hour,     minute,        30,             rows.get(index).get(5).toString(), rows.get(index).get(7).toString(),    desc,       rows.get(index).get(4).toString());
+				int eventId = (int) CalendarInsertEvent.addReminder(con,      date,      month,     year,     hour,     minute,        30,             rows.get(index).get(5).toString(), "",    desc,       rows.get(index).get(4).toString());
 
 				Log.d("AppoinText", "the database insert statement :" + date + "'" + month +"'"+year+"'" + "'" + hour + "'" + minute + "'" );
 				// after the reminder set, then put the entry to the set reminders table and add all the details to extractedData field in the form of Location:xxxx-Attendees:xxxx-Event:xxxx- all of them being a CSV 

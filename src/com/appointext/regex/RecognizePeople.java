@@ -86,11 +86,12 @@ public class RecognizePeople {
 			}
 			
 		}
-Log.i("AppoinText People", "Found names " + foundNames);
 
 		return purgeTroubleWords(foundNames);
 	}
 
+	//TODO: Take "will also be there" and "will be there" into consideration
+	
 	public static String findPeopleNegative (String msg) { //FIXME - Recepie for disaster
 		
 		if (msg == null || msg.length() == 0) {
@@ -122,13 +123,16 @@ Log.i("AppoinText People", "Found names " + foundNames);
 				
 				if (i != 0 && sms[i-1].equalsIgnoreCase("with")) {
 					foundNames += sms[i] + ",";
-					if (i < sms.length-1 && sms[i+1].equalsIgnoreCase("and")) { //more people to come
-						i+= 2; //i was the name, so +2 puts it at the word after and
+					if (i < sms.length-1 && (sms[i+1].equalsIgnoreCase("and") || Character.isUpperCase(sms[i+1].charAt(0)))) { //more people to come
+						if (sms[i+1].equalsIgnoreCase("and"))
+							i+= 2; //i was the name, so +2 puts it at the word after and
+						else
+							i++;
 						do {
 							if (i < sms.length && Character.isUpperCase(sms[i].charAt(0)))
 								foundNames += sms[i] + ",";
 							i++;
-						}while(i < sms.length && Character.isUpperCase(sms[i].charAt(0)));
+						}while(i < sms.length && (Character.isUpperCase(sms[i].charAt(0)) || sms[i].equals("and")));
 					}
 					
 					continue;
@@ -159,7 +163,6 @@ Log.i("AppoinText People", "Found names " + foundNames);
 			}
 			
 		}
-Log.i("AppoinText People", "Found names " + foundNames);
 
 		return purgeTroubleWords(foundNames);
 	}
@@ -173,8 +176,10 @@ Log.i("AppoinText People", "Found names " + foundNames);
 		String[] names = foundNames.split(",");
 		String returnVal = "";
 		for (String name : names)
-			if (!(name.equals("Can") || name.equals("However") || name.equals("You") || name.equals("I") || name.equals("Will") || name.equals("Have") || name.equals("Hey") || name.equals("Hi")))
+			if (!(name.equals("Can") || name.equals("However") || name.equals("You") || name.equals("I") || name.equals("Will") || name.equals("Have") || name.equals("Hey") || name.equals("Hi") || name.equals("Are") || name.equals("Even")))
 				returnVal += name + ",";
+
+		Log.i("AppoinText People", "Found names " + returnVal);
 		
 		//if (returnVal.length() > 0)
 			return returnVal;//.substring(0, returnVal.length()-1);

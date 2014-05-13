@@ -43,10 +43,13 @@ Log.w("AppoinTextReminder", "In GetMEN");
 		db.open();
 		ArrayList<Object> row;
 		
+		if (sms.endsWith(",")) //HACK around a hack :(
+			sms = sms.substring(0, sms.length()-1);
+		
 		String[] words = sms.toLowerCase().split(" ");
 		
 		for (int i = 0; i < words.length; i++) {
-		
+Log.d("AppoinText MEN", "MEN called with word " + words[i]);		
 			if (words[i].equals("morning")) {
 			
 				row = db.getRowAsArray("settingsTable", "DayTimeMorning");
