@@ -120,7 +120,7 @@ public class UpdateReminder {
 		if (cursor.moveToFirst()) {
 			   do {
 				  String at = cursor.getString(0);
-				  if (at != null && !at.equals(""))
+				  if (at != null && !at.equals("") && !aOld.contains(at))
 					  aOld += at;
 			   } while (cursor.moveToNext());
 			}	

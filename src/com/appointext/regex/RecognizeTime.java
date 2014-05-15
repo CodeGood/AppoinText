@@ -18,7 +18,7 @@ public class RecognizeTime {
 	public static String findTime(Context con, String msg) {
 		
 		//sms = msg.toLowerCase(Locale.US).trim().replaceAll("(\\w+)\\p{Punct}(\\s|$)", "$1$2");
-		sms = msg.toLowerCase(Locale.US).trim().replaceAll("[^a-zA-Z0-9\\' ]", ""); 
+		sms = msg.toLowerCase(Locale.US).trim().replaceAll("[^a-zA-Z0-9\\': ]", ""); 
 		String foundTime = "";
 		foundTime += findOClock();
 		foundTime += getTimeByRegex();
@@ -206,7 +206,7 @@ System.out.println("Match in HH:mm = " + match);
 					else if (time < 119) { time = time + 120; match = time/10 + ":0" + time%10; }
 					else if (time > 119 && time <= 129 ) { match = "00:0" + time%10; }
 					else if (time < 1200) { time = time + 1200; match = time/100 + ":" + time%100; } //boundary case of 12 not screwed
-					else { match = match.replaceAll("[^0-9:]", ""); }//1200 left as it is.
+					else { match = match.replaceAll("[^0-9]", ""); }//1200 left as it is.
 				}
 				catch (NumberFormatException e) {
 					continue;
@@ -216,7 +216,7 @@ System.out.println("Match in HH:mm = " + match);
 				try {
 					int time = Integer.parseInt(match.replaceAll("[^0-9]", ""));
 					if (time == 12) { match = "00:00"; }
-					else	match = match.replaceAll("[^0-9:]", "");
+					else	match = match.replaceAll("[^0-9]", "");
 					
 					if (match.length() !=  5) { //It's not in hh:mm form
 						

@@ -542,7 +542,7 @@ public class SetReminder {
 		Log.d("AppoinText", "The sentiment is : "+ reply);
 
 
-		if(rows.isEmpty()){
+		if(rows.isEmpty() && !reply.equals("yes")){
 
 			Log.e("AppoinText", "the rows are empty");
 			UpdateReminder.cancelReminder(con, curText, senderNumber, recieverNumber);

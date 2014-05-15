@@ -392,11 +392,17 @@ Log.d("AppoinText FalseConflict", "Got old attendees as " + attendees);
 							  if (at != null && at.endsWith(",")) //there is a terminal comma
 								  at = at.substring(0 , at.length()-1); //get rid of it
 Log.d("AppoinText FalseConflict", "Got current attendee as " + at);							  
-							  if (at != null && at.length() != 0)
+							  if (at != null && at.length() != 0 && !attendees.contains(at))
 								attendees += cursor.getString(0) + ",";		  
 						   } while (cursor.moveToNext());		        	
 					  
 		        }
+		        
+		        String[] names = attendees.split(",");
+		        attendees = "";
+		        for (String curName : names)
+		        	if (curName.length() > 0)
+		        		attendees += curName + ",";
 		        
 Log.d("AppoinText FalseConflict", "Updating attendees to " + attendees);
 		        
