@@ -130,24 +130,20 @@ public class SettingsDisplay extends PreferenceActivity {
 				if(row.isEmpty())	{
 					if(row.isEmpty())	{
 						Log.i("onEditorAction", "null case");
-						if(number.length() < 11)	{
-							if(number.charAt(0) == '0')
-								number = "91" + number.substring(1,number.length()-1);
-							else
-								number = "91" + number;
-						}
+						if(number.length() < 11)
+							number = "91" + number;
+						else if(number.charAt(0) == '0')
+							number = "91" + number.substring(1,number.length());
 					}
 					finalData = number + " - " + name;
 					db.addRow("settingsTable", "BlockedNumbers", finalData);
 					Toast.makeText(getApplicationContext(), number + " added to excluded list!", Toast.LENGTH_SHORT).show();
 				}
 				else if(row.get(1).toString().equals("NoNumbers"))	{
-					if(number.length() < 11)	{
-						if(number.charAt(0) == '0')
-							number = "91" + number.substring(1,number.length()-1);
-						else
-							number = "91" + number;
-					}
+					if(number.length() < 11)
+						number = "91" + number;
+					else if(number.charAt(0) == '0')
+						number = "91" + number.substring(1,number.length());
 					finalData = number + " - " + name;
 					db.updateRow("settingsTable", "BlockedNumbers", finalData);
 					Toast.makeText(getApplicationContext(), number + " added to excluded list!", Toast.LENGTH_SHORT).show();
@@ -155,12 +151,10 @@ public class SettingsDisplay extends PreferenceActivity {
 				else	{
 					String numbersExisting = row.get(1).toString();
 					if(!numbersExisting.contains(number))	{
-						if(number.length() < 11)	{
-							if(number.charAt(0) == '0')
-								number = "91" + number.substring(1,number.length()-1);
-							else
-								number = "91" + number;
-						}
+						if(number.length() < 11)
+							number = "91" + number;
+						else if(number.charAt(0) == '0')
+							number = "91" + number.substring(1,number.length());
 						finalData = number + " - " + name;
 						String toBeAdded = numbersExisting + "," + finalData;
 						db.updateRow("settingsTable", "BlockedNumbers", toBeAdded);
