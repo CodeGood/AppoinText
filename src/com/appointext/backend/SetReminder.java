@@ -497,8 +497,10 @@ public class SetReminder {
 
 		if(rows.isEmpty()){
 
-			db.addRow("pendingReminders", senderNumber, recieverNumber, 0, people, event, when, curText); 
-			Log.e("Appointext", "db.addRow  : " + " " + senderNumber+ " " +recieverNumber+ " " +0+ " " + people+ " " + event+ " " + when+ " " +location+ " "  );
+			if (event.length() != 0 || when.length() != 0) {
+				db.addRow("pendingReminders", senderNumber, recieverNumber, 0, people, event, when, curText); 
+				Log.e("Appointext", "db.addRow  : " + " " + senderNumber+ " " +recieverNumber+ " " +0+ " " + people+ " " + event+ " " + when+ " " +location+ " "  );
+			}
 
 		}
 		db.close();
