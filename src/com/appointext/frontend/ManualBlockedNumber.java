@@ -33,7 +33,7 @@ public class ManualBlockedNumber extends Activity {
 						if(number.length() < 11)
 							number = "91" + number;
 						else if(number.charAt(0) == '0')
-							number = "91" + number.substring(1,number.length()-1);
+							number = "91" + number.substring(1,number.length());
 						db.addRow("settingsTable", "BlockedNumbers", number);
 						db.close();
 						Toast.makeText(getApplicationContext(), number + " added to excluded list!", Toast.LENGTH_SHORT).show();
@@ -46,7 +46,7 @@ public class ManualBlockedNumber extends Activity {
 						if(number.length() < 11)
 							number = "91" + number;
 						else if(number.charAt(0) == '0')
-							number = "91" + number.substring(1,number.length()-1);
+							number = "91" + number.substring(1,number.length());
 						db.updateRow("settingsTable", "BlockedNumbers", number);
 						db.close();
 						Toast.makeText(getApplicationContext(), number + " added to excluded list!", Toast.LENGTH_SHORT).show();
@@ -65,7 +65,7 @@ public class ManualBlockedNumber extends Activity {
 							if(number.length() < 11)
 								number = "91" + number;
 							else if(number.charAt(0) == '0')
-								number = "91" + number.substring(1,number.length()-1);
+								number = "91" + number.substring(1,number.length());
 							db.updateRow("settingsTable", "BlockedNumbers", retrieveNumber + "," + number);
 							Log.i("Number that is being added", retrieveNumber + "," + number);
 							db.close();

@@ -133,7 +133,7 @@ public class SettingsDisplay extends PreferenceActivity {
 						if(number.length() < 11)
 							number = "91" + number;
 						else if(number.charAt(0) == '0')
-							number = "91" + number.substring(1,number.length()-1);
+							number = "91" + number.substring(1,number.length());
 					}
 					finalData = number + " - " + name;
 					db.addRow("settingsTable", "BlockedNumbers", finalData);
@@ -143,7 +143,7 @@ public class SettingsDisplay extends PreferenceActivity {
 					if(number.length() < 11)
 						number = "91" + number;
 					else if(number.charAt(0) == '0')
-						number = "91" + number.substring(1,number.length()-1);
+						number = "91" + number.substring(1,number.length());
 					finalData = number + " - " + name;
 					db.updateRow("settingsTable", "BlockedNumbers", finalData);
 					Toast.makeText(getApplicationContext(), number + " added to excluded list!", Toast.LENGTH_SHORT).show();
@@ -154,7 +154,7 @@ public class SettingsDisplay extends PreferenceActivity {
 						if(number.length() < 11)
 							number = "91" + number;
 						else if(number.charAt(0) == '0')
-							number = "91" + number.substring(1,number.length()-1);
+							number = "91" + number.substring(1,number.length());
 						finalData = number + " - " + name;
 						String toBeAdded = numbersExisting + "," + finalData;
 						db.updateRow("settingsTable", "BlockedNumbers", toBeAdded);
