@@ -40,6 +40,7 @@
         </activity>
         <activity
             android:name="com.appointext.frontend.RemindersToday"
+            android:exported="true"
             android:label="Reminders for Today" >            
         </activity>
         <activity
@@ -52,10 +53,12 @@
         </activity>
         <activity
             android:name="com.appointext.frontend.RemindersHour"
+            android:exported="true"
             android:label="Reminders over 1 Hour" >            
         </activity>
         <activity
             android:name="com.appointext.frontend.RemindersPeriodDisplay"
+            android:exported="true"
             android:label="Reminders for TimeLine" >            
         </activity>
         <activity
@@ -64,6 +67,7 @@
         </activity>
         <activity
             android:name="com.appointext.frontend.ReminderPeriodPicker"
+            android:exported="true"
             android:label="Reminder Period">            
         </activity>
         <activity
@@ -80,6 +84,7 @@
         </activity>
         <activity
             android:name="com.appointext.frontend.RemindersDisplay"
+            android:exported="true"
             android:label="Existing Reminders" >            
         </activity>
         <activity
@@ -88,6 +93,7 @@
         </activity>
         <activity
             android:name="com.appointext.frontend.TimeSelector"
+            android:exported="true"
             android:label="Day Scheduler" >            
         </activity>
         
