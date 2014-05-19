@@ -542,6 +542,11 @@ public class SetReminder {
 		String reply = FindSentiment.findSentiment(curText);
 
 		Log.d("AppoinText", "The sentiment is : "+ reply);
+		
+		if(rows.isEmpty() && reply.equals("yes")){
+
+			return -1;  //-1 value used will indicate that there were no reminders to confirm
+		}
 
 
 		if(rows.isEmpty() && !reply.equals("yes")){
